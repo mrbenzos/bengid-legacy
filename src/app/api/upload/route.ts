@@ -18,28 +18,42 @@ export async function POST(request: Request) {
 
     // 1. Try Supabase Storage if configured and not placeholder
     const isPlaceholderSupabase = !process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL.includes('placeholder');
+    
     if (!isPlaceholderSupabase) {
       try {
         const supabase = createAdminClient();
-        const { error: uploadError } = await supabase.storage
+        const { data, error: uploadError } = await supabase.storage
           .from('images')
           .upload(filename, buffer, {
             contentType: file.type,
           });
 
-        if (!uploadError) {
+        if (uploadError) {
+          console.error('Supabase upload error:', uploadError);
+          // If we are on Vercel, don't fall back, throw the actual error so we can see it
+          if (process.env.VERCEL) {
+             return NextResponse.json({ error: `Supabase Error: ${uploadError.message}` }, { status: 500 });
+          }
+        } else {
           const { data: publicUrlData } = supabase.storage
             .from('images')
             .getPublicUrl(filename);
 
           return NextResponse.json({ url: publicUrlData.publicUrl }, { status: 200 });
         }
-      } catch (err) {
-        console.warn('Supabase storage upload failed, falling back to local file storage:', err);
+      } catch (err: any) {
+        console.error('Supabase storage exception:', err);
+        if (process.env.VERCEL) {
+           return NextResponse.json({ error: `Supabase Exception: ${err.message}` }, { status: 500 });
+        }
       }
     }
 
-    // 2. Local file storage fallback to public/uploads
+    // 2. Local file storage fallback to public/uploads (ONLY for local development)
+    if (process.env.VERCEL) {
+       return NextResponse.json({ error: 'Local file fallback is not supported on Vercel. Supabase configuration is missing.' }, { status: 500 });
+    }
+
     const uploadsDir = path.join(process.cwd(), 'public', 'uploads');
     if (!fs.existsSync(uploadsDir)) {
       fs.mkdirSync(uploadsDir, { recursive: true });
