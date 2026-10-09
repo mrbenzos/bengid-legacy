@@ -42,7 +42,12 @@ export async function POST(request: Request) {
 
     const numericPrice = Number(price);
     const formattedUnit = unit || 'per roll';
-    const formattedStock = stock_status || 'In Stock';
+    
+    // Fix: Supabase check constraint requires 'in_stock' or 'out_of_stock'
+    let formattedStock = 'in_stock';
+    if (stock_status && stock_status.toLowerCase().includes('out')) {
+      formattedStock = 'out_of_stock';
+    }
 
     let createdItem;
     const isPlaceholderSupabase = !process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL.includes('placeholder');
