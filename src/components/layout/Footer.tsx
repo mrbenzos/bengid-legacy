@@ -96,11 +96,6 @@ export default function Footer() {
               <li>
                 <Link href="/cookies-policy" className="hover:text-slate-900 transition-colors">Cookies Policy</Link>
               </li>
-              <li>
-                <Link href="/admin/login" className="hover:text-[#00A3E0] transition-colors mt-2 inline-block">
-                  Admin Portal &rarr;
-                </Link>
-              </li>
             </ul>
           </div>
 
