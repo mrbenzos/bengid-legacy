@@ -1,0 +1,266 @@
+{
+  "materials": [
+    {
+      "sku": null,
+      "name": "HB pecncil",
+      "category": "Inks",
+      "brand": "BIC",
+      "color": "white",
+      "overview": "used for 3D drawing",
+      "features": [
+        "Waterproof",
+        "Eco-Friendly",
+        "UV Resistant",
+        "easy to use"
+      ],
+      "images": [],
+      "price": 100,
+      "unit": "1",
+      "image_url": null,
+      "stock_status": "In Stock",
+      "id": "mat_mv06145e2l8u",
+      "created_at": "2026-10-08T23:26:32.258Z"
+    },
+    {
+      "id": "1",
+      "sku": "BGL-MAT-001",
+      "name": "Premium High-Gloss RC Photo Paper (A4 / 260gsm)",
+      "category": "Photo Paper",
+      "brand": "Epson Compatible",
+      "color": "White",
+      "overview": "High quality premium photo paper for brilliant, long-lasting prints.",
+      "features": [
+        "High Gloss",
+        "Water Resistant",
+        "Fast Drying"
+      ],
+      "images": [],
+      "price": 350,
+      "unit": "per pack (100 sheets)",
+      "stock_status": "in_stock",
+      "image_url": "https://images.unsplash.com/photo-1588696879815-585a21b3e7bc?q=80&w=800&auto=format&fit=crop",
+      "created_at": "2026-09-30T02:02:11.167Z"
+    },
+    {
+      "id": "2",
+      "sku": "BGL-MAT-002",
+      "name": "Thermal Lamination Roll — Gloss (320mm x 50m)",
+      "category": "Lamination",
+      "brand": "Generic",
+      "color": "Transparent",
+      "overview": "Durable thermal lamination rolls for protecting documents and prints.",
+      "features": [
+        "Gloss Finish",
+        "Matte Finish Available",
+        "Anti-Scratch"
+      ],
+      "images": [],
+      "price": 450,
+      "unit": "per roll (50m)",
+      "stock_status": "in_stock",
+      "image_url": "https://images.unsplash.com/photo-1586075010923-2dd4570fb338?q=80&w=800&auto=format&fit=crop",
+      "created_at": "2026-09-30T02:02:11.167Z"
+    },
+    {
+      "id": "3",
+      "sku": "BGL-MAT-003",
+      "name": "Eco-Solvent Printing Ink — CMYK Set (1 Liter)",
+      "category": "Inks",
+      "brand": "EcoColor",
+      "color": "CMYK",
+      "overview": "Vibrant eco-solvent inks designed for high-resolution wide format printers.",
+      "features": [
+        "Eco-Friendly",
+        "UV Resistant",
+        "Non-Clogging"
+      ],
+      "images": [],
+      "price": 320,
+      "unit": "per bottle (1000ml)",
+      "stock_status": "in_stock",
+      "image_url": "https://images.unsplash.com/photo-1525909002-1b05e0c869d8?q=80&w=800&auto=format&fit=crop",
+      "created_at": "2026-09-30T02:02:11.167Z"
+    },
+    {
+      "id": "4",
+      "sku": "BGL-MAT-004",
+      "name": "PVC Frontlit Flex Banner — 440gsm (High Tensile)",
+      "category": "Flex",
+      "brand": "FlexMaster",
+      "color": "White",
+      "overview": "Heavy duty frontlit flex banner material for outdoor billboards and signage.",
+      "features": [
+        "Tear Resistant",
+        "Weatherproof",
+        "Smooth Surface"
+      ],
+      "images": [],
+      "price": 1200,
+      "unit": "per roll (50m)",
+      "stock_status": "in_stock",
+      "image_url": "https://images.unsplash.com/photo-1621360841013-c76831f1dbce?q=80&w=800&auto=format&fit=crop",
+      "created_at": "2026-09-30T02:02:11.167Z"
+    },
+    {
+      "id": "5",
+      "sku": "BGL-MAT-005",
+      "name": "Self-Adhesive Vinyl Sticker Roll — White Gloss",
+      "category": "Vinyl",
+      "brand": "VinylPro",
+      "color": "White",
+      "overview": "Premium self-adhesive vinyl for custom vehicle wraps and window graphics.",
+      "features": [
+        "Strong Adhesion",
+        "Easy Peel",
+        "Bubble-Free Application"
+      ],
+      "images": [],
+      "price": 850,
+      "unit": "per roll (50m)",
+      "stock_status": "in_stock",
+      "image_url": "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?q=80&w=800&auto=format&fit=crop",
+      "created_at": "2026-09-30T02:02:11.167Z"
+    },
+    {
+      "id": "6",
+      "sku": "BGL-MAT-006",
+      "name": "One-Way Vision Perforated Window Film",
+      "category": "One-Way-Vision",
+      "brand": "ClearView",
+      "color": "White/Black",
+      "overview": "Perforated window film that allows graphics on one side and clear visibility on the other.",
+      "features": [
+        "High Definition Print",
+        "Removable Glue",
+        "Privacy Enhancing"
+      ],
+      "images": [],
+      "price": 950,
+      "unit": "per roll (50m)",
+      "stock_status": "in_stock",
+      "image_url": "https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=800&auto=format&fit=crop",
+      "created_at": "2026-09-30T02:02:11.167Z"
+    }
+  ],
+  "cars": [
+    {
+      "sku": null,
+      "vehicle_type": "Unknown",
+      "brand": "Toyota",
+      "color": "Pearl White",
+      "fuel_type": "Petrol",
+      "seating_capacity": 5,
+      "overview": "it is in good condition ",
+      "licence_number": "WR-9999-26",
+      "registration_type": "Private",
+      "accessories": [
+        "Antilock Braking System (ABS)",
+        "Air Conditioner",
+        "Navigation / GPS"
+      ],
+      "images": [],
+      "model_name": "Land Cruiser Prado",
+      "year": 2026,
+      "price": 500000,
+      "image_url": null,
+      "status": "available",
+      "id": "car_mv06c0kpj3xo",
+      "created_at": "2026-10-08T23:35:00.841Z"
+    },
+    {
+      "id": "1",
+      "sku": "BGL-CAR-2001",
+      "model_name": "Toyota Yaris Sedan (Automatic)",
+      "vehicle_type": "Sedan",
+      "brand": "Toyota",
+      "color": "White",
+      "fuel_type": "Petrol",
+      "seating_capacity": 5,
+      "overview": "Clean used Toyota Yaris",
+      "licence_number": null,
+      "registration_type": null,
+      "accessories": [],
+      "images": [],
+      "year": 2018,
+      "price": 85000,
+      "status": "available",
+      "image_url": "https://images.unsplash.com/photo-1617814076367-b759c7d7e738?q=80&w=800&auto=format&fit=crop",
+      "created_at": "2026-09-30T02:02:11.167Z"
+    },
+    {
+      "id": "2",
+      "sku": "BGL-CAR-2002",
+      "model_name": "Hyundai Accent GLS (Clean Foreign Used)",
+      "vehicle_type": "Sedan",
+      "brand": "Hyundai",
+      "color": "Silver",
+      "fuel_type": "Petrol",
+      "seating_capacity": 5,
+      "overview": "Clean used Hyundai Accent",
+      "licence_number": null,
+      "registration_type": null,
+      "accessories": [],
+      "images": [],
+      "year": 2019,
+      "price": 92000,
+      "status": "available",
+      "image_url": "https://images.unsplash.com/photo-1590362891991-f776e747a588?q=80&w=800&auto=format&fit=crop",
+      "created_at": "2026-09-30T02:02:11.167Z"
+    },
+    {
+      "id": "3",
+      "sku": "BGL-CAR-2003",
+      "model_name": "Toyota Corolla LE (Verified Documentation)",
+      "vehicle_type": "Sedan",
+      "brand": "Toyota",
+      "color": "Black",
+      "fuel_type": "Petrol",
+      "seating_capacity": 5,
+      "overview": "Clean used Toyota Corolla",
+      "licence_number": null,
+      "registration_type": null,
+      "accessories": [],
+      "images": [],
+      "year": 2016,
+      "price": 78000,
+      "status": "sold",
+      "image_url": "https://images.unsplash.com/photo-1550355291-bbee04a92027?q=80&w=800&auto=format&fit=crop",
+      "created_at": "2026-09-30T02:02:11.167Z"
+    }
+  ],
+  "leads": [],
+  "activityLogs": [
+    {
+      "action": "modified",
+      "item_type": "car",
+      "item_name": "Land Cruiser Prado",
+      "user": "Admin",
+      "id": "log_mv083iix",
+      "created_at": "2026-10-09T00:24:23.433Z"
+    },
+    {
+      "action": "created",
+      "item_type": "car",
+      "item_name": "Land Cruiser Prado 2026",
+      "user": "Admin",
+      "id": "log_mv06c0kz",
+      "created_at": "2026-10-08T23:35:00.851Z"
+    },
+    {
+      "action": "modified",
+      "item_type": "material",
+      "item_name": "HB pecncil",
+      "user": "Admin",
+      "id": "log_mv064gp9",
+      "created_at": "2026-10-08T23:29:08.493Z"
+    },
+    {
+      "action": "created",
+      "item_type": "material",
+      "item_name": "HB pecncil",
+      "user": "Admin",
+      "id": "log_mv06145n",
+      "created_at": "2026-10-08T23:26:32.267Z"
+    }
+  ]
+}
