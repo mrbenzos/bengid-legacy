@@ -4,21 +4,6 @@ import { createAdminClient } from '@/lib/supabase/admin';
 export async function POST(request: Request) {
   try {
     const { email, code } = await request.json();
-
-    // Dev/Demo Mode Fallback for local testing
-    const isPlaceholderSupabase = !process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL.includes('placeholder');
-    if ((isPlaceholderSupabase || email === 'admin@bengidlegacy.com') && code === '123456') {
-      const response = NextResponse.json({ message: 'Verified successfully (Demo Mode)' }, { status: 200 });
-      response.cookies.set('bengid-admin-session', email, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        maxAge: 8 * 60 * 60,
-        path: '/',
-      });
-      response.cookies.delete('bengid-temp-token');
-      return response;
-    }
-
     const supabase = createAdminClient();
 
     const { data: otp, error: otpError } = await supabase
