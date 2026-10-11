@@ -1,0 +1,30 @@
+DOMAIN NAME & INFRASTRUCTURE PROPOSAL
+Prepared For: Bengid Legacy Ghana Limited
+Service: Domain Registration, SSL Certification, & Hosting Integration
+
+OVERVIEW
+To make the BENGID LEGACY website officially live and accessible to the public, an official domain name must be registered and integrated with our secure Vercel cloud hosting infrastructure. The costs outlined below cover the first year of domain registration, plus the technical setup required to link the domain to the server, configure the DNS records, and issue a mandatory SSL Security Certificate for safe browsing.
+
+AVAILABLE DOMAIN OPTIONS
+Below are the available premium domain names suitable for your brand. Please select your preferred option:
+
+Option 1: The Primary Brand (Recommended)
+Domain: bengidlegacy.com
+Total Setup & Registration Fee: 1,200 GHS
+Notes: This is the most professional and exact match for the company name. Highly recommended for building long-term brand trust.
+
+Option 2: The Shortened Regional Brand
+Domain: bengidgh.com
+Total Setup & Registration Fee: 1,040 GHS
+
+Option 3: The Group / Corporate Brand
+Domain: bengidgroup.com
+Total Setup & Registration Fee: 1,120 GHS
+
+WHAT IS INCLUDED IN THIS FEE?
+The selected fee is a one-time payment for the first year and covers the following technical services:
+1. Domain Registration: Securing the rights to the name for 12 months.
+2. Domain Privacy Protection: Hiding company executive contact details from public spam databases.
+3. DNS Configuration: Routing the domain through secure nameservers to our application firewall.
+4. SSL Certificate Issuance: Cryptographic setup to ensure the website shows the secure "Padlock" icon and loads over https://.
+5. Hosting Integration: Finalizing the bridge between the live database and the Vercel hosting platform.

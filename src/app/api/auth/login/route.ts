@@ -35,7 +35,7 @@ export async function POST(request: Request) {
 
     // Map specific emails to their designated phone numbers
     let adminPhone = process.env.ADMIN_PHONE; 
-    if (email === 'admin@bengidlegacy.com') {
+    if (email === 'admin@bengidlegacy.com' || email === 'admin@bengidlegacyghltd.com' || email === 'info@bengidlegacyghltd.com') {
       adminPhone = '233241749931';
     } else if (email === 'benzosjeff430@gmail.com') {
       adminPhone = '233538973984';

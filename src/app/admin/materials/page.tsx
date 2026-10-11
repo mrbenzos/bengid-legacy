@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import MultiImageUpload from '@/components/ui/MultiImageUpload';
 import Modal from '@/components/ui/Modal';
@@ -10,6 +10,9 @@ import {
   HiXMark,
   HiCheck,
   HiPhoto,
+  HiPencil,
+  HiTrash,
+  HiPrinter,
 } from 'react-icons/hi2';
 
 interface Material {
@@ -29,8 +32,27 @@ interface Material {
   created_at: string;
 }
 
-const DEFAULT_CATEGORIES = ['Flex', 'Banner', 'Vinyl', 'Sticker', 'Tarpaulin', 'Canvas', 'One-Way-Vision', 'Backlit', 'Mesh', 'Photo Paper', 'Lamination', 'Inks'];
-const DEFAULT_FEATURES = ['Waterproof', 'UV Resistant', 'High Gloss', 'Matte Finish', 'Tear Resistant', 'Eco-Friendly'];
+const DEFAULT_CATEGORIES = [
+  'Photo Papers',
+  'Lamination Films',
+  'Inks & Toners',
+  'Flex',
+  'Vinyl',
+  'One-Way-Vision',
+  'Stationery & Cutters',
+  'Canvas',
+  'Tarpaulin',
+];
+
+const DEFAULT_FEATURES = [
+  'Waterproof Barrier',
+  'UV Light Resistant',
+  'High Gloss Finish',
+  'Matte Finish',
+  'Tear Resistant',
+  'Eco-Solvent Friendly',
+  'Instant Dry',
+];
 
 const emptyForm = () => ({
   name: '',
@@ -39,14 +61,14 @@ const emptyForm = () => ({
   color: '',
   price: 0,
   unit: 'per roll',
-  stock_status: 'In Stock',
+  stock_status: 'in_stock',
   overview: '',
   features: [] as string[],
   images: [] as { label: string; url: string }[],
   image_url: '',
 });
 
-export default function MaterialsPage() {
+export default function AdminPrintingMaterialsPage() {
   const [materials, setMaterials] = useState<Material[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [showModal, setShowModal] = useState(false);
@@ -60,8 +82,6 @@ export default function MaterialsPage() {
   const [features, setFeatures] = useState<string[]>(DEFAULT_FEATURES);
   const [newFeatureInput, setNewFeatureInput] = useState('');
   const [showNewFeatureInput, setShowNewFeatureInput] = useState(false);
-  
-  const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     fetchMaterials();
@@ -76,7 +96,7 @@ export default function MaterialsPage() {
         setMaterials(data);
       }
     } catch (error) {
-      console.error('Failed to fetch materials:', error);
+      console.error('Failed to fetch printing materials:', error);
     } finally {
       setLoading(false);
     }
@@ -85,7 +105,7 @@ export default function MaterialsPage() {
   const handleOpenModal = (material: Material | null = null) => {
     if (material) {
       setEditingMaterial(material);
-      const isStandard = DEFAULT_CATEGORIES.includes(material.category);
+      const isStandard = DEFAULT_CATEGORIES.some(c => c.toLowerCase() === (material.category || '').toLowerCase());
       setFormData({
         name: material.name || '',
         category: isStandard ? material.category : 'Other',
@@ -93,10 +113,10 @@ export default function MaterialsPage() {
         color: material.color || '',
         price: material.price || 0,
         unit: material.unit || 'per roll',
-        stock_status: material.stock_status || 'In Stock',
+        stock_status: material.stock_status || 'in_stock',
         overview: material.overview || '',
         features: material.features || [],
-        images: (material.images && material.images.length > 0) ? material.images : (material.image_url ? [{ label: 'Image 1', url: material.image_url }] : []),
+        images: (material.images && material.images.length > 0) ? material.images : (material.image_url ? [{ label: 'Main Media', url: material.image_url }] : []),
         image_url: material.image_url || '',
       });
       setCustomCategory(isStandard ? '' : material.category);
@@ -134,12 +154,12 @@ export default function MaterialsPage() {
   };
 
   const handleDelete = async (id: string) => {
-    if (window.confirm('Are you sure you want to delete this material?')) {
+    if (window.confirm('Are you sure you want to delete this printing material?')) {
       try {
         const res = await fetch(`/api/materials/${id}`, { method: 'DELETE' });
         if (res.ok) {
           fetchMaterials();
-          toast.success('Material deleted successfully.');
+          toast.success('Printing material deleted successfully.');
         } else {
           toast.error('Delete failed.');
         }
@@ -151,12 +171,25 @@ export default function MaterialsPage() {
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Dynamic Category validation & binding
+    let finalCategory = formData.category;
+    if (formData.category === 'Other') {
+      const trimmedCustom = customCategory.trim();
+      if (!trimmedCustom) {
+        toast.error('Please enter a custom category name.');
+        return;
+      }
+      finalCategory = trimmedCustom;
+    } else if (!formData.category) {
+      toast.error('Please select a category.');
+      return;
+    }
+
     setSaving(true);
-    const toastId = toast.loading(editingMaterial ? 'Updating material...' : 'Adding material...');
+    const toastId = toast.loading(editingMaterial ? 'Updating printing material...' : 'Adding printing material...');
     
     try {
-      const finalCategory = formData.category === 'Other' ? customCategory : formData.category;
-      
       const payload = { 
         ...formData, 
         category: finalCategory,
@@ -169,15 +202,17 @@ export default function MaterialsPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
+
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
-        throw new Error(err.error || 'Server rejected the material.');
+        throw new Error(err.error || 'Server rejected the printing material payload.');
       }
+      
       await fetchMaterials();
-      toast.success(editingMaterial ? 'Material updated!' : 'Material added!', { id: toastId });
+      toast.success(editingMaterial ? 'Printing material updated!' : 'Printing material added!', { id: toastId });
       handleCloseModal();
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to save material. Please try again.', { id: toastId });
+      toast.error(error instanceof Error ? error.message : 'Failed to save printing material.', { id: toastId });
     } finally {
       setSaving(false);
     }
@@ -192,332 +227,266 @@ export default function MaterialsPage() {
   });
 
   return (
-    <div className="space-y-6 animate-fadeIn">
-      <Toaster position="top-right" toastOptions={{ style: { fontSize: '13px', fontWeight: '600' } }} />
+    <div className="space-y-6 animate-fadeIn text-white">
+      <Toaster position="top-right" toastOptions={{ style: { background: '#111827', color: '#fff', border: '1px solid #2D3748' } }} />
 
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-            Materials Management
+          <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+            Printing Materials Management
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
-            Add, edit, and organize printing media rolls, photo papers, and inks.
+          <p className="text-xs sm:text-sm text-[#9CA3AF] mt-0.5">
+            Add, update, and manage inventory of printing media rolls, photo papers, laminates, and inks.
           </p>
         </div>
 
         <button
           onClick={() => handleOpenModal()}
-          className="inline-flex items-center gap-2 bg-[#165b33] hover:bg-[#124b2a] text-white px-5 py-2.5 rounded-full font-bold text-xs sm:text-sm shadow-sm hover:shadow-md transition-all cursor-pointer"
+          className="inline-flex items-center gap-2 bg-[#4B6F23] hover:bg-[#556B2F] text-white px-5 py-2.5 rounded-full font-bold text-xs sm:text-sm shadow-md transition-all cursor-pointer"
         >
           <HiPlus className="text-base" />
-          <span>Add Material</span>
+          <span>Add Printing Material</span>
         </button>
       </div>
 
       {/* Main Table Card */}
-      <div className="bg-white rounded-3xl border border-slate-200 shadow-xs overflow-hidden">
+      <div className="bg-[#111827] rounded-3xl border border-[#2D3748] shadow-2xl overflow-hidden">
         {/* Search Bar */}
-        <div className="p-4 sm:p-5 border-b border-slate-200 flex items-center justify-between gap-4">
+        <div className="p-4 sm:p-5 border-b border-[#1F2937] flex items-center justify-between gap-4">
           <div className="relative w-full max-w-md">
-            <HiMagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm" />
+            <HiMagnifyingGlass className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm" />
             <input
               type="text"
-              placeholder="Search materials by name or category..."
+              placeholder="Search printing materials by name, category, or brand..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 bg-[#f4f6f4] focus:bg-white text-sm text-slate-800 rounded-full border border-transparent focus:border-slate-300 focus:outline-none transition-all"
+              className="w-full pl-10 pr-4 py-2.5 bg-[#0B0F19] text-sm text-white rounded-full border border-[#2D3748] focus:border-[#4B6F23] focus:outline-none transition-all placeholder-slate-500"
             />
           </div>
-          <span className="text-xs font-bold text-slate-500 whitespace-nowrap">
-            {filteredMaterials.length} materials
+          <span className="text-xs font-mono font-bold text-[#86efac] whitespace-nowrap">
+            {filteredMaterials.length} printing materials
           </span>
         </div>
 
         {loading ? (
-          <div className="p-12 text-center text-slate-500 font-semibold text-sm">Loading materials...</div>
+          <div className="p-12 text-center text-[#9CA3AF] font-semibold text-sm">Loading printing materials...</div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-[#fafbfa] border-b border-slate-200 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-                  <th className="px-6 py-3.5">Material</th>
-                  <th className="px-6 py-3.5">Category</th>
-                  <th className="px-6 py-3.5">Price (GHS)</th>
-                  <th className="px-6 py-3.5">Unit</th>
-                  <th className="px-6 py-3.5">Stock</th>
-                  <th className="px-6 py-3.5 text-right">Actions</th>
+                <tr className="bg-[#0B0F19] border-b border-[#1F2937] text-[11px] font-bold text-[#9CA3AF] uppercase tracking-wider">
+                  <th className="px-6 py-4">Item Details</th>
+                  <th className="px-6 py-4">Category</th>
+                  <th className="px-6 py-4">Price (GHS)</th>
+                  <th className="px-6 py-4">Unit</th>
+                  <th className="px-6 py-4">Stock Status</th>
+                  <th className="px-6 py-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-[#1F2937]">
                 {filteredMaterials.map((material) => (
-                  <tr key={material.id} className="hover:bg-slate-50/70 transition-colors">
+                  <tr key={material.id} className="hover:bg-white/5 transition-colors">
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <p className="text-sm font-bold text-slate-900">{material.name}</p>
-                      <p className="text-[11px] text-slate-500">{material.brand || 'No Brand'}</p>
+                      <p className="text-sm font-bold text-white">{material.name}</p>
+                      <p className="text-[11px] text-[#9CA3AF]">{material.brand || 'No Brand'}</p>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-50 text-slate-600">
+                      <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-[#0B0F19] text-[#86efac] border border-[#2D3748]">
                         {material.category}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-black text-[#165b33]">
-                      GHS {Number(material.price).toFixed(2)}
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className="text-sm font-extrabold text-white">
+                        GHS {Number(material.price).toFixed(2)}
+                      </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-slate-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-xs text-[#9CA3AF]">
                       {material.unit}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span
-                        className={`px-2.5 py-0.5 rounded-full text-xs font-bold ${
-                          material.stock_status?.toLowerCase().includes('in')
-                            ? 'bg-emerald-50 text-emerald-700'
-                            : 'bg-rose-50 text-rose-700'
-                        }`}
-                      >
-                        {material.stock_status}
+                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold ${
+                        material.stock_status === 'in_stock'
+                          ? 'bg-emerald-950/80 text-emerald-300 border border-emerald-500/30'
+                          : 'bg-rose-950/80 text-rose-300 border border-rose-500/30'
+                      }`}>
+                        <span className={`w-1.5 h-1.5 rounded-full ${material.stock_status === 'in_stock' ? 'bg-emerald-400' : 'bg-rose-400'}`} />
+                        {material.stock_status === 'in_stock' ? 'In Stock' : 'Out of Stock'}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
-                      <button
-                        onClick={() => handleOpenModal(material)}
-                        className="text-[#165b33] hover:underline font-bold text-xs mr-3 cursor-pointer"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleDelete(material.id)}
-                        className="text-rose-500 hover:underline font-bold text-xs cursor-pointer"
-                      >
-                        Delete
-                      </button>
+                    <td className="px-6 py-4 whitespace-nowrap text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        <button
+                          onClick={() => handleOpenModal(material)}
+                          className="p-2 rounded-xl bg-[#0B0F19] border border-[#2D3748] hover:border-[#4B6F23] text-white hover:text-[#86efac] transition-all"
+                          title="Edit"
+                        >
+                          <HiPencil className="text-sm" />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(material.id)}
+                          className="p-2 rounded-xl bg-[#0B0F19] border border-[#2D3748] hover:border-rose-500 text-slate-400 hover:text-rose-400 transition-all"
+                          title="Delete"
+                        >
+                          <HiTrash className="text-sm" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
-                {filteredMaterials.length === 0 && (
-                  <tr>
-                    <td colSpan={6} className="px-6 py-8 text-center text-slate-500 font-medium text-sm">No materials found</td>
-                  </tr>
-                )}
               </tbody>
             </table>
           </div>
         )}
       </div>
 
-      {/* Modern Add / Edit Modal */}
-      <Modal
-        open={showModal}
-        onClose={handleCloseModal}
-        title={editingMaterial ? 'Edit Material' : 'Add New Material'}
-        subtitle="Provide detailed specifications"
-      >
-            <form onSubmit={handleSave} className="p-4 sm:p-7 space-y-8">
-              
-              {/* ── SECTION 1: Basic Info ── */}
+      {/* Modal with Dynamic Category Logic & Dark Theme */}
+      <Modal isOpen={showModal} onClose={handleCloseModal} title={editingMaterial ? 'Edit Printing Material' : 'Add New Printing Material'}>
+        <form onSubmit={handleSave} className="space-y-6 text-white">
+          <div className="space-y-4">
+            <div>
+              <label className="block text-xs font-bold text-[#E5E7EB] mb-1.5">
+                Printing Material Name <span className="text-red-400">*</span>
+              </label>
+              <input
+                type="text"
+                required
+                placeholder="e.g. Premium High-Gloss RC Photo Paper (A4 / 260gsm)"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                className="w-full px-4 py-2.5 rounded-xl bg-[#0B0F19] border border-[#2D3748] text-sm text-white focus:outline-none focus:border-[#4B6F23]"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <p className="text-[11px] font-black uppercase tracking-widest text-slate-500 mb-4">Basic Information</p>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-xs font-bold text-slate-600 mb-1.5">Material Name <span className="text-rose-500">*</span></label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="e.g. SAV Flex Banner 510gsm"
-                      value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-[#165b33]"
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-xs font-bold text-slate-600 mb-1.5">Brand <span className="text-slate-500 font-normal">(optional)</span></label>
-                      <input
-                        type="text"
-                        placeholder="e.g. Epson Compatible"
-                        value={formData.brand}
-                        onChange={(e) => setFormData({ ...formData, brand: e.target.value })}
-                        className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-[#165b33]"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-slate-600 mb-1.5">Category <span className="text-rose-500">*</span></label>
-                      <select
-                        required
-                        value={formData.category}
-                        onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                        className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-[#165b33] bg-white"
-                      >
-                        <option value="">Select a category</option>
-                        {DEFAULT_CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
-                        <option value="Other">Other</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  {formData.category === 'Other' && (
-                    <div>
-                      <label className="block text-xs font-bold text-slate-600 mb-1.5">Custom Category Name <span className="text-rose-500">*</span></label>
-                      <input
-                        type="text"
-                        required
-                        placeholder="e.g. Laminating Film"
-                        value={customCategory}
-                        onChange={(e) => setCustomCategory(e.target.value)}
-                        className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-[#165b33]"
-                      />
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              <hr className="border-slate-200" />
-
-              {/* ── SECTION 2: Pricing & Specs ── */}
-              <div>
-                <p className="text-[11px] font-black uppercase tracking-widest text-slate-500 mb-4">Pricing & Specifications</p>
-                <div className="space-y-4">
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                    <div className="col-span-2 sm:col-span-1">
-                      <label className="block text-xs font-bold text-slate-600 mb-1.5">Price (GHS) <span className="text-rose-500">*</span></label>
-                      <input
-                        type="number"
-                        step="0.01"
-                        required
-                        value={formData.price}
-                        onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) || 0 })}
-                        className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-[#165b33]"
-                        placeholder="0.00"
-                      />
-                    </div>
-                    <div className="col-span-2 sm:col-span-1">
-                      <label className="block text-xs font-bold text-slate-600 mb-1.5">Unit <span className="text-rose-500">*</span></label>
-                      <input
-                        type="text"
-                        required
-                        value={formData.unit}
-                        onChange={(e) => setFormData({ ...formData, unit: e.target.value })}
-                        className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-[#165b33]"
-                        placeholder="e.g. per roll"
-                      />
-                    </div>
-                    <div className="col-span-2 sm:col-span-1">
-                      <label className="block text-xs font-bold text-slate-600 mb-1.5">Color</label>
-                      <input
-                        type="text"
-                        value={formData.color}
-                        onChange={(e) => setFormData({ ...formData, color: e.target.value })}
-                        className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-[#165b33]"
-                        placeholder="e.g. White / Transparent"
-                      />
-                    </div>
-                    <div className="col-span-2 sm:col-span-1">
-                      <label className="block text-xs font-bold text-slate-600 mb-1.5">Stock Status</label>
-                      <select
-                        required
-                        value={formData.stock_status}
-                        onChange={(e) => setFormData({ ...formData, stock_status: e.target.value })}
-                        className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-[#165b33] bg-white"
-                      >
-                        <option value="In Stock">In Stock</option>
-                        <option value="Out of Stock">Out of Stock</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-slate-600 mb-1.5">Material Overview</label>
-                    <textarea
-                      rows={3}
-                      placeholder="Describe the material quality, common uses, and technical details..."
-                      value={formData.overview}
-                      onChange={(e) => setFormData({ ...formData, overview: e.target.value })}
-                      className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-[#165b33] resize-none"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <hr className="border-slate-200" />
-
-              {/* ── SECTION 3: Features ── */}
-              <div>
-                <p className="text-[11px] font-black uppercase tracking-widest text-slate-500 mb-4">Material Features</p>
-                <div className="flex flex-wrap gap-2 mb-3">
-                  {features.map((feat) => {
-                    const selected = formData.features.includes(feat);
-                    return (
-                      <button
-                        key={feat}
-                        type="button"
-                        onClick={() => toggleFeature(feat)}
-                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
-                          selected
-                            ? 'bg-[#165b33] text-white border-[#165b33]'
-                            : 'bg-white text-slate-600 border-slate-200 hover:border-slate-400'
-                        }`}
-                      >
-                        {selected && <HiCheck className="text-xs" />}
-                        {feat}
-                      </button>
-                    );
-                  })}
-                  <button
-                    type="button"
-                    onClick={() => setShowNewFeatureInput(!showNewFeatureInput)}
-                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-bold border border-dashed border-slate-300 text-slate-500 hover:border-slate-500 hover:text-slate-600 transition-all cursor-pointer"
-                  >
-                    <HiPlus className="text-xs" /> Add Feature
-                  </button>
-                </div>
-                {showNewFeatureInput && (
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      value={newFeatureInput}
-                      onChange={(e) => setNewFeatureInput(e.target.value)}
-                      placeholder="e.g. Non-curling"
-                      className="flex-1 px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-[#165b33]"
-                      onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addNewFeature())}
-                    />
-                    <button type="button" onClick={addNewFeature} className="px-4 py-2 bg-[#165b33] text-white rounded-xl text-xs font-bold cursor-pointer hover:bg-[#124b2a]">Add</button>
-                  </div>
-                )}
-                {formData.features.length > 0 && (
-                  <p className="text-[11px] text-slate-500 mt-2">{formData.features.length} feature(s) selected</p>
-                )}
-              </div>
-
-              <hr className="border-slate-200" />
-
-              {/* ── SECTION 4: Images ── */}
-              <div className="bg-white rounded-2xl border border-slate-200 p-6">
-                <MultiImageUpload
-                  title="MATERIAL IMAGES (MULTI-ANGLE)"
-                  bucket="images"
-                  images={formData.images.filter(img => img.url)}
-                  onChange={(images) => setFormData({ ...formData, images })}
+                <label className="block text-xs font-bold text-[#E5E7EB] mb-1.5">Brand</label>
+                <input
+                  type="text"
+                  placeholder="e.g. Epson Compatible / MasterLam"
+                  value={formData.brand}
+                  onChange={(e) => setFormData({ ...formData, brand: e.target.value })}
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#0B0F19] border border-[#2D3748] text-sm text-white focus:outline-none focus:border-[#4B6F23]"
                 />
               </div>
 
-              <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 sticky bottom-0 -mx-4 sm:-mx-7 -mb-4 sm:-mb-7 px-4 sm:px-7 py-4 bg-white/95 backdrop-blur border-t border-slate-200">
-                <button
-                  type="button"
-                  onClick={handleCloseModal}
-                  className="px-5 py-2.5 rounded-full border border-slate-200 text-slate-600 font-bold text-sm hover:bg-slate-50 cursor-pointer"
+              <div>
+                <label className="block text-xs font-bold text-[#E5E7EB] mb-1.5">
+                  Category <span className="text-red-400">*</span>
+                </label>
+                <select
+                  required
+                  value={formData.category}
+                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#0B0F19] border border-[#2D3748] text-sm text-white focus:outline-none focus:border-[#4B6F23] cursor-pointer"
                 >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={saving}
-                  className="px-6 py-2.5 rounded-full bg-[#165b33] hover:bg-[#124b2a] text-white font-bold text-sm shadow-sm transition-all disabled:opacity-50 cursor-pointer"
-                >
-                  {saving ? 'Saving...' : editingMaterial ? 'Update Material' : 'Save Material'}
-                </button>
+                  <option value="">Select a category</option>
+                  {DEFAULT_CATEGORIES.map((c) => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                  <option value="Other">Other</option>
+                </select>
               </div>
-            </form>
+            </div>
+
+            {/* DYNAMIC CATEGORY FIELD: Rendered directly underneath select box when "Other" is chosen */}
+            {formData.category === 'Other' && (
+              <div className="animate-fadeIn p-4 rounded-2xl bg-[#0B0F19] border border-[#4B6F23]/60 shadow-inner">
+                <label className="block text-xs font-bold text-[#86efac] mb-1.5">
+                  Custom Category Name <span className="text-red-400">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Enter custom category name (e.g. Backlit Film Media)"
+                  value={customCategory}
+                  onChange={(e) => setCustomCategory(e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#111827] border border-[#4B6F23] text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-[#86efac]"
+                />
+              </div>
+            )}
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-[#E5E7EB] mb-1.5">
+                  Price (GHS) <span className="text-red-400">*</span>
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  required
+                  placeholder="0.00"
+                  value={formData.price}
+                  onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) || 0 })}
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#0B0F19] border border-[#2D3748] text-sm text-white focus:outline-none focus:border-[#4B6F23]"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-[#E5E7EB] mb-1.5">
+                  Unit <span className="text-red-400">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. per roll / per pack"
+                  value={formData.unit}
+                  onChange={(e) => setFormData({ ...formData, unit: e.target.value })}
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#0B0F19] border border-[#2D3748] text-sm text-white focus:outline-none focus:border-[#4B6F23]"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-[#E5E7EB] mb-1.5">
+                  Stock Status <span className="text-red-400">*</span>
+                </label>
+                <select
+                  value={formData.stock_status}
+                  onChange={(e) => setFormData({ ...formData, stock_status: e.target.value })}
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#0B0F19] border border-[#2D3748] text-sm text-white focus:outline-none focus:border-[#4B6F23] cursor-pointer"
+                >
+                  <option value="in_stock">In Stock</option>
+                  <option value="out_of_stock">Out of Stock</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-[#E5E7EB] mb-1.5">Product Overview</label>
+              <textarea
+                rows={3}
+                placeholder="Brief technical and operational description of this printing media..."
+                value={formData.overview}
+                onChange={(e) => setFormData({ ...formData, overview: e.target.value })}
+                className="w-full px-4 py-2.5 rounded-xl bg-[#0B0F19] border border-[#2D3748] text-sm text-white focus:outline-none focus:border-[#4B6F23] resize-none"
+              ></textarea>
+            </div>
+
+            {/* Media Uploads */}
+            <div>
+              <label className="block text-xs font-bold text-[#E5E7EB] mb-2">Printing Media Photos</label>
+              <MultiImageUpload
+                images={formData.images}
+                onChange={(imgs) => setFormData({ ...formData, images: imgs })}
+              />
+            </div>
+          </div>
+
+          <div className="flex items-center justify-end gap-3 pt-6 border-t border-[#1F2937]">
+            <button
+              type="button"
+              onClick={handleCloseModal}
+              className="px-5 py-2.5 rounded-full text-xs font-bold text-[#9CA3AF] hover:text-white hover:bg-white/5 transition-all"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={saving}
+              className="px-6 py-2.5 rounded-full bg-[#4B6F23] hover:bg-[#556B2F] text-white text-xs font-bold shadow-md transition-all disabled:opacity-50"
+            >
+              {saving ? 'Saving...' : editingMaterial ? 'Update Printing Material' : 'Create Printing Material'}
+            </button>
+          </div>
+        </form>
       </Modal>
     </div>
   );

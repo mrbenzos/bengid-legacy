@@ -5,30 +5,43 @@ import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { IoLogoWhatsapp } from 'react-icons/io5';
-import { HiArrowLeft, HiCheckCircle, HiPhoto, HiMapPin, HiPhone } from 'react-icons/hi2';
+import { HiArrowLeft, HiCheckCircle, HiPhoto, HiChevronLeft, HiChevronRight, HiPhone, HiMapPin, HiShieldCheck } from 'react-icons/hi2';
 import { Car } from '@/lib/types';
+import CarCard from '@/components/ui/CarCard';
+import { INITIAL_CARS } from '@/lib/initialData';
 
 export default function AutomobileDetailPage() {
   const params = useParams();
-  const router = useRouter();
   const id = params?.id as string;
   
   const [car, setCar] = useState<Car | null>(null);
+  const [similarCars, setSimilarCars] = useState<Car[]>([]);
   const [loading, setLoading] = useState(true);
-  const [mainImage, setMainImage] = useState<string | null>(null);
+  const [activeImageIdx, setActiveImageIdx] = useState(0);
 
   useEffect(() => {
     async function fetchCar() {
       try {
-        const res = await fetch(`/api/cars/${id}`, { cache: 'no-store' });
+        const res = await fetch(`/api/cars/${id}`);
         if (!res.ok) throw new Error('Not found');
         const data: Car = await res.json();
         setCar(data);
-        const first = data.images?.find((i) => i.url)?.url || data.image_url || null;
-        setMainImage(first);
+
+        // Fetch similar cars
+        const resAll = await fetch('/api/cars');
+        if (resAll.ok) {
+          const allCars: Car[] = await resAll.json();
+          setSimilarCars(allCars.filter(c => c.id !== data.id).slice(0, 3));
+        }
       } catch (err) {
-        // Never substitute made-up data: show "Vehicle not found" instead.
-        setCar(null);
+        // Fallback to local catalog
+        const found = INITIAL_CARS.find(c => c.id === id || c.sku === id);
+        if (found) {
+          setCar(found);
+          setSimilarCars(INITIAL_CARS.filter(c => c.id !== found.id).slice(0, 3));
+        } else {
+          setCar(null);
+        }
       } finally {
         setLoading(false);
       }
@@ -38,11 +51,11 @@ export default function AutomobileDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-white p-6 md:p-12 animate-pulse">
-        <div className="h-6 w-32 bg-slate-200 rounded mb-8"></div>
-        <div className="grid lg:grid-cols-12 gap-8">
-          <div className="lg:col-span-7 h-96 bg-slate-200 rounded-3xl"></div>
-          <div className="lg:col-span-5 h-96 bg-slate-200 rounded-3xl"></div>
+      <div className="min-h-screen bg-[#0B0F19] p-6 md:p-12 animate-pulse pt-32">
+        <div className="h-6 w-48 bg-[#111827] rounded mb-8"></div>
+        <div className="grid lg:grid-cols-12 gap-8 max-w-7xl mx-auto">
+          <div className="lg:col-span-7 h-96 bg-[#111827] rounded-3xl"></div>
+          <div className="lg:col-span-5 h-96 bg-[#111827] rounded-3xl"></div>
         </div>
       </div>
     );
@@ -50,173 +63,249 @@ export default function AutomobileDetailPage() {
 
   if (!car) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-white">
-        <h1 className="text-3xl font-black text-slate-900 mb-4">Vehicle not found</h1>
-        <Link href="/automobiles" className="text-[#165b33] font-bold flex items-center gap-2 hover:underline">
-          <HiArrowLeft /> ← Back to Automobiles
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[#0B0F19] text-white px-4">
+        <h1 className="text-3xl font-black mb-3">Vehicle Not Found</h1>
+        <p className="text-[#9CA3AF] mb-8 text-sm">The requested vehicle listing is unavailable or has been sold.</p>
+        <Link 
+          href="/automobiles" 
+          className="px-6 py-3 rounded-full bg-[#4B6F23] hover:bg-[#556B2F] text-white font-bold flex items-center gap-2 transition-all shadow-lg text-sm"
+        >
+          <HiArrowLeft /> ← Back to Automobile Showroom
         </Link>
       </div>
     );
   }
 
-  const sku = car.id;
-  const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '233205761698';
-  const whatsappMsg = `Hello BENGID LEGACY, I am inquiring about vehicle ${car.model_name} (Ref: ${sku}). Please advise on availability.`;
+  const sku = car.sku || `BGL-CAR-${car.id.slice(0, 4).toUpperCase()}`;
+  // Exclusively hardcoded official WhatsApp line: 0205761698 (+233205761698)
+  const whatsappNumber = '233205761698';
+  const formattedPrice =
+    car.price != null
+      ? `GHS ${Number(car.price).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+      : 'Negotiable';
+
+  const whatsappMsg = `Hello BENGID LEGACY,\n\nI am inquiring about vehicle ${car.model_name}${car.year ? ` (${car.year})` : ''} (Ref: ${sku}).\nPrice: ${formattedPrice}\n\nPlease advise on availability and arrange physical inspection at Santase Tech Station, Kumasi.`;
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMsg)}`;
 
-  const gallery: { label: string; url: string }[] = [];
-  const seen = new Set<string>();
-  const pushImg = (label: string, url?: string | null) => {
-    if (url && !seen.has(url)) {
-      seen.add(url);
-      gallery.push({ label, url });
-    }
-  };
-  (car.images || []).forEach((img) => pushImg(img.label, img.url));
-  pushImg('Main photo', car.image_url);
-  const activeImage = mainImage && seen.has(mainImage) ? mainImage : gallery[0]?.url || null;
-  const activeLabel = gallery.find((g) => g.url === activeImage)?.label;
+  const allImages: string[] = [];
+  if (car.image_url) allImages.push(car.image_url);
+  if (car.images && car.images.length > 0) {
+    car.images.forEach(img => {
+      if (img.url && !allImages.includes(img.url)) {
+        allImages.push(img.url);
+      }
+    });
+  }
+  if (allImages.length === 0) {
+    allImages.push('https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=800&auto=format&fit=crop');
+  }
+
+  const isAvailable = car.status?.toLowerCase() === 'available';
 
   return (
-    <div className="min-h-screen bg-white pb-20">
-      <div className="bg-slate-50 border-b border-slate-200 pt-28 pb-16 px-4 md:px-8">
-        <div className="max-w-7xl mx-auto">
-          <Link href="/automobiles" className="inline-flex items-center gap-2 text-slate-600 hover:text-slate-900 mb-8 font-semibold transition-colors">
-            <HiArrowLeft /> Back to Automobiles
-          </Link>
-          
-          <div className="flex flex-col lg:flex-row gap-8">
-            {/* Left 60% Image Gallery */}
-            <div className="w-full lg:w-[60%]">
-              <div className="relative h-72 sm:h-96 w-full rounded-2xl overflow-hidden bg-slate-100 mb-4 border border-slate-200">
-                {activeImage ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={activeImage} alt={car.model_name} className="absolute inset-0 w-full h-full object-cover" />
-                ) : (
-                  <div className="absolute inset-0 flex items-center justify-center text-slate-400">
-                    <HiPhoto className="text-6xl" />
-                  </div>
-                )}
-                {activeLabel && (
-                  <span className="absolute bottom-3 left-3 px-3 py-1 rounded-full bg-black/60 text-white text-xs font-bold backdrop-blur">
-                    {activeLabel}
+    <div className="min-h-screen bg-[#0B0F19] text-white pb-24">
+      <div className="max-w-7xl mx-auto px-4 md:px-8 pt-32">
+        
+        {/* Breadcrumb Navigation */}
+        <Link 
+          href="/automobiles" 
+          className="inline-flex items-center gap-2 text-[#9CA3AF] hover:text-white mb-8 font-semibold text-sm transition-colors"
+        >
+          <HiArrowLeft /> ← Back to Automobile Showroom
+        </Link>
+        
+        {/* TOP SECTION: Media Gallery & Vehicle Specifications */}
+        <div className="flex flex-col lg:flex-row gap-10 mb-20 bg-[#111827] rounded-3xl p-6 sm:p-10 border border-[#2D3748] shadow-2xl">
+          {/* Left: Image Gallery */}
+          <div className="w-full lg:w-3/5 flex flex-col">
+            <div className="relative w-full h-80 sm:h-[460px] rounded-2xl overflow-hidden bg-[#0B0F19] shadow-lg border border-[#2D3748] mb-4 group">
+              <Image 
+                src={allImages[activeImageIdx] || allImages[0]} 
+                alt={car.model_name} 
+                fill 
+                className="object-cover" 
+                priority
+              />
+              {allImages.length > 1 && (
+                <>
+                  <button 
+                    onClick={() => setActiveImageIdx(prev => (prev === 0 ? allImages.length - 1 : prev - 1))}
+                    aria-label="Previous Image"
+                    className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black/90 transition-all border border-white/20"
+                  >
+                    <HiChevronLeft className="text-2xl" />
+                  </button>
+                  <button 
+                    onClick={() => setActiveImageIdx(prev => (prev === allImages.length - 1 ? 0 : prev + 1))}
+                    aria-label="Next Image"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black/90 transition-all border border-white/20"
+                  >
+                    <HiChevronRight className="text-2xl" />
+                  </button>
+                </>
+              )}
+            </div>
+
+            {/* Thumbnails */}
+            {allImages.length > 1 && (
+              <div className="flex gap-3 overflow-x-auto pb-2">
+                {allImages.map((img, idx) => (
+                  <button 
+                    key={idx} 
+                    onClick={() => setActiveImageIdx(idx)}
+                    className={`relative w-24 h-18 rounded-xl overflow-hidden border-2 flex-shrink-0 transition-all ${
+                      activeImageIdx === idx ? 'border-[#4B6F23] scale-105' : 'border-[#2D3748] opacity-60 hover:opacity-100'
+                    }`}
+                  >
+                    <Image src={img} alt={`Thumbnail ${idx + 1}`} fill className="object-cover" />
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Right: Vehicle Detail Card */}
+          <div className="w-full lg:w-2/5 flex flex-col justify-between">
+            <div>
+              {/* Badges */}
+              <div className="flex flex-wrap items-center gap-2 mb-4">
+                <span className={`px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider border ${
+                  isAvailable 
+                    ? 'bg-emerald-950/80 text-emerald-300 border-emerald-500/40' 
+                    : 'bg-zinc-900/80 text-zinc-400 border-zinc-700'
+                }`}>
+                  {isAvailable ? '● Available' : '○ Sold'}
+                </span>
+                {car.brand && (
+                  <span className="px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-[#0B0F19] text-[#86efac] border border-[#2D3748]">
+                    {car.brand}
                   </span>
                 )}
+                {car.vehicle_type && (
+                  <span className="px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-[#0B0F19] text-[#9CA3AF] border border-[#2D3748]">
+                    {car.vehicle_type}
+                  </span>
+                )}
+                <span className="px-2.5 py-1 rounded text-xs font-mono font-bold text-[#9CA3AF] bg-[#0B0F19] border border-[#2D3748]">
+                  {sku}
+                </span>
               </div>
-              
-              {gallery.length > 1 && (
-                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
-                  {gallery.map((g) => (
-                    <button 
-                      key={g.url}
-                      onClick={() => setMainImage(g.url)}
-                      title={g.label}
-                      className={`relative h-20 rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${activeImage === g.url ? 'border-[#165b33]' : 'border-transparent hover:border-slate-300'}`}
-                    >
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={g.url} alt={g.label} className="absolute inset-0 w-full h-full object-cover" />
-                    </button>
-                  ))}
+
+              {/* Vehicle Title & Model */}
+              <h1 className="text-2xl sm:text-3xl font-black text-white leading-tight mb-4">
+                {car.model_name}
+              </h1>
+
+              {/* Price Box */}
+              <div className="bg-[#0B0F19] p-5 rounded-2xl border border-[#2D3748] mb-6">
+                <span className="text-[11px] font-bold text-[#9CA3AF] uppercase tracking-wider block mb-1">
+                  Asking Price (Ghana Cedis)
+                </span>
+                <span className="text-3xl sm:text-4xl font-black text-white">
+                  {formattedPrice}
+                </span>
+              </div>
+
+              {/* Quick Specs Grid */}
+              <div className="grid grid-cols-2 gap-3 mb-6 bg-[#0B0F19] p-4 rounded-2xl border border-[#2D3748]">
+                <div>
+                  <span className="text-[10px] font-bold text-[#9CA3AF] uppercase block">Year</span>
+                  <span className="text-sm font-bold text-white">{car.year || 'N/A'}</span>
+                </div>
+                <div>
+                  <span className="text-[10px] font-bold text-[#9CA3AF] uppercase block">Fuel Type</span>
+                  <span className="text-sm font-bold text-white">{car.fuel_type || 'Petrol'}</span>
+                </div>
+                <div>
+                  <span className="text-[10px] font-bold text-[#9CA3AF] uppercase block">Color</span>
+                  <span className="text-sm font-bold text-white">{car.color || 'Standard'}</span>
+                </div>
+                <div>
+                  <span className="text-[10px] font-bold text-[#9CA3AF] uppercase block">Seating</span>
+                  <span className="text-sm font-bold text-white">{car.seating_capacity ? `${car.seating_capacity} Seats` : '5 Seats'}</span>
+                </div>
+              </div>
+
+              {/* Overview */}
+              {car.overview && (
+                <div className="mb-6">
+                  <h3 className="text-xs font-bold text-[#9CA3AF] uppercase tracking-wider mb-2">Vehicle Overview</h3>
+                  <p className="text-sm text-[#E5E7EB] leading-relaxed font-normal">
+                    {car.overview}
+                  </p>
+                </div>
+              )}
+
+              {/* Accessories / Features */}
+              {car.accessories && car.accessories.length > 0 && (
+                <div className="mb-6">
+                  <h3 className="text-xs font-bold text-[#9CA3AF] uppercase tracking-wider mb-2.5">Key Accessories &amp; Features</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {car.accessories.map((acc, i) => (
+                      <div key={i} className="flex items-center gap-2 text-xs text-[#E5E7EB] font-medium bg-[#0B0F19] px-3 py-1.5 rounded-xl border border-[#2D3748]">
+                        <HiCheckCircle className="text-[#86efac] text-sm flex-shrink-0" />
+                        <span className="truncate">{acc}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>
 
-            {/* Right 40% Details */}
-            <div className="w-full lg:w-[40%]">
-              <div className="bg-white rounded-3xl p-8 shadow-xl relative">
-                <div className="absolute top-6 right-6 bg-[#165b33] text-white px-3 py-1 rounded-full text-xs font-bold shadow-md">
-                  {sku}
-                </div>
-                
-                <span className="inline-block px-3 py-1 bg-slate-50 text-slate-600 text-xs font-bold rounded-full mb-4 uppercase tracking-wider">
-                  {car.vehicle_type || 'Vehicle'}
-                </span>
-                
-                <h1 className="text-3xl font-black text-slate-900 leading-tight mb-2">{car.model_name}</h1>
-                <p className="text-slate-500 font-medium mb-4">{car.brand} • {car.year}</p>
-                
-                <div className="mb-6">
-                  <span className={`inline-block px-4 py-1.5 rounded-full text-sm font-bold ${car.status === 'available' ? 'bg-green-100 text-green-800' : 'bg-slate-50 text-slate-600'}`}>
-                    {car.status === 'available' ? 'Available' : 'Sold'}
-                  </span>
-                </div>
-                
-                <div className="mb-6">
-                  <p className="text-4xl font-black text-[#0369a1]">
-                    GHS {car.price ? Number(car.price).toLocaleString() : 'Call for price'}
-                  </p>
-                </div>
-                
-                <hr className="border-slate-200 mb-6" />
-                
-                <div className="grid grid-cols-2 gap-y-4 gap-x-2 text-sm mb-6">
-                  <div>
-                    <span className="block text-slate-500 text-xs uppercase font-bold">Color</span>
-                    <span className="font-semibold text-slate-800">{car.color || 'N/A'}</span>
-                  </div>
-                  <div>
-                    <span className="block text-slate-500 text-xs uppercase font-bold">Fuel Type</span>
-                    <span className="font-semibold text-slate-800">{car.fuel_type || 'N/A'}</span>
-                  </div>
-                  <div>
-                    <span className="block text-slate-500 text-xs uppercase font-bold">Seating</span>
-                    <span className="font-semibold text-slate-800">{car.seating_capacity || 'N/A'}</span>
-                  </div>
-                  <div>
-                    <span className="block text-slate-500 text-xs uppercase font-bold">Year</span>
-                    <span className="font-semibold text-slate-800">{car.year || 'N/A'}</span>
-                  </div>
-                  <div>
-                    <span className="block text-slate-500 text-xs uppercase font-bold">Reg Type</span>
-                    <span className="font-semibold text-slate-800">{car.registration_type || 'N/A'}</span>
-                  </div>
-                  <div>
-                    <span className="block text-slate-500 text-xs uppercase font-bold">Licence</span>
-                    <span className="font-semibold text-slate-800">{car.licence_number || 'N/A'}</span>
-                  </div>
-                </div>
-                
-                <hr className="border-slate-200 mb-6" />
-                
-                <div className="space-y-3">
-                  <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 w-full bg-[#165b33] hover:bg-[#124b2a] text-white py-3.5 rounded-xl font-bold transition-colors">
-                    <IoLogoWhatsapp className="text-xl" /> WhatsApp Inquiry
-                  </a>
-                  <a href="tel:0205761698" className="flex items-center justify-center gap-2 w-full bg-slate-900 hover:bg-slate-800 text-white py-3.5 rounded-xl font-bold transition-colors">
-                    <HiPhone className="text-xl" /> Call to Inquire
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+            {/* Direct Action Buttons */}
+            <div className="space-y-3 pt-6 border-t border-[#1F2937]">
+              <a
+                href={whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full py-4 bg-[#25D366] hover:bg-[#20ba59] text-white rounded-full font-bold text-sm tracking-wide transition-all shadow-[0_6px_25px_rgba(37,211,102,0.35)] flex items-center justify-center gap-2"
+              >
+                <IoLogoWhatsapp className="text-xl" />
+                <span>Inquire on WhatsApp (0205761698)</span>
+              </a>
 
-      {/* BOTTOM SECTION */}
-      <div className="max-w-7xl mx-auto px-4 md:px-8 mt-12">
-        <div className="grid md:grid-cols-3 gap-12">
-          <div className="md:col-span-2">
-            <h2 className="text-2xl font-black text-slate-900 mb-6 border-b border-slate-200 pb-4">Vehicle Overview</h2>
-            <div className="prose max-w-none text-slate-600 leading-relaxed whitespace-pre-wrap">
-              {car.overview || 'No overview available for this vehicle.'}
+              <div className="flex flex-col sm:flex-row gap-3">
+                <a
+                  href="tel:0241749931"
+                  className="flex-1 py-3 bg-[#1F2937] hover:bg-[#2D3748] text-white rounded-full font-bold text-xs uppercase tracking-wider text-center transition-colors flex items-center justify-center gap-2 border border-[#2D3748]"
+                >
+                  <HiPhone className="text-sm text-[#4B6F23]" />
+                  <span>Call: 0241749931</span>
+                </a>
+                <a
+                  href="tel:0593132725"
+                  className="flex-1 py-3 bg-[#1F2937] hover:bg-[#2D3748] text-white rounded-full font-bold text-xs uppercase tracking-wider text-center transition-colors flex items-center justify-center gap-2 border border-[#2D3748]"
+                >
+                  <HiPhone className="text-sm text-[#4B6F23]" />
+                  <span>Call: 0593132725</span>
+                </a>
+              </div>
+
+              <div className="flex items-center justify-center gap-2 text-[11px] text-[#9CA3AF] pt-2">
+                <HiMapPin className="text-[#4B6F23]" />
+                <span>Inspection Location: Santase Tech Station, Kumasi, Ghana</span>
+              </div>
             </div>
           </div>
-          <div className="md:col-span-1">
-            <h2 className="text-2xl font-black text-slate-900 mb-6 border-b border-slate-200 pb-4">Accessories</h2>
-            {car.accessories && car.accessories.length > 0 ? (
-              <div className="grid gap-4">
-                {car.accessories.map((acc, idx) => (
-                  <div key={idx} className="flex items-center gap-3 bg-white p-4 rounded-xl shadow-sm border border-slate-200">
-                    <HiCheckCircle className="text-[#165b33] text-xl flex-shrink-0" />
-                    <span className="font-semibold text-slate-800">{acc}</span>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-slate-500 italic">No accessories listed.</p>
-            )}
-          </div>
         </div>
+
+        {/* SIMILAR AUTOMOBILES */}
+        {similarCars.length > 0 && (
+          <div>
+            <div className="flex items-center justify-between mb-8">
+              <h2 className="text-2xl font-black text-white">Other Vehicles in Stock</h2>
+              <Link href="/automobiles" className="text-xs font-bold text-[#86efac] hover:underline">
+                View All Automobiles →
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              {similarCars.map((sim) => (
+                <CarCard key={sim.id} car={sim} />
+              ))}
+            </div>
+          </div>
+        )}
+
       </div>
     </div>
   );

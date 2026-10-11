@@ -5,26 +5,28 @@ import Image from 'next/image';
 import Link from 'next/link';
 import CarCard from '@/components/ui/CarCard';
 import { Car } from '@/lib/types';
-import { HiArrowRight } from 'react-icons/hi2';
+import { INITIAL_CARS } from '@/lib/initialData';
+import { HiArrowRight, HiMagnifyingGlass, HiShieldCheck } from 'react-icons/hi2';
+import { IoLogoWhatsapp } from 'react-icons/io5';
 
-const DEFAULT_CARS: Car[] = [
-  { id: '1', sku: 'BGL-CAR-3001', model_name: 'Toyota Yaris Sedan (Automatic)', vehicle_type: 'Sedan', brand: 'Toyota', color: 'White', fuel_type: 'Petrol', seating_capacity: 5, overview: 'Clean used Toyota Yaris', licence_number: null, registration_type: null, accessories: [], images: [], year: 2018, price: 85000.0, status: 'available', image_url: null, created_at: new Date().toISOString() },
-  { id: '2', sku: 'BGL-CAR-3002', model_name: 'Hyundai Accent GLS', vehicle_type: 'Sedan', brand: 'Hyundai', color: 'Silver', fuel_type: 'Petrol', seating_capacity: 5, overview: 'Clean used Hyundai Accent', licence_number: null, registration_type: null, accessories: [], images: [], year: 2019, price: 92000.0, status: 'available', image_url: null, created_at: new Date().toISOString() },
-  { id: '3', sku: 'BGL-CAR-3003', model_name: 'Mercedes-Benz GLE', vehicle_type: 'SUV', brand: 'Mercedes', color: 'Black', fuel_type: 'Petrol', seating_capacity: 5, overview: 'Clean used GLE', licence_number: null, registration_type: null, accessories: [], images: [], year: 2021, price: 450000.0, status: 'available', image_url: '/images/categories/mercedes.jpg', created_at: new Date().toISOString() },
-  { id: '4', sku: 'BGL-CAR-3004', model_name: 'Porsche 911 Carrera', vehicle_type: 'Coupe', brand: 'Porsche', color: 'Grey', fuel_type: 'Petrol', seating_capacity: 2, overview: 'Sport coupe', licence_number: null, registration_type: null, accessories: [], images: [], year: 2022, price: 850000.0, status: 'available', image_url: '/images/categories/porsche.jpg', created_at: new Date().toISOString() }
-];
-
-const CAR_CATEGORIES = [
-  { name: 'Mercedes-Benz', image: '/images/categories/mercedes.jpg' },
-  { name: 'Audi', image: '/images/categories/audi.jpg' },
-  { name: 'BMW', image: '/images/categories/bmw.jpg' },
-  { name: 'Porsche', image: '/images/categories/porsche.jpg' },
+const BRAND_FILTERS = [
+  'All',
+  'BYD',
+  'Changan',
+  'Geely',
+  'Chery',
+  'Dongfeng',
+  'Toyota',
+  'Hyundai',
+  'Mercedes-Benz',
 ];
 
 export default function AutomobilesPage() {
-  const [cars, setCars] = useState<Car[]>([]);
+  const [cars, setCars] = useState<Car[]>(INITIAL_CARS);
   const [loading, setLoading] = useState(true);
   const [brandFilter, setBrandFilter] = useState('All');
+  const [typeFilter, setTypeFilter] = useState('All');
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     async function fetchCars() {
@@ -38,10 +40,10 @@ export default function AutomobilesPage() {
             return;
           }
         }
-        setCars(DEFAULT_CARS);
+        setCars(INITIAL_CARS);
       } catch (err) {
         console.error('Error fetching cars:', err);
-        setCars(DEFAULT_CARS);
+        setCars(INITIAL_CARS);
       } finally {
         setLoading(false);
       }
@@ -51,167 +53,185 @@ export default function AutomobilesPage() {
 
   const filteredCars = useMemo(() => {
     return cars.filter((car) => {
-      if (brandFilter === 'All') return true;
-      return car.brand?.toLowerCase() === brandFilter.toLowerCase() || car.model_name?.toLowerCase().includes(brandFilter.toLowerCase());
-    });
-  }, [cars, brandFilter]);
+      const matchesBrand =
+        brandFilter === 'All' ||
+        car.brand?.toLowerCase() === brandFilter.toLowerCase() ||
+        car.model_name?.toLowerCase().includes(brandFilter.toLowerCase());
 
-  const handleCategoryClick = (brandName: string) => {
-    setBrandFilter(brandName);
-    document.getElementById('inventory')?.scrollIntoView({ behavior: 'smooth' });
-  };
+      const matchesType =
+        typeFilter === 'All' ||
+        (car.vehicle_type && car.vehicle_type.toLowerCase().includes(typeFilter.toLowerCase()));
+
+      const matchesSearch =
+        !searchQuery ||
+        car.model_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (car.brand && car.brand.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (car.sku && car.sku.toLowerCase().includes(searchQuery.toLowerCase()));
+
+      return matchesBrand && matchesType && matchesSearch;
+    });
+  }, [cars, brandFilter, typeFilter, searchQuery]);
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* 1. HERO SECTION */}
-      <section className="relative h-[80vh] min-h-[600px] w-full bg-white flex flex-col justify-center">
-        {/* Background Car Image */}
-        <div className="absolute inset-0 z-0 overflow-hidden">
+    <div className="min-h-screen bg-[#0B0F19] text-white">
+      {/* 1. CINEMATIC HERO SECTION */}
+      <section className="relative w-full min-h-[85vh] flex flex-col justify-between overflow-hidden pt-28 pb-16 border-b border-[#1F2937]">
+        {/* Full-bleed background car image */}
+        <div className="absolute inset-0 z-0">
           <Image
             src="/images/automobiles-hero.jpg"
             alt="BENGID LEGACY GHANA LIMITED Premium Car Sales"
             fill
-            className="object-cover opacity-70 object-center scale-105 transition-transform duration-1000"
+            className="object-cover object-center opacity-45 scale-105 transition-transform duration-1000"
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-white via-white/30 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0B0F19] via-[#0B0F19]/80 to-[#0B0F19]/40" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#0B0F19] via-[#0B0F19]/60 to-transparent" />
         </div>
 
-        <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8 mt-20">
-          <h1 className="text-5xl sm:text-7xl font-bold text-slate-900 mb-6 leading-tight max-w-3xl">
-            Premium car <br />sales
-          </h1>
-          <p className="text-slate-600 max-w-xl text-sm sm:text-base leading-relaxed">
-            We want you to have a stress-free vehicle experience, so we make it easy to find a car — by providing simple search tools, customer reviews and plenty of pick-up locations across the city.
-          </p>
-        </div>
+        <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8 my-auto">
+          <div className="max-w-4xl">
+            {/* Note: Purged floating badge */}
+            <span className="text-xs font-mono font-bold text-[#86efac] uppercase tracking-widest block mb-3">
+              DIVISION 02 • CERTIFIED AUTOMOBILE SALES
+            </span>
 
-        {/* Floating Search/Filter Bar */}
-        <div className="absolute bottom-0 left-0 w-full translate-y-1/2 z-20 px-4">
-          <div className="max-w-5xl mx-auto bg-white rounded-none sm:rounded-lg shadow-2xl flex flex-col sm:flex-row overflow-hidden border border-slate-200">
-            <div className="flex-1 p-5 border-b sm:border-b-0 sm:border-r border-slate-200">
-              <label className="block text-xs font-semibold text-slate-500 mb-1">Vehicle Type</label>
-              <select className="w-full bg-transparent text-sm font-bold text-slate-900 outline-none cursor-pointer">
-                <option>All Types</option>
-                <option>Sedan</option>
-                <option>SUV</option>
-                <option>Hatchback</option>
-                <option>Truck/Pickup</option>
-                <option>Van/Minivan</option>
-                <option>Coupe</option>
-                <option>Convertible</option>
-                <option>Luxury</option>
-                <option>Electric</option>
-                <option>Hybrid</option>
-              </select>
-            </div>
-            <div className="flex-1 p-5 border-b sm:border-b-0 sm:border-r border-slate-200">
-              <label className="block text-xs font-semibold text-slate-500 mb-1">Make / Brand</label>
-              <select className="w-full bg-transparent text-sm font-bold text-slate-900 outline-none cursor-pointer">
-                <option>Any Brand</option>
-                <option>Mercedes-Benz</option>
-                <option>Toyota</option>
-              </select>
-            </div>
-            <div className="flex-1 p-5 border-b sm:border-b-0 sm:border-r border-slate-200">
-              <label className="block text-xs font-semibold text-slate-500 mb-1">Max Price</label>
-              <select className="w-full bg-transparent text-sm font-bold text-slate-900 outline-none cursor-pointer">
-                <option>Any Price</option>
-                <option>Below GHS 100k</option>
-                <option>Below GHS 500k</option>
-              </select>
-            </div>
-            <button className="bg-blue-400 hover:bg-blue-500 text-white font-bold px-8 py-5 transition-colors sm:w-auto w-full">
-              Search
-            </button>
-          </div>
-        </div>
-      </section>
+            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black text-white mb-6 leading-tight tracking-tight drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)]">
+              PREMIUM AUTOMOBILES,<br />
+              <span className="text-[#4B6F23] drop-shadow-md">
+                VERIFIED DOCUMENTATION.
+              </span>
+            </h1>
 
-      {/* 2. CAR CATEGORY SECTION */}
-      <section className="pt-32 pb-16 bg-white">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-4xl font-bold text-slate-900 mb-10">Car Category</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {CAR_CATEGORIES.map((cat, idx) => (
-              <div 
-                key={idx} 
-                onClick={() => handleCategoryClick(cat.name)}
-                className="group relative h-96 w-full rounded-none overflow-hidden cursor-pointer"
+            <p className="text-base sm:text-lg text-[#F3F4F6] max-w-2xl leading-relaxed font-normal mb-8 drop-shadow-[0_2px_8px_rgba(0,0,0,0.7)]">
+              Discover clean foreign-used sedans, executive SUVs, rugged pickups, and popular new-energy Chinese vehicles (BYD, Changan, Geely, Chery, Dongfeng) available for inspection at Santase Tech Station, Kumasi.
+            </p>
+
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4">
+              <a
+                href="#inventory"
+                className="px-8 py-4 bg-[#4B6F23] hover:bg-[#556B2F] text-white rounded-full font-bold text-sm tracking-wide transition-all shadow-[0_6px_25px_rgba(75,111,35,0.4)] flex items-center justify-center gap-2 border border-[#4B6F23]/60 hover:-translate-y-0.5"
               >
-                <Image
-                  src={cat.image}
-                  alt={cat.name}
-                  fill
-                  className="object-cover object-center group-hover:scale-105 transition-transform duration-700"
-                />
-                <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/10 to-transparent group-hover:from-black/70 transition-colors duration-500" />
-                <h3 className="absolute top-6 left-6 text-2xl font-medium text-white max-w-[120px] leading-tight">
-                  {cat.name.split('-').join('-\n')}
-                </h3>
-                <div className="absolute bottom-6 right-6 w-10 h-10 rounded-full bg-white/90 backdrop-blur flex items-center justify-center group-hover:bg-blue-400 transition-colors">
-                  <HiArrowRight className="text-lg text-slate-900 group-hover:text-white" />
-                </div>
-              </div>
-            ))}
+                <span>Browse Vehicle Showroom</span>
+                <HiArrowRight className="text-sm" />
+              </a>
+              <a
+                href="https://wa.me/233205761698?text=Hello%20BENGID%20LEGACY,%20I%20want%20to%20inquire%20about%20vehicles%20for%20sale."
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-8 py-4 bg-[#25D366] hover:bg-[#20ba59] text-white rounded-full font-bold text-sm tracking-wide transition-all shadow-lg flex items-center justify-center gap-2 hover:-translate-y-0.5"
+              >
+                <IoLogoWhatsapp className="text-lg" />
+                <span>Inquire on WhatsApp (0205761698)</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        {/* Brand Highlights Bar */}
+        <div className="relative z-10 border-t border-[#1F2937] bg-[#111827]/80 backdrop-blur-xl py-4">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
+            <span className="text-xs font-mono font-bold text-[#9CA3AF] uppercase tracking-widest flex-shrink-0">
+              POPULAR BRANDS IN STOCK
+            </span>
+            <div className="flex flex-wrap items-center gap-4 sm:gap-6">
+              {['BYD', 'Changan', 'Geely', 'Chery', 'Dongfeng', 'Toyota', 'Mercedes-Benz'].map((b, i) => (
+                <button
+                  key={i}
+                  onClick={() => setBrandFilter(b)}
+                  className="text-xs font-bold text-[#E5E7EB] hover:text-[#86efac] transition-colors cursor-pointer"
+                >
+                  {b}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
-      {/* 3. TREND VEHICLES SECTION */}
-      <section id="inventory" className="py-16 bg-slate-50">
+      {/* 2. VEHICLE INVENTORY & FILTER BAR */}
+      <section id="inventory" className="py-20 bg-[#0B0F19]">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between mb-10">
-            <h2 className="text-4xl font-bold text-slate-900">Trend vehicles {brandFilter !== 'All' ? `- ${brandFilter}` : ''}</h2>
-            <div className="flex items-center gap-4">
-              {brandFilter !== 'All' && (
-                <button onClick={() => setBrandFilter('All')} className="text-sm font-semibold text-slate-500 hover:text-slate-900 underline">
-                  Clear Filter
+          
+          {/* Controls Bar */}
+          <div className="bg-[#111827] rounded-3xl p-6 sm:p-8 border border-[#2D3748] mb-12 shadow-2xl">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+              <div>
+                <h2 className="text-2xl sm:text-3xl font-black text-white">
+                  Automobile Showroom
+                </h2>
+                <p className="text-xs sm:text-sm text-[#9CA3AF] mt-1">
+                  Showing {filteredCars.length} vehicles available for inspection in Kumasi
+                </p>
+              </div>
+
+              {/* Search & Type Select */}
+              <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
+                <div className="relative flex-grow sm:w-72">
+                  <HiMagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg" />
+                  <input
+                    type="text"
+                    placeholder="Search model, brand or SKU..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full pl-12 pr-4 py-3 bg-[#0B0F19] rounded-full border border-[#2D3748] focus:border-[#4B6F23] text-sm text-white placeholder-slate-500 outline-none transition-all"
+                  />
+                </div>
+
+                <select
+                  value={typeFilter}
+                  onChange={(e) => setTypeFilter(e.target.value)}
+                  className="bg-[#0B0F19] text-white text-xs font-bold px-4 py-3 rounded-full border border-[#2D3748] focus:border-[#4B6F23] outline-none cursor-pointer"
+                >
+                  <option value="All">All Body Types</option>
+                  <option value="Salon">Sedan / Salon</option>
+                  <option value="SUV">SUV / 4WD</option>
+                  <option value="Pickup">Pickup Truck</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Brand Filter Pills */}
+            <div className="flex flex-wrap gap-2 mt-6 pt-6 border-t border-[#1F2937]">
+              {BRAND_FILTERS.map((brand) => (
+                <button
+                  key={brand}
+                  onClick={() => setBrandFilter(brand)}
+                  className={`px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer ${
+                    brandFilter.toLowerCase() === brand.toLowerCase()
+                      ? 'bg-[#4B6F23] text-white shadow-md border border-[#4B6F23]'
+                      : 'bg-[#1F2937] text-[#9CA3AF] hover:text-white hover:bg-[#2D3748] border border-transparent'
+                  }`}
+                >
+                  {brand}
                 </button>
-              )}
-              <Link href="/automobiles" className="px-6 py-2 rounded-full bg-blue-400 hover:bg-blue-500 text-white font-semibold text-sm transition-colors">
-                View all ➔
-              </Link>
+              ))}
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {loading
-              ? Array.from({ length: 4 }).map((_, i) => (
-                  <div key={i} className="bg-white rounded-xl h-80 animate-pulse border border-slate-200 p-4" />
-                ))
-              : filteredCars.slice(0, 8).map((car) => (
-                  <CarCard key={car.id} car={car} />
-                ))}
-          </div>
-        </div>
-      </section>
+          {/* Vehicle Cards Grid */}
+          {loading ? (
+            <div className="py-20 text-center text-[#9CA3AF] font-bold">Loading vehicles...</div>
+          ) : filteredCars.length === 0 ? (
+            <div className="py-20 text-center bg-[#111827] rounded-3xl border border-[#2D3748] p-12">
+              <h3 className="text-xl font-bold text-white mb-2">No vehicles found</h3>
+              <p className="text-sm text-[#9CA3AF] mb-6">No vehicles match your active search filters.</p>
+              <button
+                onClick={() => { setBrandFilter('All'); setTypeFilter('All'); setSearchQuery(''); }}
+                className="px-6 py-2.5 rounded-full bg-[#4B6F23] text-white text-xs font-bold"
+              >
+                Reset Filters
+              </button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              {filteredCars.map((car) => (
+                <CarCard key={car.id} car={car} />
+              ))}
+            </div>
+          )}
 
-      {/* 4. PROMO SECTION */}
-      <section className="bg-[#0B0F19] text-slate-900 overflow-hidden relative border-t border-slate-200">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-20 flex flex-col md:flex-row items-center justify-between">
-          <div className="md:w-1/2 z-10">
-            <h2 className="text-5xl font-bold mb-8 leading-tight">
-              Book Tesla with <br />a big discount
-            </h2>
-            <button className="px-8 py-3 bg-blue-400 hover:bg-blue-500 text-white rounded-full font-bold transition-colors">
-              Book Now
-            </button>
-          </div>
-          <div className="md:w-1/2 relative h-[400px] w-full mt-10 md:mt-0 z-0">
-            <Image
-              src="/images/cars-showroom.jpg"
-              alt="Tesla Model X"
-              fill
-              className="object-contain"
-            />
-          </div>
-
-          {/* Discount Badge */}
-          <div className="hidden md:flex absolute right-0 top-0 bottom-0 w-1/4 bg-blue-400 flex-col items-center justify-center p-8 z-10">
-            <h3 className="text-6xl font-black text-slate-900 mb-2">50%</h3>
-            <p className="text-white/90 text-lg text-center font-medium">For everyone<br/>Tesla cars</p>
-          </div>
         </div>
       </section>
 

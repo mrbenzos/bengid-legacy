@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { HiEye, HiEyeSlash } from 'react-icons/hi2';
+import { HiEye, HiEyeSlash, HiShieldCheck } from 'react-icons/hi2';
 import toast from 'react-hot-toast';
 
 export default function AdminLoginPage() {
@@ -29,10 +29,10 @@ export default function AdminLoginPage() {
 
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.message || 'Login failed');
+        throw new Error(data.error || data.message || 'Login failed. Check your credentials.');
       }
 
-      toast.success('Login successful');
+      toast.success('Credentials verified. OTP sent via SMS.');
       router.push(`/admin/verify?email=${encodeURIComponent(email)}`);
     } catch (err: any) {
       setError(err.message || 'An error occurred during login');
@@ -43,106 +43,107 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="flex h-screen min-h-screen bg-white">
+    <div className="flex h-screen min-h-screen bg-[#0B0F19] text-white">
       {/* Left Panel - Hidden on Mobile */}
-      <div className="hidden lg:flex lg:w-2/5 flex-col justify-between bg-gradient-to-br from-[#0c2f1a] via-[#124b2a] to-[#165b33] p-12">
+      <div className="hidden lg:flex lg:w-5/12 flex-col justify-between bg-gradient-to-br from-[#1B3310] via-[#2D4414] to-[#0B0F19] p-12 border-r border-[#2D3748]">
         <div>
-          <h1 className="font-black text-3xl text-slate-900 tracking-tight">
+          <div className="w-12 h-12 rounded-2xl bg-[#4B6F23] border border-[#86efac] flex items-center justify-center text-white font-black text-xl mb-4 shadow-lg">
+            BG
+          </div>
+          <h1 className="font-black text-3xl text-white tracking-tight">
             BENGID LEGACY
           </h1>
-          <p className="text-[#86efac] text-sm font-semibold tracking-widest mt-1">
-            GHANA LIMITED
+          <p className="text-[#86efac] text-xs font-bold tracking-widest mt-1">
+            GHANA LIMITED • SANTASE HEADQUARTERS
           </p>
         </div>
 
         <div className="flex-1 flex flex-col justify-center">
-          <h2 className="text-slate-900 text-3xl font-bold mb-3">
+          <h2 className="text-white text-3xl font-extrabold mb-3">
             Secure Admin Portal
           </h2>
-          <p className="text-emerald-300/70 text-lg mb-10 max-w-sm">
-            Centralized management for building materials and vehicle sales operations.
+          <p className="text-[#E5E7EB] text-sm leading-relaxed mb-8 max-w-sm font-normal">
+            Centralized management for printing materials inventory, automobile showroom, and global import operations in Kumasi.
           </p>
 
-          <div className="space-y-4">
-            <div className="flex items-center gap-3 bg-white/10 rounded-full px-4 py-2 w-max">
-              <div className="w-2 h-2 rounded-full bg-[#86efac] animate-pulse" />
-              <span className="text-slate-900 text-sm font-medium">3 Active Divisions</span>
+          <div className="space-y-3">
+            <div className="flex items-center gap-3 bg-[#0B0F19]/60 backdrop-blur-md border border-white/10 rounded-2xl px-4 py-2.5 w-max">
+              <div className="w-2.5 h-2.5 rounded-full bg-[#86efac] animate-pulse" />
+              <span className="text-white text-xs font-semibold">3 Active Commercial Divisions</span>
             </div>
-            <div className="flex items-center gap-3 bg-white/10 rounded-full px-4 py-2 w-max">
-              <div className="w-2 h-2 rounded-full bg-[#86efac] animate-pulse" />
-              <span className="text-slate-900 text-sm font-medium">Real-time Inventory</span>
+            <div className="flex items-center gap-3 bg-[#0B0F19]/60 backdrop-blur-md border border-white/10 rounded-2xl px-4 py-2.5 w-max">
+              <div className="w-2.5 h-2.5 rounded-full bg-[#86efac] animate-pulse" />
+              <span className="text-white text-xs font-semibold">Real-time Stock Synchronization</span>
             </div>
-            <div className="flex items-center gap-3 bg-white/10 rounded-full px-4 py-2 w-max">
-              <div className="w-2 h-2 rounded-full bg-[#86efac] animate-pulse" />
-              <span className="text-slate-900 text-sm font-medium">SMS Alerts Active</span>
+            <div className="flex items-center gap-3 bg-[#0B0F19]/60 backdrop-blur-md border border-white/10 rounded-2xl px-4 py-2.5 w-max">
+              <div className="w-2.5 h-2.5 rounded-full bg-[#86efac] animate-pulse" />
+              <span className="text-white text-xs font-semibold">Vynfy SMS 2FA Security Active</span>
             </div>
           </div>
         </div>
 
         <div>
-          <p className="text-emerald-900/60 text-sm font-medium">
-            Powered by Bengid Operations
+          <p className="text-[#9CA3AF] text-xs font-mono">
+            Protected by Bengid Administrative Shield
           </p>
         </div>
       </div>
 
       {/* Right Panel - Login Form */}
-      <div className="flex-1 flex flex-col justify-center px-6 sm:px-12 lg:px-24">
-        <div className="mx-auto w-full max-w-sm">
+      <div className="flex-1 flex flex-col justify-center px-6 sm:px-12 lg:px-24 bg-[#0B0F19]">
+        <div className="mx-auto w-full max-w-md bg-[#111827] p-8 sm:p-10 rounded-3xl border border-[#2D3748] shadow-2xl">
           <div className="mb-8">
-            <p className="text-[#165b33] text-xs font-bold uppercase tracking-widest mb-3">
-              Admin Login
-            </p>
-            <h2 className="text-slate-900 font-black text-3xl mb-2">
+            <span className="text-[#86efac] text-xs font-mono font-bold uppercase tracking-widest block mb-2">
+              ADMINISTRATIVE ACCESS
+            </span>
+            <h2 className="text-white font-black text-2xl sm:text-3xl mb-2">
               Welcome Back
             </h2>
-            <p className="text-slate-500 text-sm">
-              Enter your credentials to access the dashboard
+            <p className="text-[#9CA3AF] text-xs sm:text-sm">
+              Enter your authorized credentials to access the control desk
             </p>
           </div>
 
-          <form onSubmit={handleLogin} className="space-y-5">
-            {error && (
-              <div className="bg-red-50 border border-red-200 text-red-700 rounded-xl p-3 text-sm">
-                {error}
-              </div>
-            )}
+          {error && (
+            <div className="mb-6 p-4 bg-rose-950/60 border border-rose-500/40 text-rose-300 text-xs rounded-2xl">
+              {error}
+            </div>
+          )}
 
+          <form onSubmit={handleLogin} className="space-y-5">
             <div>
-              <label className="block text-sm font-semibold text-slate-600 mb-1.5" htmlFor="email">
-                Email Address
+              <label className="block text-xs font-bold text-[#E5E7EB] mb-2">
+                Administrator Email
               </label>
               <input
-                id="email"
                 type="email"
+                required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                required
-                className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-[#165b33] focus:ring-4 focus:ring-[#165b33]/20 transition-all text-slate-900"
-                placeholder="admin@bengidlegacy.com"
+                placeholder="admin@bengidlegacyghltd.com"
+                className="w-full px-4 py-3 bg-[#0B0F19] rounded-xl border border-[#2D3748] focus:border-[#4B6F23] outline-none text-sm text-white placeholder-slate-500 transition-colors"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-slate-600 mb-1.5" htmlFor="password">
+              <label className="block text-xs font-bold text-[#E5E7EB] mb-2">
                 Password
               </label>
               <div className="relative">
                 <input
-                  id="password"
                   type={showPassword ? 'text' : 'password'}
+                  required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  required
-                  className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-[#165b33] focus:ring-4 focus:ring-[#165b33]/20 transition-all text-slate-900 pr-12"
-                  placeholder="••••••••"
+                  placeholder="••••••••••••"
+                  className="w-full pl-4 pr-12 py-3 bg-[#0B0F19] rounded-xl border border-[#2D3748] focus:border-[#4B6F23] outline-none text-sm text-white placeholder-slate-500 transition-colors"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-600 p-1"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
                 >
-                  {showPassword ? <HiEyeSlash className="w-5 h-5" /> : <HiEye className="w-5 h-5" />}
+                  {showPassword ? <HiEyeSlash className="text-lg" /> : <HiEye className="text-lg" />}
                 </button>
               </div>
             </div>
@@ -150,18 +151,17 @@ export default function AdminLoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-[#165b33] hover:bg-[#124b2a] text-white rounded-xl py-3.5 font-bold text-sm transition-colors flex items-center justify-center gap-2 mt-2 disabled:opacity-70 disabled:cursor-not-allowed"
+              className="w-full py-3.5 bg-[#4B6F23] hover:bg-[#556B2F] text-white rounded-full font-bold text-xs uppercase tracking-wider transition-all shadow-[0_6px_25px_rgba(75,111,35,0.4)] disabled:opacity-50 cursor-pointer"
             >
-              {loading && (
-                <div className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
-              )}
-              {loading ? 'Authenticating...' : 'Sign In'}
+              {loading ? 'Authenticating...' : 'Sign In & Request OTP'}
             </button>
-
-            <p className="text-slate-500 text-xs text-center mt-6">
-              Demo: admin@bengidlegacy.com / admin123
-            </p>
           </form>
+
+          <div className="mt-8 pt-6 border-t border-[#1F2937] text-center">
+            <span className="text-[11px] text-[#9CA3AF]">
+              Protected System • Bengid Legacy Ghana Limited
+            </span>
+          </div>
         </div>
       </div>
     </div>

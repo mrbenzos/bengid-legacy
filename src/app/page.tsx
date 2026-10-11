@@ -6,64 +6,44 @@ import Image from 'next/image';
 import MaterialCard from '@/components/ui/MaterialCard';
 import CarCard from '@/components/ui/CarCard';
 import { Material, Car } from '@/lib/types';
+import { INITIAL_MATERIALS, INITIAL_CARS } from '@/lib/initialData';
+import { HiArrowRight, HiShieldCheck, HiTruck, HiPrinter, HiGlobeAlt, HiPhone } from 'react-icons/hi2';
+import { IoLogoWhatsapp } from 'react-icons/io5';
 
-const DEMO_MATERIALS: Material[] = [
-  { id: '1', sku: 'BGL-MAT-001', name: 'Premium High-Gloss RC Photo Paper (A4 / 260gsm)', category: 'Photo Paper', brand: 'Epson Compatible', color: 'White', overview: 'High quality premium photo paper for brilliant, long-lasting prints.', features: ['High Gloss', 'Water Resistant', 'Fast Drying'], images: [], price: 350.0, unit: 'per pack (100 sheets)', stock_status: 'in_stock', image_url: 'https://images.unsplash.com/photo-1588696879815-585a21b3e7bc?q=80&w=800&auto=format&fit=crop', created_at: new Date().toISOString() },
-  { id: '2', sku: 'BGL-MAT-002', name: 'Thermal Lamination Roll — Gloss (320mm x 50m)', category: 'Lamination', brand: 'Generic', color: 'Transparent', overview: 'Durable thermal lamination rolls for protecting documents and prints.', features: ['Gloss Finish', 'Matte Finish Available', 'Anti-Scratch'], images: [], price: 450.0, unit: 'per roll (50m)', stock_status: 'in_stock', image_url: 'https://images.unsplash.com/photo-1586075010923-2dd4570fb338?q=80&w=800&auto=format&fit=crop', created_at: new Date().toISOString() },
-  { id: '3', sku: 'BGL-MAT-003', name: 'Eco-Solvent Printing Ink — CMYK Set (1 Liter)', category: 'Inks', brand: 'EcoColor', color: 'CMYK', overview: 'Vibrant eco-solvent inks designed for high-resolution wide format printers.', features: ['Eco-Friendly', 'UV Resistant', 'Non-Clogging'], images: [], price: 320.0, unit: 'per bottle (1000ml)', stock_status: 'in_stock', image_url: 'https://images.unsplash.com/photo-1525909002-1b05e0c869d8?q=80&w=800&auto=format&fit=crop', created_at: new Date().toISOString() },
-  { id: '4', sku: 'BGL-MAT-004', name: 'PVC Frontlit Flex Banner — 440gsm (High Tensile)', category: 'Flex', brand: 'FlexMaster', color: 'White', overview: 'Heavy duty frontlit flex banner material for outdoor billboards and signage.', features: ['Tear Resistant', 'Weatherproof', 'Smooth Surface'], images: [], price: 1200.0, unit: 'per roll (50m)', stock_status: 'in_stock', image_url: 'https://images.unsplash.com/photo-1621360841013-c76831f1dbce?q=80&w=800&auto=format&fit=crop', created_at: new Date().toISOString() },
-  { id: '5', sku: 'BGL-MAT-005', name: 'Self-Adhesive Vinyl Sticker Roll — White Gloss', category: 'Vinyl', brand: 'VinylPro', color: 'White', overview: 'Premium self-adhesive vinyl for custom vehicle wraps and window graphics.', features: ['Strong Adhesion', 'Easy Peel', 'Bubble-Free Application'], images: [], price: 850.0, unit: 'per roll (50m)', stock_status: 'in_stock', image_url: 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?q=80&w=800&auto=format&fit=crop', created_at: new Date().toISOString() },
-  { id: '6', sku: 'BGL-MAT-006', name: 'One-Way Vision Perforated Window Film', category: 'One-Way-Vision', brand: 'ClearView', color: 'White/Black', overview: 'Perforated window film that allows graphics on one side and clear visibility on the other.', features: ['High Definition Print', 'Removable Glue', 'Privacy Enhancing'], images: [], price: 950.0, unit: 'per roll (50m)', stock_status: 'in_stock', image_url: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=800&auto=format&fit=crop', created_at: new Date().toISOString() },
-];
-
-const DEMO_CARS: Car[] = [
-  { id: '1', sku: 'BGL-CAR-2001', model_name: 'Toyota Yaris Sedan (Automatic)', vehicle_type: 'Sedan', brand: 'Toyota', color: 'White', fuel_type: 'Petrol', seating_capacity: 5, overview: 'Clean used Toyota Yaris', licence_number: null, registration_type: null, accessories: [], images: [], year: 2018, price: 85000.0, status: 'available', image_url: '/images/div-auto.jpg', created_at: new Date().toISOString() },
-  { id: '2', sku: 'BGL-CAR-2002', model_name: 'Hyundai Accent GLS (Clean Foreign Used)', vehicle_type: 'Sedan', brand: 'Hyundai', color: 'Silver', fuel_type: 'Petrol', seating_capacity: 5, overview: 'Clean used Hyundai Accent', licence_number: null, registration_type: null, accessories: [], images: [], year: 2019, price: 92000.0, status: 'available', image_url: '/images/div-auto.jpg', created_at: new Date().toISOString() },
-  { id: '3', sku: 'BGL-CAR-2003', model_name: 'Toyota Corolla LE (Verified Documentation)', vehicle_type: 'Sedan', brand: 'Toyota', color: 'Black', fuel_type: 'Petrol', seating_capacity: 5, overview: 'Clean used Toyota Corolla', licence_number: null, registration_type: null, accessories: [], images: [], year: 2016, price: 78000.0, status: 'sold', image_url: '/images/div-auto.jpg', created_at: new Date().toISOString() },
-];
-
+// Priority Reordering: 1st Printing Materials, 2nd Automobiles, 3rd General Importations
 const THREE_DIVISIONS = [
   {
     num: '01',
-    title: 'Sales of Automobiles',
-    tagline: 'Verified Imported Vehicles',
-    desc: 'Clean pre-owned and brand-new cars (Salon cars, SUVs, Heavy Duty, etc.) with verified documentation.',
-    href: '/automobiles',
-    btnText: 'View Cars for Sale',
-    accentColor: 'from-[#165b33] to-[#114b29]',
-    borderColor: 'border-[#165b33]',
-    badge: 'Car Sales',
-    image: '/images/automobiles-hero.jpg',
+    title: 'Import & Supply of Printing Materials',
+    tagline: 'Wholesale & Retail Consumables',
+    desc: 'Premium supply of Photo Papers, Thermal Lamination Films, Eco-Solvent Inks, Vinyl Stickers, and Printing Hardwares.',
+    href: '/materials',
+    btnText: 'Explore Printing Materials',
+    image: '/images/materials-hero.jpg',
   },
   {
     num: '02',
-    title: 'Import & Supply of Materials',
-    tagline: 'Wholesale & Retail Supplies',
-    desc: 'Quality supply of Stationary, Photo Papers, Lamination Films, Inks, and Printing Hardwares.',
-    href: '/materials',
-    btnText: 'View Materials Catalogue',
-    accentColor: 'from-[#165b33] to-[#114b29]',
-    borderColor: 'border-[#165b33]',
-    badge: 'Wholesale Supplies',
-    image: '/images/materials-hero.jpg',
+    title: 'Sales of Automobiles',
+    tagline: 'Verified Foreign-Used & New Cars',
+    desc: 'Clean pre-owned and brand-new cars, luxury SUVs, and commercial pickups (Toyota, Mercedes, BYD, Changan, Geely) with verified documentation.',
+    href: '/automobiles',
+    btnText: 'View Cars for Sale',
+    image: '/images/automobiles-hero.jpg',
   },
   {
     num: '03',
     title: 'General Importations',
-    tagline: 'Global Sourcing & Supply',
-    desc: 'Reliable importation and supply of general merchandise and specialized goods on demand.',
+    tagline: 'Global Sourcing & Ocean Freight',
+    desc: 'Reliable importation, customs clearance at Tema Port, and inland delivery of industrial equipment, electronics, and commercial cargo.',
     href: '/general-importations',
     btnText: 'Explore Import Services',
-    accentColor: 'from-[#165b33] to-[#114b29]',
-    borderColor: 'border-[#165b33]',
-    badge: 'General Imports',
     image: '/images/imports-hero.jpg',
   },
 ];
 
 export default function HomePage() {
-  const [materials, setMaterials] = useState<Material[]>(DEMO_MATERIALS);
-  const [cars, setCars] = useState<Car[]>(DEMO_CARS);
+  const [materials, setMaterials] = useState<Material[]>(INITIAL_MATERIALS);
+  const [cars, setCars] = useState<Car[]>(INITIAL_CARS);
 
   useEffect(() => {
     async function loadData() {
@@ -80,7 +60,7 @@ export default function HomePage() {
         if (carRes && carRes.ok) {
           const carData = await carRes.json();
           if (Array.isArray(carData) && carData.length > 0) {
-            setCars(carData.slice(0, 3) as Car[]);
+            setCars(carData.slice(0, 6) as Car[]);
           }
         }
       } catch (e) {
@@ -91,118 +71,264 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className="flex flex-col min-h-screen bg-white">
+    <div className="flex flex-col min-h-screen bg-[#0B0F19] text-white">
       
-      {/* 1. HERO SECTION WITH USER UPLOADED PORT IMAGE AS BACKGROUND */}
-      <section className="relative w-full bg-white pt-28 sm:pt-36 pb-20 overflow-hidden border-b border-slate-200">
+      {/* 1. HERO SECTION WITH RICH FULL-BLEED PICTORIAL OVERLAY */}
+      <section className="relative w-full min-h-[92vh] flex flex-col justify-center overflow-hidden pt-28 pb-20 border-b border-[#1F2937]">
+        {/* Full-bleed pictorial background matching high-end Automobiles aesthetic */}
         <div className="absolute inset-0 z-0">
           <Image
-            src="/images/hero-new.jpg"
-            alt="Bengid Legacy Ghana Limited Port Operations"
+            src="/images/automobiles-hero.jpg"
+            alt="Bengid Legacy Ghana Limited Operations"
             fill
             priority
-            className="object-cover object-center opacity-100 scale-105 transition-transform duration-1000"
+            className="object-cover object-center scale-105 transition-transform duration-1000 opacity-55"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-white/30 via-[#f1f3f2]/50 to-[#f1f3f2]" />
+          {/* Contrast & depth overlays */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0B0F19] via-[#0B0F19]/80 to-[#0B0F19]/40" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#0B0F19] via-[#0B0F19]/60 to-transparent" />
         </div>
         
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="text-center max-w-4xl mx-auto mb-14 bg-white/70 backdrop-blur-md px-6 py-10 sm:p-12 rounded-[2.5rem] shadow-xl border border-slate-200">
-            <h1 className="text-5xl sm:text-7xl font-bold text-slate-900 mb-6 leading-tight max-w-3xl">
-              Welcome to <br className="hidden sm:inline" />
-              <span className="text-[#165b33]">
-                Bengid Legacy Ghana Limited
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 my-auto">
+          <div className="max-w-4xl">
+            {/* Note: Floating green-outlined badge purged completely */}
+            
+            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black text-white mb-6 leading-[1.1] tracking-tight drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)]">
+              Welcome to <br />
+              <span className="text-[#4B6F23] drop-shadow-md">
+                BENGID LEGACY GHANA LIMITED
               </span>
             </h1>
 
-            <p className="text-base sm:text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed font-medium">
-              A diversified corporate enterprise operating 3 dedicated divisions: <strong>Sales of Automobiles</strong>, <strong>Import & Supply of Materials</strong>, and <strong>General Importations</strong>.
+            <p className="text-base sm:text-xl text-[#F3F4F6] max-w-2xl leading-relaxed font-medium mb-10 drop-shadow-[0_2px_8px_rgba(0,0,0,0.7)]">
+              A premier diversified corporate enterprise operating 3 dedicated divisions: <strong className="text-white">Import &amp; Supply of Printing Materials</strong>, <strong className="text-white">Sales of Automobiles</strong>, and <strong className="text-white">General Importations</strong>.
             </p>
-          </div>
 
-          {/* 3 DISTINCT DIVISION TILES (USING YOUR 3 SPECIFIC SUB DIVISION IMAGES) */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
-            {THREE_DIVISIONS.map((div) => (
+            {/* High-contrast Action Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4">
               <Link
-                key={div.num}
-                href={div.href}
-                className="group relative bg-white hover:bg-slate-100 rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden cursor-pointer"
+                href="/materials"
+                className="px-8 py-4 bg-[#4B6F23] hover:bg-[#556B2F] text-white rounded-full font-bold text-sm tracking-wide transition-all shadow-[0_6px_25px_rgba(75,111,35,0.4)] flex items-center justify-center gap-2 border border-[#4B6F23]/60 hover:-translate-y-0.5"
               >
-                <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="text-2xl font-black text-slate-200 group-hover:text-slate-600 transition-colors">
-                      {div.num}
-                    </span>
-                    <span className="text-[10px] uppercase font-extrabold px-2.5 py-1 rounded-full text-[#165b33] bg-[#eaf4ec]">
-                      {div.badge}
-                    </span>
-                  </div>
-
-                  <div className="relative h-48 w-full rounded-2xl overflow-hidden mb-6 shadow-sm border border-slate-200">
-                    <Image src={div.image} alt={div.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-white/30 via-transparent to-transparent" />
-                  </div>
-
-                  <span className="text-xs font-bold text-[#165b33] tracking-wider uppercase mb-1 block">
-                    {div.tagline}
-                  </span>
-                  <h2 className="text-2xl font-black text-slate-900 group-hover:text-[#165b33] transition-colors leading-snug mb-3">
-                    {div.title}
-                  </h2>
-                  <p className="text-xs text-slate-500 leading-relaxed font-medium mb-6">
-                    {div.desc}
-                  </p>
-                </div>
-
-                <div className="pt-4 border-t border-slate-200 flex items-center justify-between text-xs font-bold text-[#165b33]">
-                  <span>{div.btnText}</span>
-                  <span className="text-base group-hover:translate-x-1 transition-transform">&rarr;</span>
-                </div>
+                <HiPrinter className="text-lg" />
+                <span>Printing Materials Catalogue</span>
+                <HiArrowRight className="text-sm" />
               </Link>
-            ))}
+              <Link
+                href="/automobiles"
+                className="px-8 py-4 bg-[#111827]/90 hover:bg-[#1F2937] text-white rounded-full font-bold text-sm tracking-wide transition-all border border-[#2D3748] hover:border-white/40 flex items-center justify-center gap-2 backdrop-blur-md hover:-translate-y-0.5"
+              >
+                <span>Automobile Showroom</span>
+                <HiArrowRight className="text-sm" />
+              </Link>
+              <a
+                href="https://wa.me/233205761698"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-6 py-4 bg-[#25D366] hover:bg-[#20ba59] text-white rounded-full font-bold text-sm tracking-wide transition-all shadow-lg flex items-center justify-center gap-2 hover:-translate-y-0.5"
+              >
+                <IoLogoWhatsapp className="text-lg" />
+                <span>WhatsApp: 0205761698</span>
+              </a>
+            </div>
           </div>
+        </div>
 
+        {/* Floating Quick Trust Highlights Bar */}
+        <div className="relative z-10 mt-16 border-t border-[#1F2937] bg-[#111827]/75 backdrop-blur-xl py-5">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+            <div>
+              <span className="text-2xl sm:text-3xl font-black text-white block">10,000+</span>
+              <span className="text-xs font-bold text-[#9CA3AF] uppercase tracking-wider">Printing Rolls Supplied</span>
+            </div>
+            <div>
+              <span className="text-2xl sm:text-3xl font-black text-[#86efac] block">100%</span>
+              <span className="text-xs font-bold text-[#9CA3AF] uppercase tracking-wider">Verified Customs Papers</span>
+            </div>
+            <div>
+              <span className="text-2xl sm:text-3xl font-black text-white block">500+</span>
+              <span className="text-xs font-bold text-[#9CA3AF] uppercase tracking-wider">Import Containers Cleared</span>
+            </div>
+            <div>
+              <span className="text-2xl sm:text-3xl font-black text-[#86efac] block">Kumasi, GH</span>
+              <span className="text-xs font-bold text-[#9CA3AF] uppercase tracking-wider">Santase Tech Station</span>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* 2. AUTOMOBILES HIGHLIGHT */}
-      <section className="py-20 bg-slate-50 border-b border-slate-200">
+      {/* 2. THE 3 CORE DIVISIONS (REORDERED: 1. Printing Materials, 2. Automobiles, 3. General Importations) */}
+      <section className="py-24 bg-[#0B0F19] relative border-b border-[#1F2937]">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-12">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <span className="text-xs font-mono font-bold text-[#4B6F23] uppercase tracking-widest block mb-2">
+              COMMERCIAL PILLARS
+            </span>
+            <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight">
+              Our 3 Specialized Divisions
+            </h2>
+            <p className="text-[#9CA3AF] text-sm sm:text-base mt-4 leading-relaxed font-medium">
+              Delivering verified quality across commercial printing consumables, clean imported automobiles, and direct container logistics in Ghana.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {THREE_DIVISIONS.map((div) => (
+              <div
+                key={div.num}
+                className="group relative bg-[#111827] rounded-3xl overflow-hidden border border-[#2D3748] hover:border-[#4B6F23] transition-all duration-500 shadow-[0_10px_35px_rgba(0,0,0,0.4)] flex flex-col hover:-translate-y-2"
+              >
+                {/* Visual Image Header */}
+                <div className="relative h-56 w-full overflow-hidden">
+                  <Image
+                    src={div.image}
+                    alt={div.title}
+                    fill
+                    className="object-cover object-center group-hover:scale-108 transition-transform duration-700 opacity-75"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#111827] via-[#111827]/40 to-transparent" />
+                  <span className="absolute top-4 left-4 text-xs font-mono font-black text-[#86efac] bg-black/70 backdrop-blur-md px-3 py-1 rounded-full border border-white/10">
+                    DIVISION {div.num}
+                  </span>
+                </div>
+
+                {/* Division Info */}
+                <div className="p-7 flex flex-col flex-grow">
+                  <span className="text-xs font-bold text-[#4B6F23] uppercase tracking-wider mb-2 block">
+                    {div.tagline}
+                  </span>
+                  <h3 className="text-2xl font-bold text-white mb-3 leading-snug group-hover:text-[#86efac] transition-colors">
+                    {div.title}
+                  </h3>
+                  <p className="text-[#9CA3AF] text-sm leading-relaxed mb-6 flex-grow font-normal">
+                    {div.desc}
+                  </p>
+
+                  <Link
+                    href={div.href}
+                    className="inline-flex items-center justify-between w-full px-5 py-3.5 rounded-full bg-[#1F2937] hover:bg-[#4B6F23] text-white text-xs font-bold uppercase tracking-wider transition-all border border-[#2D3748] hover:border-[#4B6F23]"
+                  >
+                    <span>{div.btnText}</span>
+                    <HiArrowRight className="text-sm" />
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 3. FEATURED PRINTING MATERIALS CATALOG SECTION */}
+      <section className="py-24 bg-[#0B0F19] relative border-b border-[#1F2937]">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-14 gap-4">
             <div>
-              <span className="text-xs font-bold text-[#165b33] uppercase tracking-widest mb-2 block">Division 01 • Automobiles</span>
-              <h2 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">Featured Vehicles for Sale</h2>
+              <span className="text-xs font-mono font-bold text-[#4B6F23] uppercase tracking-widest block mb-2">
+                DIVISION 01 • PRINT CONSUMABLES
+              </span>
+              <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight">
+                Featured Printing Materials
+              </h2>
+              <p className="text-[#9CA3AF] text-sm max-w-xl mt-3 font-normal">
+                Wholesale photo papers, roll laminates, eco-solvent inks, and flex banners in stock at Santase Tech Station, Kumasi.
+              </p>
             </div>
-            <Link href="/automobiles" className="text-xs font-bold text-[#165b33] uppercase tracking-wider hover:underline mt-4 sm:mt-0 flex items-center gap-1">
-              Browse All Cars <span>&rarr;</span>
+            <Link
+              href="/materials"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#111827] hover:bg-[#1F2937] text-white font-bold text-xs uppercase tracking-wider border border-[#2D3748] hover:border-[#4B6F23] transition-all self-start md:self-auto"
+            >
+              <span>View All Printing Materials</span>
+              <HiArrowRight className="text-sm" />
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {cars.map((car) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {materials.slice(0, 6).map((material) => (
+              <MaterialCard key={material.id} material={material} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 4. FEATURED AUTOMOBILES SECTION (INCLUDING CHINESE MODELS) */}
+      <section className="py-24 bg-[#0B0F19] relative border-b border-[#1F2937]">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-14 gap-4">
+            <div>
+              <span className="text-xs font-mono font-bold text-[#4B6F23] uppercase tracking-widest block mb-2">
+                DIVISION 02 • AUTOMOBILE SHOWROOM
+              </span>
+              <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight">
+                Vehicles Available in Kumasi
+              </h2>
+              <p className="text-[#9CA3AF] text-sm max-w-xl mt-3 font-normal">
+                Toyota, Mercedes-Benz, and popular Chinese models (BYD, Changan, Geely, Chery, Dongfeng) with verified documentation.
+              </p>
+            </div>
+            <Link
+              href="/automobiles"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#111827] hover:bg-[#1F2937] text-white font-bold text-xs uppercase tracking-wider border border-[#2D3748] hover:border-[#4B6F23] transition-all self-start md:self-auto"
+            >
+              <span>View Automobile Catalog</span>
+              <HiArrowRight className="text-sm" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {cars.slice(0, 6).map((car) => (
               <CarCard key={car.id} car={car} />
             ))}
           </div>
         </div>
       </section>
 
-      {/* 3. MATERIALS HIGHLIGHT */}
-      <section className="py-20 bg-white">
+      {/* 5. GENERAL IMPORTATIONS SPOTLIGHT */}
+      <section className="py-20 bg-gradient-to-b from-[#0B0F19] via-[#111827] to-[#0B0F19] border-b border-[#1F2937]">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-12">
-            <div>
-              <span className="text-xs font-bold text-[#165b33] uppercase tracking-widest mb-2 block">Division 02 • Printing Materials</span>
-              <h2 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">Wholesale Printing Supplies</h2>
+          <div className="bg-[#111827]/90 rounded-3xl p-8 sm:p-14 border border-[#2D3748] shadow-2xl flex flex-col lg:flex-row items-center justify-between gap-10">
+            <div className="lg:max-w-2xl">
+              <span className="text-xs font-mono font-bold text-[#4B6F23] uppercase tracking-widest block mb-2">
+                DIVISION 03 • GLOBAL CARGO
+              </span>
+              <h2 className="text-3xl sm:text-4xl font-black text-white mb-4 leading-tight">
+                Direct Global Cargo &amp; Factory Procurement
+              </h2>
+              <p className="text-[#E5E7EB] text-sm sm:text-base leading-relaxed mb-6 font-normal">
+                Import heavy machinery, commercial electronics, spare parts, and construction supplies directly from verified international factories. We manage ocean freight, clearing at Tema Port, and inland haulage to Kumasi.
+              </p>
+              <div className="flex flex-wrap gap-4">
+                <Link
+                  href="/general-importations"
+                  className="px-6 py-3.5 bg-[#4B6F23] hover:bg-[#556B2F] text-white font-bold text-xs uppercase tracking-wider rounded-full transition-all shadow-md flex items-center gap-2"
+                >
+                  <HiGlobeAlt className="text-base" />
+                  <span>Request Importation Quote</span>
+                </Link>
+                <a
+                  href="https://wa.me/233205761698?text=Hello%20BENGID%20LEGACY,%20I%20want%20to%20inquire%20about%20cargo%20importation."
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-6 py-3.5 bg-[#25D366] hover:bg-[#20ba59] text-white font-bold text-xs uppercase tracking-wider rounded-full transition-all shadow-md flex items-center gap-2"
+                >
+                  <IoLogoWhatsapp className="text-base" />
+                  <span>Direct WhatsApp Line</span>
+                </a>
+              </div>
             </div>
-            <Link href="/materials" className="text-xs font-bold text-[#165b33] uppercase tracking-wider hover:underline mt-4 sm:mt-0 flex items-center gap-1">
-              Browse All Materials <span>&rarr;</span>
-            </Link>
-          </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {materials.map((mat) => (
-              <MaterialCard key={mat.id} material={mat} />
-            ))}
+            <div className="w-full lg:w-96 relative h-64 rounded-2xl overflow-hidden border border-[#2D3748] shadow-lg">
+              <Image
+                src="/images/imports-hero.jpg"
+                alt="Tema Port Cargo Ship Logistics"
+                fill
+                className="object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+              <div className="absolute bottom-4 left-4 right-4">
+                <span className="text-xs font-bold text-white block">Tema Port &amp; Kotoka Freight</span>
+                <span className="text-[11px] text-[#9CA3AF]">Customs clearance &amp; nationwide delivery</span>
+              </div>
+            </div>
           </div>
         </div>
       </section>
