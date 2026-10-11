@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { HiMenu, HiX, HiHome, HiPrinter, HiBriefcase, HiPhone, HiGlobeAlt, HiInformationCircle } from 'react-icons/hi';
+import { HiMenu, HiX, HiHome, HiShoppingBag, HiBriefcase, HiPhone, HiGlobe, HiInformationCircle } from 'react-icons/hi';
 import { IoLogoWhatsapp } from 'react-icons/io5';
 import BrandLogo from '@/components/ui/BrandLogo';
 
@@ -15,12 +15,11 @@ export default function Navbar() {
     return null;
   }
 
-  // Priority order: 1. Printing Materials, 2. Automobiles, 3. General Importations
   const navLinks = [
     { name: 'Home', href: '/', icon: HiHome },
-    { name: 'Printing Materials', href: '/materials', icon: HiPrinter },
+    { name: 'Materials', href: '/materials', icon: HiShoppingBag },
+    { name: 'General Import', href: '/general-importations', icon: HiGlobe },
     { name: 'Automobiles', href: '/automobiles', icon: HiBriefcase },
-    { name: 'General Import', href: '/general-importations', icon: HiGlobeAlt },
     { name: 'About', href: '/about', icon: HiInformationCircle },
     { name: 'Contact', href: '/contact', icon: HiPhone },
   ];
@@ -43,7 +42,7 @@ export default function Navbar() {
         <nav
           role="navigation"
           aria-label="Main navigation"
-          className="hidden lg:flex pointer-events-auto items-center gap-1.5 px-3 py-2 rounded-full bg-[#0a1120]/75 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.3)]"
+          className="hidden lg:flex pointer-events-auto items-center gap-2 px-3 py-2 rounded-full bg-[#0a1120]/70 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.3)]"
         >
           {navLinks.map((link) => {
             const active = isActive(link.href);
@@ -53,13 +52,13 @@ export default function Navbar() {
                 key={link.name}
                 href={link.href}
                 aria-current={active ? 'page' : undefined}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-full text-xs sm:text-sm font-semibold transition-all duration-300 ${
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 ${
                   active
-                    ? 'bg-[#4B6F23] text-white shadow-[0_0_16px_rgba(75,111,35,0.55)] font-bold'
-                    : 'text-slate-300 hover:text-white hover:bg-white/10'
+                    ? 'bg-[#165b33] text-white shadow-[0_0_15px_rgba(22,91,51,0.5)]'
+                    : 'text-slate-300 hover:text-white hover:bg-[#0a0a0a]/10'
                 }`}
               >
-                <Icon className={`text-base ${active ? 'text-white' : 'text-slate-400'}`} />
+                <Icon className={`text-lg ${active ? 'text-white' : 'text-slate-400'}`} />
                 <span>{link.name}</span>
               </Link>
             );
@@ -72,9 +71,9 @@ export default function Navbar() {
             href="https://wa.me/233205761698"
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden sm:flex bg-[#4B6F23] hover:bg-[#3D5A1C] text-white text-xs sm:text-sm font-bold px-5 py-2.5 rounded-full shadow-[0_4px_16px_rgba(75,111,35,0.35)] transition-all hover:-translate-y-0.5 items-center gap-2"
+            className="hidden sm:flex bg-[#557a2b] hover:bg-[#44631e] text-white text-sm font-bold px-5 py-2.5 rounded-full shadow-lg transition-transform hover:-translate-y-0.5 items-center gap-2"
           >
-            <IoLogoWhatsapp className="text-base text-white" />
+            <IoLogoWhatsapp className="text-lg" />
             <span>WhatsApp</span>
           </a>
 
@@ -85,9 +84,9 @@ export default function Navbar() {
             aria-label={isOpen ? 'Close navigation menu' : 'Open navigation menu'}
             aria-expanded={isOpen}
             aria-controls="mobile-nav-menu"
-            className="lg:hidden inline-flex items-center justify-center p-3 rounded-full bg-[#0a1120]/75 backdrop-blur-xl border border-white/10 text-white hover:bg-white/10 transition-colors shadow-lg"
+            className="lg:hidden inline-flex items-center justify-center p-3 rounded-full bg-[#0a1120]/70 backdrop-blur-xl border border-white/10 text-white hover:bg-[#0a0a0a]/10 transition-colors shadow-lg"
           >
-            {isOpen ? <HiX className="block h-6 w-6 text-white" /> : <HiMenu className="block h-6 w-6 text-white" />}
+            {isOpen ? <HiX className="block h-6 w-6" /> : <HiMenu className="block h-6 w-6" />}
           </button>
         </div>
       </header>
@@ -101,7 +100,7 @@ export default function Navbar() {
           className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden"
         >
           <div className="absolute top-24 left-4 right-4 bg-[#0a1120]/95 backdrop-blur-2xl border border-white/10 shadow-2xl rounded-3xl p-4 animate-fadeIn">
-            <div className="space-y-1.5">
+            <div className="space-y-2">
               {navLinks.map((link) => {
                 const active = isActive(link.href);
                 const Icon = link.icon;
@@ -110,13 +109,13 @@ export default function Navbar() {
                     key={link.name}
                     href={link.href}
                     onClick={() => setIsOpen(false)}
-                    className={`flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-bold transition-colors ${
+                    className={`flex items-center gap-3 px-4 py-4 rounded-2xl text-sm font-bold transition-colors ${
                       active
-                        ? 'bg-[#4B6F23] text-white shadow-md'
-                        : 'text-slate-300 hover:bg-white/10 hover:text-white'
+                        ? 'bg-[#165b33] text-white shadow-md'
+                        : 'text-slate-300 hover:bg-[#0a0a0a]/10 hover:text-white'
                     }`}
                   >
-                    <Icon className="text-lg" />
+                    <Icon className="text-xl" />
                     {link.name}
                   </Link>
                 );
