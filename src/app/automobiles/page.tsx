@@ -84,11 +84,11 @@ export default function AutomobilesPage() {
             className="object-cover object-center scale-105 transition-transform duration-1000"
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-white/40 via-white/80 to-[#F9FAFB]" />
+          <div className="absolute inset-0 bg-gradient-to-b from-white/25 via-[#f1f3f2]/40 to-[#F9FAFB]" />
         </div>
 
         <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl bg-white/90 backdrop-blur-md p-8 sm:p-12 rounded-[2.5rem] shadow-xl border border-gray-200/80 mb-10">
+          <div className="max-w-4xl bg-white/70 backdrop-blur-md p-8 sm:p-12 rounded-[2.5rem] shadow-xl border border-white/70 mb-10">
             <span className="text-xs font-mono font-bold text-[#4B6F23] uppercase tracking-widest block mb-2">
               DIVISION 02 • CERTIFIED AUTOMOBILE SALES
             </span>
@@ -184,8 +184,8 @@ export default function AutomobilesPage() {
                   onClick={() => setBrandFilter(b)}
                   className={`px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer ${
                     brandFilter.toLowerCase() === b.toLowerCase()
-                      ? 'bg-[#4B6F23] text-white shadow-sm border border-[#4B6F23]'
-                      : 'bg-gray-100 text-gray-700 hover:text-gray-950 hover:bg-gray-200 border border-transparent'
+                      ? 'bg-[#4B6F23] text-white shadow-md border border-[#4B6F23]'
+                      : 'bg-white hover:bg-gray-100 text-gray-700 hover:text-gray-950 border border-gray-200 shadow-2xs'
                   }`}
                 >
                   {b}

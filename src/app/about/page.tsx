@@ -18,11 +18,11 @@ export default function AboutPage() {
             className="object-cover object-center scale-105 transition-transform duration-1000"
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-white/40 via-white/80 to-[#F9FAFB]" />
+          <div className="absolute inset-0 bg-gradient-to-b from-white/25 via-[#f1f3f2]/40 to-[#F9FAFB]" />
         </div>
 
         <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8 mt-4">
-          <div className="max-w-4xl bg-white/90 backdrop-blur-md p-8 sm:p-12 rounded-[2.5rem] shadow-xl border border-gray-200/80 mb-10">
+          <div className="max-w-4xl bg-white/70 backdrop-blur-md p-8 sm:p-12 rounded-[2.5rem] shadow-xl border border-white/70 mb-10">
             <span className="text-xs font-mono font-bold text-[#4B6F23] uppercase tracking-widest block mb-2">
               ABOUT BENGID LEGACY GHANA LIMITED
             </span>
@@ -189,13 +189,16 @@ export default function AboutPage() {
             
             {/* Co-Founder 1: Benjamin Owusu */}
             <div className="bg-white rounded-3xl p-8 border border-gray-200 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col items-center text-center group hover:-translate-y-1">
-              {/* Structured image container slot formatted to accept official executive headshot uploads */}
+              {/* Official Executive Headshot */}
               <div className="relative w-36 h-36 rounded-full p-1 bg-gradient-to-tr from-[#4B6F23] via-[#86efac] to-[#3D5A1C] mb-6 shadow-md">
-                <div className="w-full h-full rounded-full bg-gray-50 overflow-hidden flex items-center justify-center relative border-2 border-white">
-                  <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex flex-col items-center justify-center text-gray-700">
-                    <span className="text-3xl font-black tracking-wider text-[#4B6F23]">BO</span>
-                    <HiUser className="text-4xl text-gray-400 mt-1" />
-                  </div>
+                <div className="w-full h-full rounded-full overflow-hidden relative border-2 border-white shadow-inner">
+                  <Image
+                    src="/images/benjamin-owusu.png"
+                    alt="Benjamin Owusu — Co-Founder"
+                    fill
+                    className="object-cover object-top scale-105"
+                    priority
+                  />
                 </div>
               </div>
 

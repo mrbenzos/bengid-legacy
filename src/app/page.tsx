@@ -87,13 +87,13 @@ export default function HomePage() {
             priority
             className="object-cover object-center scale-105 transition-transform duration-1000"
           />
-          {/* Approved crisp light gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-b from-white/40 via-white/80 to-[#F9FAFB]" />
+          {/* Lighter, semi-transparent see-through gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-b from-white/25 via-[#f1f3f2]/40 to-[#F9FAFB]" />
         </div>
         
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          {/* Hero Content Card with High Contrast */}
-          <div className="text-center max-w-4xl mx-auto mb-14 bg-white/90 backdrop-blur-md px-6 py-10 sm:p-12 rounded-[2.5rem] shadow-xl border border-gray-200/80">
+          {/* Semi-Transparent Glassmorphism Hero Card with Backdrop Blur */}
+          <div className="text-center max-w-4xl mx-auto mb-14 bg-white/70 backdrop-blur-md px-6 py-10 sm:p-12 rounded-[2.5rem] shadow-xl border border-white/70">
             {/* Note: Floating green-outlined badge purged completely */}
             
             <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black text-gray-900 mb-6 leading-tight tracking-tight">
