@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { IoLogoWhatsapp } from 'react-icons/io5';
-import { HiArrowLeft, HiCheckCircle, HiPhoto, HiChevronLeft, HiChevronRight, HiPrinter, HiMapPin, HiPhone } from 'react-icons/hi2';
+import { HiArrowLeft, HiCheckCircle, HiChevronLeft, HiChevronRight, HiPrinter, HiMapPin, HiPhone } from 'react-icons/hi2';
 import { Material } from '@/lib/types';
 import MaterialCard from '@/components/ui/MaterialCard';
 import { INITIAL_MATERIALS } from '@/lib/initialData';
@@ -23,20 +23,24 @@ export default function MaterialDetailPage() {
     async function fetchMaterial() {
       try {
         const res = await fetch(`/api/materials/${id}`);
-        if (!res.ok) throw new Error('Not found');
-        const data = await res.json();
-        setMaterial(data);
-
-        // Fetch related printing materials
-        const resAll = await fetch('/api/materials');
-        if (resAll.ok) {
-          const allData: Material[] = await resAll.json();
-          const related = allData.filter(m => m.category === data.category && m.id !== data.id).slice(0, 3);
-          setRelatedMaterials(related);
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.id) {
+            setMaterial(data as Material);
+            setRelatedMaterials(INITIAL_MATERIALS.filter(m => m.id !== data.id).slice(0, 3));
+            setLoading(false);
+            return;
+          }
+        }
+        const found = INITIAL_MATERIALS.find(m => m.id === id);
+        if (found) {
+          setMaterial(found);
+          setRelatedMaterials(INITIAL_MATERIALS.filter(m => m.id !== found.id).slice(0, 3));
+        } else {
+          setMaterial(null);
         }
       } catch (err) {
-        // Fallback to local catalog if matching
-        const found = INITIAL_MATERIALS.find(m => m.id === id || m.sku === id);
+        const found = INITIAL_MATERIALS.find(m => m.id === id);
         if (found) {
           setMaterial(found);
           setRelatedMaterials(INITIAL_MATERIALS.filter(m => m.id !== found.id).slice(0, 3));
@@ -52,11 +56,11 @@ export default function MaterialDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0B0F19] p-6 md:p-12 animate-pulse pt-32">
-        <div className="h-6 w-48 bg-[#111827] rounded mb-8"></div>
+      <div className="min-h-screen bg-[#F9FAFB] p-6 md:p-12 animate-pulse pt-32">
+        <div className="h-6 w-48 bg-gray-200 rounded mb-8"></div>
         <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
-          <div className="h-96 bg-[#111827] rounded-3xl"></div>
-          <div className="h-96 bg-[#111827] rounded-3xl"></div>
+          <div className="h-96 bg-gray-200 rounded-3xl"></div>
+          <div className="h-96 bg-gray-200 rounded-3xl"></div>
         </div>
       </div>
     );
@@ -64,13 +68,13 @@ export default function MaterialDetailPage() {
 
   if (!material) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-[#0B0F19] text-white px-4">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[#F9FAFB] text-gray-900 px-4">
         <HiPrinter className="text-6xl text-[#4B6F23] mb-4" />
         <h1 className="text-3xl font-black mb-3">Printing Material Not Found</h1>
-        <p className="text-[#9CA3AF] mb-8 text-sm">The requested printing consumable is not listed or has been removed.</p>
+        <p className="text-gray-600 mb-8 text-sm">The requested printing consumable is not listed or has been removed.</p>
         <Link 
           href="/materials" 
-          className="px-6 py-3 rounded-full bg-[#4B6F23] hover:bg-[#556B2F] text-white font-bold flex items-center gap-2 transition-all shadow-lg text-sm"
+          className="px-6 py-3 rounded-full bg-[#4B6F23] hover:bg-[#3D5A1C] text-white font-bold flex items-center gap-2 transition-all shadow-md text-sm"
         >
           <HiArrowLeft /> ← Back to Printing Materials
         </Link>
@@ -100,22 +104,22 @@ export default function MaterialDetailPage() {
   const inStock = material.stock_status === 'in_stock';
 
   return (
-    <div className="min-h-screen bg-[#0B0F19] text-white pb-24">
+    <div className="min-h-screen bg-[#F9FAFB] text-[#111827] pb-24">
       <div className="max-w-7xl mx-auto px-4 md:px-8 pt-32">
         
         {/* Breadcrumb Navigation */}
         <Link 
           href="/materials" 
-          className="inline-flex items-center gap-2 text-[#9CA3AF] hover:text-white mb-8 font-semibold text-sm transition-colors"
+          className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-8 font-semibold text-sm transition-colors"
         >
           <HiArrowLeft /> ← Back to Printing Materials
         </Link>
         
         {/* TOP SECTION: Media Gallery & Product Specifications */}
-        <div className="flex flex-col lg:flex-row gap-10 mb-20 bg-[#111827] rounded-3xl p-6 sm:p-10 border border-[#2D3748] shadow-2xl">
+        <div className="flex flex-col lg:flex-row gap-10 mb-20 bg-white rounded-3xl p-6 sm:p-10 border border-gray-200 shadow-md">
           {/* Left: Image Gallery */}
           <div className="w-full lg:w-1/2 flex flex-col">
-            <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-[#0B0F19] shadow-lg border border-[#2D3748] mb-4 group">
+            <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-gray-100 shadow-sm border border-gray-200 mb-4 group">
               <Image 
                 src={allImages[activeImageIdx] || allImages[0]} 
                 alt={material.name} 
@@ -151,7 +155,7 @@ export default function MaterialDetailPage() {
                     key={idx} 
                     onClick={() => setActiveImageIdx(idx)}
                     className={`relative w-20 h-16 rounded-xl overflow-hidden border-2 flex-shrink-0 transition-all ${
-                      activeImageIdx === idx ? 'border-[#4B6F23] scale-105' : 'border-[#2D3748] opacity-60 hover:opacity-100'
+                      activeImageIdx === idx ? 'border-[#4B6F23] scale-105' : 'border-gray-200 opacity-70 hover:opacity-100'
                     }`}
                   >
                     <Image src={img} alt={`Thumbnail ${idx + 1}`} fill className="object-cover" />
@@ -166,41 +170,41 @@ export default function MaterialDetailPage() {
             <div>
               {/* Badges */}
               <div className="flex flex-wrap items-center gap-2.5 mb-4">
-                <span className="px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-[#0B0F19] text-[#86efac] border border-[#2D3748]">
+                <span className="px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-gray-100 text-gray-800 border border-gray-200">
                   {material.category}
                 </span>
                 <span className={`px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider border ${
                   inStock 
-                    ? 'bg-emerald-950/80 text-emerald-300 border-emerald-500/40' 
-                    : 'bg-rose-950/80 text-rose-300 border-rose-500/40'
+                    ? 'bg-emerald-50 text-emerald-800 border-emerald-200' 
+                    : 'bg-rose-50 text-rose-800 border-rose-200'
                 }`}>
                   {inStock ? '● In Stock' : '○ Out of Stock'}
                 </span>
-                <span className="px-2.5 py-1 rounded text-xs font-mono font-bold text-[#9CA3AF] bg-[#0B0F19] border border-[#2D3748]">
+                <span className="px-2.5 py-1 rounded text-xs font-mono font-bold text-gray-600 bg-gray-50 border border-gray-200">
                   {sku}
                 </span>
               </div>
 
               {/* Title & Brand */}
-              <h1 className="text-2xl sm:text-4xl font-black text-white leading-tight mb-2">
+              <h1 className="text-2xl sm:text-4xl font-black text-gray-900 leading-tight mb-2">
                 {material.name}
               </h1>
               {material.brand && (
-                <p className="text-xs text-[#9CA3AF] font-bold uppercase tracking-wider mb-6">
-                  Brand: <span className="text-white">{material.brand}</span>
+                <p className="text-xs text-gray-500 font-bold uppercase tracking-wider mb-6">
+                  Brand: <span className="text-gray-800">{material.brand}</span>
                 </p>
               )}
 
               {/* Pricing Box */}
-              <div className="bg-[#0B0F19] p-5 rounded-2xl border border-[#2D3748] mb-6">
-                <span className="text-[11px] font-bold text-[#9CA3AF] uppercase tracking-wider block mb-1">
+              <div className="bg-gray-50 p-5 rounded-2xl border border-gray-200 mb-6">
+                <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider block mb-1">
                   Wholesale Price (Ghana Cedis)
                 </span>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-3xl sm:text-4xl font-black text-white">
+                  <span className="text-3xl sm:text-4xl font-black text-gray-900">
                     GHS {material.price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </span>
-                  <span className="text-sm font-semibold text-[#86efac]">
+                  <span className="text-sm font-semibold text-[#4B6F23]">
                     / {material.unit}
                   </span>
                 </div>
@@ -209,8 +213,8 @@ export default function MaterialDetailPage() {
               {/* Overview */}
               {material.overview && (
                 <div className="mb-6">
-                  <h3 className="text-xs font-bold text-[#9CA3AF] uppercase tracking-wider mb-2">Product Overview</h3>
-                  <p className="text-sm text-[#E5E7EB] leading-relaxed font-normal">
+                  <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Product Overview</h3>
+                  <p className="text-sm text-gray-700 leading-relaxed font-normal">
                     {material.overview}
                   </p>
                 </div>
@@ -219,11 +223,11 @@ export default function MaterialDetailPage() {
               {/* Features Checklist */}
               {material.features && material.features.length > 0 && (
                 <div className="mb-8">
-                  <h3 className="text-xs font-bold text-[#9CA3AF] uppercase tracking-wider mb-3">Key Performance Features</h3>
+                  <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Key Performance Features</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                     {material.features.map((feat, i) => (
-                      <div key={i} className="flex items-center gap-2 text-xs text-[#E5E7EB] font-medium bg-[#0B0F19] px-3 py-2 rounded-xl border border-[#2D3748]">
-                        <HiCheckCircle className="text-[#86efac] text-base flex-shrink-0" />
+                      <div key={i} className="flex items-center gap-2 text-xs text-gray-800 font-medium bg-gray-50 px-3 py-2 rounded-xl border border-gray-200">
+                        <HiCheckCircle className="text-[#4B6F23] text-base flex-shrink-0" />
                         <span>{feat}</span>
                       </div>
                     ))}
@@ -233,12 +237,12 @@ export default function MaterialDetailPage() {
             </div>
 
             {/* Direct Action Buttons */}
-            <div className="space-y-3 pt-6 border-t border-[#1F2937]">
+            <div className="space-y-3 pt-6 border-t border-gray-100">
               <a
                 href={whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full py-4 bg-[#25D366] hover:bg-[#20ba59] text-white rounded-full font-bold text-sm tracking-wide transition-all shadow-[0_6px_25px_rgba(37,211,102,0.35)] flex items-center justify-center gap-2"
+                className="w-full py-4 bg-[#4B6F23] hover:bg-[#3D5A1C] text-white rounded-full font-bold text-sm tracking-wide transition-all shadow-md flex items-center justify-center gap-2"
               >
                 <IoLogoWhatsapp className="text-xl" />
                 <span>Order via WhatsApp (0205761698)</span>
@@ -247,21 +251,21 @@ export default function MaterialDetailPage() {
               <div className="flex flex-col sm:flex-row gap-3">
                 <a
                   href="tel:0241749931"
-                  className="flex-1 py-3 bg-[#1F2937] hover:bg-[#2D3748] text-white rounded-full font-bold text-xs uppercase tracking-wider text-center transition-colors flex items-center justify-center gap-2 border border-[#2D3748]"
+                  className="flex-1 py-3 bg-white hover:bg-gray-50 text-gray-800 rounded-full font-bold text-xs uppercase tracking-wider text-center transition-colors flex items-center justify-center gap-2 border border-gray-300 shadow-xs"
                 >
                   <HiPhone className="text-sm text-[#4B6F23]" />
                   <span>Call: 0241749931</span>
                 </a>
                 <a
                   href="tel:0593132725"
-                  className="flex-1 py-3 bg-[#1F2937] hover:bg-[#2D3748] text-white rounded-full font-bold text-xs uppercase tracking-wider text-center transition-colors flex items-center justify-center gap-2 border border-[#2D3748]"
+                  className="flex-1 py-3 bg-white hover:bg-gray-50 text-gray-800 rounded-full font-bold text-xs uppercase tracking-wider text-center transition-colors flex items-center justify-center gap-2 border border-gray-300 shadow-xs"
                 >
                   <HiPhone className="text-sm text-[#4B6F23]" />
                   <span>Call: 0593132725</span>
                 </a>
               </div>
 
-              <div className="flex items-center justify-center gap-2 text-[11px] text-[#9CA3AF] pt-2">
+              <div className="flex items-center justify-center gap-2 text-[11px] text-gray-500 pt-2">
                 <HiMapPin className="text-[#4B6F23]" />
                 <span>Warehouse Location: Santase Tech Station, Kumasi, Ghana</span>
               </div>
@@ -273,8 +277,8 @@ export default function MaterialDetailPage() {
         {relatedMaterials.length > 0 && (
           <div>
             <div className="flex items-center justify-between mb-8">
-              <h2 className="text-2xl font-black text-white">Other Printing Materials You May Need</h2>
-              <Link href="/materials" className="text-xs font-bold text-[#86efac] hover:underline">
+              <h2 className="text-2xl font-black text-gray-900">Other Printing Materials You May Need</h2>
+              <Link href="/materials" className="text-xs font-bold text-[#4B6F23] hover:underline">
                 View Full Catalogue →
               </Link>
             </div>

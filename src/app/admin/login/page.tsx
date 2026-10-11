@@ -43,90 +43,90 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="flex h-screen min-h-screen bg-[#0B0F19] text-white">
-      {/* Left Panel - Hidden on Mobile */}
-      <div className="hidden lg:flex lg:w-5/12 flex-col justify-between bg-gradient-to-br from-[#1B3310] via-[#2D4414] to-[#0B0F19] p-12 border-r border-[#2D3748]">
+    <div className="flex min-h-screen bg-[#F9FAFB] text-[#111827]">
+      {/* Left Branded Panel - Hidden on Mobile */}
+      <div className="hidden lg:flex lg:w-5/12 flex-col justify-between bg-gradient-to-br from-[#1B3310] via-[#2D4414] to-[#11240A] p-12 text-white shadow-xl">
         <div>
-          <div className="w-12 h-12 rounded-2xl bg-[#4B6F23] border border-[#86efac] flex items-center justify-center text-white font-black text-xl mb-4 shadow-lg">
+          <div className="w-12 h-12 rounded-2xl bg-[#4B6F23] border border-emerald-400 flex items-center justify-center text-white font-black text-xl mb-4 shadow-md">
             BG
           </div>
           <h1 className="font-black text-3xl text-white tracking-tight">
             BENGID LEGACY
           </h1>
-          <p className="text-[#86efac] text-xs font-bold tracking-widest mt-1">
+          <p className="text-emerald-200 text-xs font-bold tracking-widest mt-1 uppercase">
             GHANA LIMITED • SANTASE HEADQUARTERS
           </p>
         </div>
 
-        <div className="flex-1 flex flex-col justify-center">
+        <div className="flex-1 flex flex-col justify-center my-10">
           <h2 className="text-white text-3xl font-extrabold mb-3">
             Secure Admin Portal
           </h2>
-          <p className="text-[#E5E7EB] text-sm leading-relaxed mb-8 max-w-sm font-normal">
-            Centralized management for printing materials inventory, automobile showroom, and global import operations in Kumasi.
+          <p className="text-emerald-100/90 text-sm leading-relaxed mb-8 max-w-sm font-normal">
+            Centralized operations management for printing materials inventory, automobile showroom, and global cargo importations in Kumasi.
           </p>
 
           <div className="space-y-3">
-            <div className="flex items-center gap-3 bg-[#0B0F19]/60 backdrop-blur-md border border-white/10 rounded-2xl px-4 py-2.5 w-max">
-              <div className="w-2.5 h-2.5 rounded-full bg-[#86efac] animate-pulse" />
+            <div className="flex items-center gap-3 bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl px-4 py-2.5 w-max">
+              <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
               <span className="text-white text-xs font-semibold">3 Active Commercial Divisions</span>
             </div>
-            <div className="flex items-center gap-3 bg-[#0B0F19]/60 backdrop-blur-md border border-white/10 rounded-2xl px-4 py-2.5 w-max">
-              <div className="w-2.5 h-2.5 rounded-full bg-[#86efac] animate-pulse" />
+            <div className="flex items-center gap-3 bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl px-4 py-2.5 w-max">
+              <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
               <span className="text-white text-xs font-semibold">Real-time Stock Synchronization</span>
             </div>
-            <div className="flex items-center gap-3 bg-[#0B0F19]/60 backdrop-blur-md border border-white/10 rounded-2xl px-4 py-2.5 w-max">
-              <div className="w-2.5 h-2.5 rounded-full bg-[#86efac] animate-pulse" />
-              <span className="text-white text-xs font-semibold">Vynfy SMS 2FA Security Active</span>
+            <div className="flex items-center gap-3 bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl px-4 py-2.5 w-max">
+              <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="text-white text-xs font-semibold">SMS 2FA Gateway Active</span>
             </div>
           </div>
         </div>
 
         <div>
-          <p className="text-[#9CA3AF] text-xs font-mono">
-            Protected by Bengid Administrative Shield
+          <p className="text-emerald-300/70 text-xs font-mono">
+            Protected by Bengid Administrative Shield • Ghana
           </p>
         </div>
       </div>
 
-      {/* Right Panel - Login Form */}
-      <div className="flex-1 flex flex-col justify-center px-6 sm:px-12 lg:px-24 bg-[#0B0F19]">
-        <div className="mx-auto w-full max-w-md bg-[#111827] p-8 sm:p-10 rounded-3xl border border-[#2D3748] shadow-2xl">
+      {/* Right Form Panel in Clean Light Mode */}
+      <div className="flex-1 flex flex-col justify-center px-6 sm:px-12 lg:px-24 bg-[#F9FAFB]">
+        <div className="mx-auto w-full max-w-md bg-white p-8 sm:p-10 rounded-3xl border border-gray-200 shadow-xl">
           <div className="mb-8">
-            <span className="text-[#86efac] text-xs font-mono font-bold uppercase tracking-widest block mb-2">
+            <span className="text-[#4B6F23] text-xs font-mono font-bold uppercase tracking-widest block mb-2">
               ADMINISTRATIVE ACCESS
             </span>
-            <h2 className="text-white font-black text-2xl sm:text-3xl mb-2">
+            <h2 className="text-gray-900 font-black text-2xl sm:text-3xl mb-2">
               Welcome Back
             </h2>
-            <p className="text-[#9CA3AF] text-xs sm:text-sm">
-              Enter your authorized credentials to access the control desk
+            <p className="text-gray-500 text-xs sm:text-sm">
+              Enter your credentials to access the Bengid Legacy control desk.
             </p>
           </div>
 
           {error && (
-            <div className="mb-6 p-4 bg-rose-950/60 border border-rose-500/40 text-rose-300 text-xs rounded-2xl">
+            <div className="mb-6 p-4 bg-rose-50 border border-rose-200 text-rose-700 text-xs rounded-2xl">
               {error}
             </div>
           )}
 
           <form onSubmit={handleLogin} className="space-y-5">
             <div>
-              <label className="block text-xs font-bold text-[#E5E7EB] mb-2">
-                Administrator Email
+              <label className="block text-xs font-bold text-gray-700 mb-1.5 uppercase tracking-wider">
+                Corporate Email Address
               </label>
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@bengidlegacyghltd.com"
-                className="w-full px-4 py-3 bg-[#0B0F19] rounded-xl border border-[#2D3748] focus:border-[#4B6F23] outline-none text-sm text-white placeholder-slate-500 transition-colors"
+                placeholder="admin@bengidlegacy.com"
+                className="w-full px-4 py-3 bg-[#F9FAFB] rounded-xl border border-gray-300 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#4B6F23] focus:ring-2 focus:ring-[#4B6F23]/20 transition-all"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-[#E5E7EB] mb-2">
+              <label className="block text-xs font-bold text-gray-700 mb-1.5 uppercase tracking-wider">
                 Password
               </label>
               <div className="relative">
@@ -136,12 +136,12 @@ export default function AdminLoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••••••"
-                  className="w-full pl-4 pr-12 py-3 bg-[#0B0F19] rounded-xl border border-[#2D3748] focus:border-[#4B6F23] outline-none text-sm text-white placeholder-slate-500 transition-colors"
+                  className="w-full px-4 py-3 bg-[#F9FAFB] rounded-xl border border-gray-300 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#4B6F23] focus:ring-2 focus:ring-[#4B6F23]/20 transition-all pr-12"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                 >
                   {showPassword ? <HiEyeSlash className="text-lg" /> : <HiEye className="text-lg" />}
                 </button>
@@ -151,15 +151,15 @@ export default function AdminLoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3.5 bg-[#4B6F23] hover:bg-[#556B2F] text-white rounded-full font-bold text-xs uppercase tracking-wider transition-all shadow-[0_6px_25px_rgba(75,111,35,0.4)] disabled:opacity-50 cursor-pointer"
+              className="w-full py-3.5 bg-[#4B6F23] hover:bg-[#3D5A1C] text-white rounded-full font-bold text-xs uppercase tracking-wider transition-all shadow-md hover:-translate-y-0.5 disabled:opacity-50 cursor-pointer"
             >
               {loading ? 'Authenticating...' : 'Sign In & Request OTP'}
             </button>
           </form>
 
-          <div className="mt-8 pt-6 border-t border-[#1F2937] text-center">
-            <span className="text-[11px] text-[#9CA3AF]">
-              Protected System • Bengid Legacy Ghana Limited
+          <div className="mt-8 pt-6 border-t border-gray-200 text-center">
+            <span className="text-xs text-gray-400 font-medium">
+              Kumasi Head Office Desk • Bengid Legacy Ghana Limited
             </span>
           </div>
         </div>

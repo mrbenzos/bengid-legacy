@@ -98,15 +98,12 @@ export default function LeadsPage() {
   const getDivisionBadge = (division: string) => {
     const d = (division || '').toLowerCase();
     if (d.includes('car') || d.includes('auto')) {
-      return 'bg-blue-500/20 text-blue-300 border-blue-500/40';
-    }
-    if (d.includes('print') || d.includes('mat')) {
-      return 'bg-[#4B6F23]/25 text-[#86efac] border-[#4B6F23]/50';
+      return 'bg-blue-50 text-blue-700 border-blue-200';
     }
     if (d.includes('import') || d.includes('contract')) {
-      return 'bg-amber-500/20 text-amber-300 border-amber-500/40';
+      return 'bg-purple-50 text-purple-700 border-purple-200';
     }
-    return 'bg-[#1F2937] text-[#9CA3AF] border-[#2D3748]';
+    return 'bg-emerald-50 text-[#4B6F23] border-emerald-200';
   };
 
   const cleanPhoneForWhatsApp = (phone: string) => {
@@ -118,20 +115,20 @@ export default function LeadsPage() {
   };
 
   return (
-    <div className="space-y-6 animate-fadeIn">
+    <div className="space-y-6 animate-fadeIn text-[#111827]">
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-            Customer Inquiries & Leads
+          <h1 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight">
+            Customer Inquiries &amp; Leads
           </h1>
-          <p className="text-xs sm:text-sm text-[#9CA3AF] mt-0.5">
+          <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
             Real-time inquiries from website visitors, direct calls, and quotation requests across Ghana.
           </p>
         </div>
 
         {/* Tab Filter Pills */}
-        <div className="flex items-center gap-2 bg-[#0B0F19] p-1.5 rounded-full border border-[#2D3748] shadow-inner overflow-x-auto max-w-full">
+        <div className="flex items-center gap-2 bg-white p-1.5 rounded-full border border-gray-200 shadow-sm overflow-x-auto max-w-full">
           {tabs.map((tab) => {
             const isActive = activeTab === tab;
             return (
@@ -140,8 +137,8 @@ export default function LeadsPage() {
                 onClick={() => setActiveTab(tab)}
                 className={`px-4 py-2 rounded-full text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${
                   isActive
-                    ? 'bg-[#4B6F23] text-white shadow-md'
-                    : 'text-[#9CA3AF] hover:text-white hover:bg-white/5'
+                    ? 'bg-[#4B6F23] text-white shadow-sm'
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                 }`}
               >
                 <span>{tab}</span>
@@ -153,16 +150,16 @@ export default function LeadsPage() {
 
       {/* Leads Content */}
       {loading ? (
-        <div className="bg-[#111827] rounded-3xl p-12 text-center text-[#9CA3AF] font-semibold text-sm border border-[#2D3748]">
+        <div className="bg-white rounded-3xl p-12 text-center text-gray-500 font-semibold text-sm border border-gray-200 shadow-sm">
           Loading inquiries...
         </div>
       ) : leads.length === 0 ? (
-        <div className="bg-[#111827] rounded-3xl p-12 text-center border border-[#2D3748]">
-          <div className="w-12 h-12 rounded-full bg-[#1F2937] text-[#9CA3AF] mx-auto flex items-center justify-center text-xl mb-3">
+        <div className="bg-white rounded-3xl p-12 text-center border border-gray-200 shadow-sm">
+          <div className="w-12 h-12 rounded-full bg-gray-100 text-gray-400 mx-auto flex items-center justify-center text-xl mb-3">
             <HiChatBubbleLeftEllipsis />
           </div>
-          <h3 className="font-bold text-white text-base">No inquiries found</h3>
-          <p className="text-xs text-[#9CA3AF] mt-1">There are no leads in the "{activeTab}" category yet.</p>
+          <h3 className="font-bold text-gray-900 text-base">No inquiries found</h3>
+          <p className="text-xs text-gray-500 mt-1">There are no leads in the "{activeTab}" category yet.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -182,20 +179,20 @@ export default function LeadsPage() {
             return (
               <div
                 key={lead.id}
-                className="bg-[#111827] rounded-3xl border border-[#2D3748] p-5 shadow-lg hover:border-[#4B6F23]/60 transition-all flex flex-col justify-between"
+                className="bg-white rounded-3xl border border-gray-200 p-5 shadow-sm hover:border-[#4B6F23]/60 transition-all flex flex-col justify-between"
               >
                 <div>
                   {/* Top Meta */}
                   <div className="flex items-start justify-between gap-3 mb-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-[#4B6F23]/20 text-[#86efac] font-black text-xs flex items-center justify-center border border-[#4B6F23]/40">
+                      <div className="w-10 h-10 rounded-full bg-emerald-50 text-[#4B6F23] font-black text-xs flex items-center justify-center border border-emerald-200">
                         {initials}
                       </div>
                       <div>
-                        <h3 className="font-black text-sm text-white leading-tight">
+                        <h3 className="font-black text-sm text-gray-900 leading-tight">
                           {lead.name}
                         </h3>
-                        <span className="text-[11px] text-[#9CA3AF] font-medium">
+                        <span className="text-[11px] text-gray-500 font-medium">
                           {lead.phone}
                         </span>
                       </div>
@@ -211,14 +208,14 @@ export default function LeadsPage() {
                   </div>
 
                   {/* Message box */}
-                  <div className="bg-[#0B0F19] border border-[#2D3748] rounded-2xl p-3.5 mb-4 text-xs text-[#E5E7EB] leading-relaxed">
+                  <div className="bg-gray-50 border border-gray-200 rounded-2xl p-3.5 mb-4 text-xs text-gray-700 leading-relaxed">
                     "{lead.message}"
                   </div>
                 </div>
 
                 {/* Footer and Actions */}
-                <div className="pt-3 border-t border-[#1F2937] flex items-center justify-between gap-2">
-                  <div className="flex items-center gap-1 text-[11px] text-[#9CA3AF] font-medium">
+                <div className="pt-3 border-t border-gray-200 flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-1 text-[11px] text-gray-400 font-medium">
                     <HiCalendar className="text-xs" />
                     <span>{formatDate(lead.created_at)}</span>
                   </div>
@@ -226,7 +223,7 @@ export default function LeadsPage() {
                   <div className="flex items-center gap-2">
                     <a
                       href={`tel:${lead.phone}`}
-                      className="p-2 rounded-full bg-[#1F2937] hover:bg-[#2D3748] text-white text-xs font-bold transition-all"
+                      className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold transition-all"
                       title="Call customer"
                     >
                       <HiPhone />

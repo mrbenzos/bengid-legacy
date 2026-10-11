@@ -39,14 +39,14 @@ export default function CookieBanner() {
       aria-live="polite"
       className="fixed bottom-0 left-0 right-0 z-[9999] animate-fadeInUp"
     >
-      <div className="bg-[#111827] border-t border-[#2D3748] shadow-2xl px-4 py-4 sm:py-5 text-white">
+      <div className="bg-white/95 backdrop-blur-xl border-t border-gray-200 shadow-[0_-8px_30px_rgba(0,0,0,0.08)] px-4 py-4 sm:py-5 text-gray-800">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-8">
           {/* Text */}
-          <div className="flex-1 text-sm text-[#E5E7EB] leading-relaxed">
-            <span className="text-white font-bold">🍪 Cookie Notice:</span> We use essential cookies to ensure our website operates smoothly and remembers your preferences. We do not use third-party advertising cookies.{' '}
+          <div className="flex-1 text-sm text-gray-600 leading-relaxed">
+            <span className="text-gray-900 font-bold">🍪 Cookie Notice:</span> We use essential cookies to ensure our website operates smoothly and remembers your preferences. We do not use third-party advertising cookies.{' '}
             <Link
               href="/cookies-policy"
-              className="text-[#10B981] underline hover:text-[#34D399] transition-colors font-medium ml-1"
+              className="text-[#4B6F23] underline hover:text-[#3D5A1C] transition-colors font-medium ml-1"
             >
               Learn more in Cookies Policy
             </Link>
@@ -56,15 +56,15 @@ export default function CookieBanner() {
           <div className="flex items-center gap-3 flex-shrink-0">
             <button
               onClick={handleDecline}
-              className="px-4 py-2 text-xs font-semibold text-[#9CA3AF] hover:text-white border border-[#374151] rounded-full transition-colors cursor-pointer"
+              className="px-4 py-2 text-xs font-semibold text-gray-600 hover:text-gray-900 border border-gray-300 rounded-full transition-colors cursor-pointer"
             >
               Essential Only
             </button>
             <button
               onClick={handleAccept}
-              className="px-5 py-2 text-xs font-bold bg-[#4B6F23] hover:bg-[#556B2F] text-white rounded-full transition-colors shadow-md cursor-pointer"
+              className="px-6 py-2 text-xs font-bold text-white bg-[#4B6F23] hover:bg-[#3D5A1C] rounded-full shadow-sm transition-all cursor-pointer"
             >
-              Accept All
+              Accept Cookies
             </button>
           </div>
         </div>

@@ -6,7 +6,7 @@ import Link from 'next/link';
 import CarCard from '@/components/ui/CarCard';
 import { Car } from '@/lib/types';
 import { INITIAL_CARS } from '@/lib/initialData';
-import { HiArrowRight, HiMagnifyingGlass, HiShieldCheck } from 'react-icons/hi2';
+import { HiArrowRight, HiMagnifyingGlass, HiShieldCheck, HiTruck } from 'react-icons/hi2';
 import { IoLogoWhatsapp } from 'react-icons/io5';
 
 const BRAND_FILTERS = [
@@ -73,45 +73,42 @@ export default function AutomobilesPage() {
   }, [cars, brandFilter, typeFilter, searchQuery]);
 
   return (
-    <div className="min-h-screen bg-[#0B0F19] text-white">
-      {/* 1. CINEMATIC HERO SECTION */}
-      <section className="relative w-full min-h-[85vh] flex flex-col justify-between overflow-hidden pt-28 pb-16 border-b border-[#1F2937]">
-        {/* Full-bleed background car image */}
+    <div className="min-h-screen bg-[#F9FAFB] text-[#111827]">
+      {/* 1. HERO SECTION WITH LIGHT OVERLAY */}
+      <section className="relative w-full pt-28 sm:pt-36 pb-16 overflow-hidden border-b border-gray-200">
         <div className="absolute inset-0 z-0">
           <Image
             src="/images/automobiles-hero.jpg"
             alt="BENGID LEGACY GHANA LIMITED Premium Car Sales"
             fill
-            className="object-cover object-center opacity-45 scale-105 transition-transform duration-1000"
+            className="object-cover object-center scale-105 transition-transform duration-1000"
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0B0F19] via-[#0B0F19]/80 to-[#0B0F19]/40" />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#0B0F19] via-[#0B0F19]/60 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-b from-white/40 via-white/80 to-[#F9FAFB]" />
         </div>
 
-        <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8 my-auto">
-          <div className="max-w-4xl">
-            {/* Note: Purged floating badge */}
-            <span className="text-xs font-mono font-bold text-[#86efac] uppercase tracking-widest block mb-3">
+        <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-4xl bg-white/90 backdrop-blur-md p-8 sm:p-12 rounded-[2.5rem] shadow-xl border border-gray-200/80 mb-10">
+            <span className="text-xs font-mono font-bold text-[#4B6F23] uppercase tracking-widest block mb-2">
               DIVISION 02 • CERTIFIED AUTOMOBILE SALES
             </span>
 
-            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black text-white mb-6 leading-tight tracking-tight drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)]">
-              PREMIUM AUTOMOBILES,<br />
-              <span className="text-[#4B6F23] drop-shadow-md">
-                VERIFIED DOCUMENTATION.
+            <h1 className="text-4xl sm:text-6xl font-black text-gray-900 mb-5 leading-tight tracking-tight">
+              Premium Automobiles,<br />
+              <span className="text-[#4B6F23]">
+                Verified Documentation.
               </span>
             </h1>
 
-            <p className="text-base sm:text-lg text-[#F3F4F6] max-w-2xl leading-relaxed font-normal mb-8 drop-shadow-[0_2px_8px_rgba(0,0,0,0.7)]">
-              Discover clean foreign-used sedans, executive SUVs, rugged pickups, and popular new-energy Chinese vehicles (BYD, Changan, Geely, Chery, Dongfeng) available for inspection at Santase Tech Station, Kumasi.
+            <p className="text-base sm:text-lg text-gray-700 max-w-2xl leading-relaxed font-normal mb-8">
+              Discover clean foreign-used sedans, executive SUVs, rugged pickups, and popular new-energy Chinese vehicles (BYD, Changan, Geely, Chery, Dongfeng) available for physical inspection at Santase Tech Station, Kumasi.
             </p>
 
             {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-col sm:flex-row gap-3.5">
               <a
                 href="#inventory"
-                className="px-8 py-4 bg-[#4B6F23] hover:bg-[#556B2F] text-white rounded-full font-bold text-sm tracking-wide transition-all shadow-[0_6px_25px_rgba(75,111,35,0.4)] flex items-center justify-center gap-2 border border-[#4B6F23]/60 hover:-translate-y-0.5"
+                className="px-8 py-3.5 bg-[#4B6F23] hover:bg-[#3D5A1C] text-white rounded-full font-bold text-sm tracking-wide transition-all shadow-[0_4px_16px_rgba(75,111,35,0.3)] flex items-center justify-center gap-2 hover:-translate-y-0.5"
               >
                 <span>Browse Vehicle Showroom</span>
                 <HiArrowRight className="text-sm" />
@@ -120,7 +117,7 @@ export default function AutomobilesPage() {
                 href="https://wa.me/233205761698?text=Hello%20BENGID%20LEGACY,%20I%20want%20to%20inquire%20about%20vehicles%20for%20sale."
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-8 py-4 bg-[#25D366] hover:bg-[#20ba59] text-white rounded-full font-bold text-sm tracking-wide transition-all shadow-lg flex items-center justify-center gap-2 hover:-translate-y-0.5"
+                className="px-8 py-3.5 bg-[#25D366] hover:bg-[#1ebe5d] text-white rounded-full font-bold text-sm tracking-wide transition-all shadow-md flex items-center justify-center gap-2 hover:-translate-y-0.5"
               >
                 <IoLogoWhatsapp className="text-lg" />
                 <span>Inquire on WhatsApp (0205761698)</span>
@@ -130,9 +127,9 @@ export default function AutomobilesPage() {
         </div>
 
         {/* Brand Highlights Bar */}
-        <div className="relative z-10 border-t border-[#1F2937] bg-[#111827]/80 backdrop-blur-xl py-4">
+        <div className="relative z-10 border-t border-gray-200 bg-white/80 backdrop-blur-md py-4">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
-            <span className="text-xs font-mono font-bold text-[#9CA3AF] uppercase tracking-widest flex-shrink-0">
+            <span className="text-xs font-mono font-bold text-gray-600 uppercase tracking-widest flex-shrink-0">
               POPULAR BRANDS IN STOCK
             </span>
             <div className="flex flex-wrap items-center gap-4 sm:gap-6">
@@ -140,7 +137,7 @@ export default function AutomobilesPage() {
                 <button
                   key={i}
                   onClick={() => setBrandFilter(b)}
-                  className="text-xs font-bold text-[#E5E7EB] hover:text-[#86efac] transition-colors cursor-pointer"
+                  className="text-xs font-bold text-gray-700 hover:text-[#4B6F23] transition-colors cursor-pointer"
                 >
                   {b}
                 </button>
@@ -151,75 +148,63 @@ export default function AutomobilesPage() {
       </section>
 
       {/* 2. VEHICLE INVENTORY & FILTER BAR */}
-      <section id="inventory" className="py-20 bg-[#0B0F19]">
+      <section id="inventory" className="py-20 bg-[#F9FAFB]">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           
           {/* Controls Bar */}
-          <div className="bg-[#111827] rounded-3xl p-6 sm:p-8 border border-[#2D3748] mb-12 shadow-2xl">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-gray-200 mb-12 shadow-sm">
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
               <div>
-                <h2 className="text-2xl sm:text-3xl font-black text-white">
-                  Automobile Showroom
+                <h2 className="text-2xl sm:text-3xl font-black text-gray-900">
+                  Automobile Inventory
                 </h2>
-                <p className="text-xs sm:text-sm text-[#9CA3AF] mt-1">
-                  Showing {filteredCars.length} vehicles available for inspection in Kumasi
+                <p className="text-xs sm:text-sm text-gray-500 mt-1">
+                  Showing {filteredCars.length} vehicles available for inspection at Kumasi showroom
                 </p>
               </div>
 
-              {/* Search & Type Select */}
-              <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
-                <div className="relative flex-grow sm:w-72">
-                  <HiMagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg" />
-                  <input
-                    type="text"
-                    placeholder="Search model, brand or SKU..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-12 pr-4 py-3 bg-[#0B0F19] rounded-full border border-[#2D3748] focus:border-[#4B6F23] text-sm text-white placeholder-slate-500 outline-none transition-all"
-                  />
-                </div>
-
-                <select
-                  value={typeFilter}
-                  onChange={(e) => setTypeFilter(e.target.value)}
-                  className="bg-[#0B0F19] text-white text-xs font-bold px-4 py-3 rounded-full border border-[#2D3748] focus:border-[#4B6F23] outline-none cursor-pointer"
-                >
-                  <option value="All">All Body Types</option>
-                  <option value="Salon">Sedan / Salon</option>
-                  <option value="SUV">SUV / 4WD</option>
-                  <option value="Pickup">Pickup Truck</option>
-                </select>
+              {/* Search input */}
+              <div className="relative w-full lg:w-96">
+                <HiMagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg" />
+                <input
+                  type="text"
+                  placeholder="Search model, brand, or SKU..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-12 pr-4 py-3 bg-gray-50 rounded-full border border-gray-300 focus:border-[#4B6F23] focus:bg-white text-sm text-gray-900 placeholder-gray-400 outline-none transition-all shadow-inner"
+                />
               </div>
             </div>
 
             {/* Brand Filter Pills */}
-            <div className="flex flex-wrap gap-2 mt-6 pt-6 border-t border-[#1F2937]">
-              {BRAND_FILTERS.map((brand) => (
+            <div className="flex flex-wrap gap-2 mt-6 pt-6 border-t border-gray-100">
+              {BRAND_FILTERS.map((b) => (
                 <button
-                  key={brand}
-                  onClick={() => setBrandFilter(brand)}
+                  key={b}
+                  onClick={() => setBrandFilter(b)}
                   className={`px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer ${
-                    brandFilter.toLowerCase() === brand.toLowerCase()
-                      ? 'bg-[#4B6F23] text-white shadow-md border border-[#4B6F23]'
-                      : 'bg-[#1F2937] text-[#9CA3AF] hover:text-white hover:bg-[#2D3748] border border-transparent'
+                    brandFilter.toLowerCase() === b.toLowerCase()
+                      ? 'bg-[#4B6F23] text-white shadow-sm border border-[#4B6F23]'
+                      : 'bg-gray-100 text-gray-700 hover:text-gray-950 hover:bg-gray-200 border border-transparent'
                   }`}
                 >
-                  {brand}
+                  {b}
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Vehicle Cards Grid */}
+          {/* Cards Grid */}
           {loading ? (
-            <div className="py-20 text-center text-[#9CA3AF] font-bold">Loading vehicles...</div>
+            <div className="py-20 text-center text-gray-500 font-bold">Loading automobile inventory...</div>
           ) : filteredCars.length === 0 ? (
-            <div className="py-20 text-center bg-[#111827] rounded-3xl border border-[#2D3748] p-12">
-              <h3 className="text-xl font-bold text-white mb-2">No vehicles found</h3>
-              <p className="text-sm text-[#9CA3AF] mb-6">No vehicles match your active search filters.</p>
+            <div className="py-20 text-center bg-white rounded-3xl border border-gray-200 p-12 shadow-sm">
+              <HiTruck className="text-5xl text-gray-400 mx-auto mb-4" />
+              <h3 className="text-xl font-bold text-gray-800 mb-2">No vehicles found</h3>
+              <p className="text-sm text-gray-500 mb-6">Try selecting "All" brands or clearing your search term.</p>
               <button
-                onClick={() => { setBrandFilter('All'); setTypeFilter('All'); setSearchQuery(''); }}
-                className="px-6 py-2.5 rounded-full bg-[#4B6F23] text-white text-xs font-bold"
+                onClick={() => { setBrandFilter('All'); setSearchQuery(''); }}
+                className="px-6 py-2.5 rounded-full bg-[#4B6F23] text-white text-xs font-bold cursor-pointer"
               >
                 Reset Filters
               </button>

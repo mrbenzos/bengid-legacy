@@ -20,8 +20,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark scroll-smooth">
-      <body className={`${inter.className} flex flex-col min-h-screen antialiased bg-[#0B0F19] text-[#FFFFFF] selection:bg-[#4B6F23] selection:text-white`}>
+    <html lang="en" className="scroll-smooth">
+      <body className={`${inter.className} flex flex-col min-h-screen antialiased bg-[#F9FAFB] text-[#111827] selection:bg-[#4B6F23] selection:text-white`}>
         <Navbar />
         <main className="flex-1">
           {children}
@@ -32,9 +32,10 @@ export default function RootLayout({
           position="top-right"
           toastOptions={{
             style: {
-              background: '#111827',
-              color: '#FFFFFF',
-              border: '1px solid #2D3748',
+              background: '#FFFFFF',
+              color: '#111827',
+              border: '1px solid #E5E7EB',
+              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
               fontSize: '13px',
               fontWeight: '600',
             },

@@ -85,7 +85,7 @@ export default function ReportsPage() {
   else periodText = `${customFrom} to ${customTo}`;
 
   return (
-    <div className="space-y-6 animate-fadeIn">
+    <div className="space-y-6 animate-fadeIn text-[#111827]">
       <Toaster position="top-right" />
       
       <style dangerouslySetInnerHTML={{ __html: `
@@ -120,21 +120,21 @@ export default function ReportsPage() {
 
       <div className="space-y-6">
         <div className="no-print">
-          <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-            Reports & Analytics
+          <h1 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight">
+            Reports &amp; Analytics
           </h1>
-          <p className="text-xs sm:text-sm text-[#9CA3AF] mt-0.5">
+          <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
             Generate and export consolidated business audit reports for printing materials inventory, automobile catalog, and customer leads.
           </p>
         </div>
 
         {/* Controls Card */}
-        <div className="bg-[#111827] rounded-3xl p-6 shadow-xl border border-[#2D3748] no-print">
+        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-200 no-print">
           <div className="flex flex-wrap gap-2 mb-6">
             <button 
               onClick={() => setReportType('monthly')}
               className={`px-4 py-2 rounded-full font-bold text-xs sm:text-sm transition-colors cursor-pointer ${
-                reportType === 'monthly' ? 'bg-[#4B6F23] text-white shadow-md' : 'bg-[#1F2937] text-[#9CA3AF] hover:text-white hover:bg-[#2D3748]'
+                reportType === 'monthly' ? 'bg-[#4B6F23] text-white shadow-sm' : 'bg-gray-100 text-gray-700 hover:text-gray-900 hover:bg-gray-200'
               }`}
             >
               Monthly Report
@@ -142,7 +142,7 @@ export default function ReportsPage() {
             <button 
               onClick={() => setReportType('annual')}
               className={`px-4 py-2 rounded-full font-bold text-xs sm:text-sm transition-colors cursor-pointer ${
-                reportType === 'annual' ? 'bg-[#4B6F23] text-white shadow-md' : 'bg-[#1F2937] text-[#9CA3AF] hover:text-white hover:bg-[#2D3748]'
+                reportType === 'annual' ? 'bg-[#4B6F23] text-white shadow-sm' : 'bg-gray-100 text-gray-700 hover:text-gray-900 hover:bg-gray-200'
               }`}
             >
               Annual Report
@@ -150,7 +150,7 @@ export default function ReportsPage() {
             <button 
               onClick={() => setReportType('custom')}
               className={`px-4 py-2 rounded-full font-bold text-xs sm:text-sm transition-colors cursor-pointer ${
-                reportType === 'custom' ? 'bg-[#4B6F23] text-white shadow-md' : 'bg-[#1F2937] text-[#9CA3AF] hover:text-white hover:bg-[#2D3748]'
+                reportType === 'custom' ? 'bg-[#4B6F23] text-white shadow-sm' : 'bg-gray-100 text-gray-700 hover:text-gray-900 hover:bg-gray-200'
               }`}
             >
               Custom Range
@@ -161,22 +161,22 @@ export default function ReportsPage() {
             {reportType === 'monthly' && (
               <>
                 <div>
-                  <label className="block text-xs font-bold text-[#9CA3AF] mb-1.5">Select Month</label>
+                  <label className="block text-xs font-bold text-gray-600 mb-1.5">Select Month</label>
                   <select 
                     value={selectedMonth} 
                     onChange={e => setSelectedMonth(Number(e.target.value))}
-                    className="border border-[#2D3748] rounded-xl px-4 py-2.5 bg-[#0B0F19] text-white focus:ring-2 focus:ring-[#4B6F23] outline-none text-sm"
+                    className="border border-gray-300 rounded-xl px-4 py-2.5 bg-[#F9FAFB] text-gray-900 focus:ring-2 focus:ring-[#4B6F23] outline-none text-sm"
                   >
                     {months.map(m => <option key={m.value} value={m.value}>{m.label}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-[#9CA3AF] mb-1.5">Year</label>
+                  <label className="block text-xs font-bold text-gray-600 mb-1.5">Year</label>
                   <input 
                     type="number" 
                     value={selectedYear} 
                     onChange={e => setSelectedYear(Number(e.target.value))}
-                    className="border border-[#2D3748] rounded-xl px-4 py-2.5 bg-[#0B0F19] text-white w-28 focus:ring-2 focus:ring-[#4B6F23] outline-none text-sm font-semibold"
+                    className="border border-gray-300 rounded-xl px-4 py-2.5 bg-[#F9FAFB] text-gray-900 w-28 focus:ring-2 focus:ring-[#4B6F23] outline-none text-sm font-semibold"
                   />
                 </div>
               </>
@@ -184,12 +184,12 @@ export default function ReportsPage() {
 
             {reportType === 'annual' && (
               <div>
-                <label className="block text-xs font-bold text-[#9CA3AF] mb-1.5">Select Year</label>
+                <label className="block text-xs font-bold text-gray-600 mb-1.5">Select Year</label>
                 <input 
                   type="number" 
                   value={selectedYear} 
                   onChange={e => setSelectedYear(Number(e.target.value))}
-                  className="border border-[#2D3748] rounded-xl px-4 py-2.5 bg-[#0B0F19] text-white w-32 focus:ring-2 focus:ring-[#4B6F23] outline-none text-sm font-semibold"
+                  className="border border-gray-300 rounded-xl px-4 py-2.5 bg-[#F9FAFB] text-gray-900 w-32 focus:ring-2 focus:ring-[#4B6F23] outline-none text-sm font-semibold"
                 />
               </div>
             )}
@@ -197,21 +197,21 @@ export default function ReportsPage() {
             {reportType === 'custom' && (
               <>
                 <div>
-                  <label className="block text-xs font-bold text-[#9CA3AF] mb-1.5">From Date</label>
+                  <label className="block text-xs font-bold text-gray-600 mb-1.5">From Date</label>
                   <input 
                     type="date" 
                     value={customFrom} 
                     onChange={e => setCustomFrom(e.target.value)}
-                    className="border border-[#2D3748] rounded-xl px-4 py-2 bg-[#0B0F19] text-white focus:ring-2 focus:ring-[#4B6F23] outline-none text-sm"
+                    className="border border-gray-300 rounded-xl px-4 py-2 bg-[#F9FAFB] text-gray-900 focus:ring-2 focus:ring-[#4B6F23] outline-none text-sm"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-[#9CA3AF] mb-1.5">To Date</label>
+                  <label className="block text-xs font-bold text-gray-600 mb-1.5">To Date</label>
                   <input 
                     type="date" 
                     value={customTo} 
                     onChange={e => setCustomTo(e.target.value)}
-                    className="border border-[#2D3748] rounded-xl px-4 py-2 bg-[#0B0F19] text-white focus:ring-2 focus:ring-[#4B6F23] outline-none text-sm"
+                    className="border border-gray-300 rounded-xl px-4 py-2 bg-[#F9FAFB] text-gray-900 focus:ring-2 focus:ring-[#4B6F23] outline-none text-sm"
                   />
                 </div>
               </>
@@ -220,7 +220,7 @@ export default function ReportsPage() {
             <button
               onClick={handleGenerate}
               disabled={generating}
-              className="bg-[#4B6F23] hover:bg-[#3D5A1C] text-white rounded-xl px-6 py-2.5 font-bold transition-colors flex items-center gap-2 disabled:opacity-70 cursor-pointer shadow-md text-sm"
+              className="bg-[#4B6F23] hover:bg-[#3D5A1C] text-white rounded-xl px-6 py-2.5 font-bold transition-colors flex items-center gap-2 disabled:opacity-70 cursor-pointer shadow-sm text-sm"
             >
               {generating ? (
                 <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div> Generating...</>
@@ -232,9 +232,9 @@ export default function ReportsPage() {
             {generated && (
               <button
                 onClick={handlePrint}
-                className="border border-[#2D3748] bg-[#1F2937] hover:bg-[#2D3748] text-white rounded-xl px-6 py-2.5 font-bold transition-colors flex items-center gap-2 cursor-pointer text-sm"
+                className="border border-gray-300 bg-white hover:bg-gray-50 text-gray-800 rounded-xl px-6 py-2.5 font-bold transition-colors flex items-center gap-2 cursor-pointer text-sm shadow-sm"
               >
-                <HiPrinter className="text-lg text-[#86efac]" /> Print / Export PDF
+                <HiPrinter className="text-lg text-[#4B6F23]" /> Print / Export PDF
               </button>
             )}
           </div>
@@ -242,42 +242,42 @@ export default function ReportsPage() {
 
         {/* Generated Report View */}
         {generated && reportData && (
-          <div id="printable-report" className="bg-[#111827] rounded-3xl p-8 shadow-xl border border-[#2D3748] text-white mt-8 animate-fadeIn">
-            <div className="text-center mb-10 pb-6 border-b border-[#2D3748]">
-              <span className="text-xs font-extrabold uppercase tracking-widest text-[#86efac] block mb-1">Santase Tech Station, Kumasi, Ghana</span>
-              <h1 className="text-2xl sm:text-3xl font-black text-[#86efac] mb-1">BENGID LEGACY GHANA LIMITED</h1>
-              <h2 className="text-lg sm:text-xl font-bold text-white mb-2">Official Business Report</h2>
-              <p className="text-[#9CA3AF] font-medium flex items-center justify-center gap-2 text-xs sm:text-sm">
+          <div id="printable-report" className="bg-white rounded-3xl p-8 shadow-sm border border-gray-200 text-gray-900 mt-8 animate-fadeIn">
+            <div className="text-center mb-10 pb-6 border-b border-gray-200">
+              <span className="text-xs font-extrabold uppercase tracking-widest text-[#4B6F23] block mb-1">Santase Tech Station, Kumasi, Ghana</span>
+              <h1 className="text-2xl sm:text-3xl font-black text-[#4B6F23] mb-1">BENGID LEGACY GHANA LIMITED</h1>
+              <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-2">Official Business Report</h2>
+              <p className="text-gray-600 font-medium flex items-center justify-center gap-2 text-xs sm:text-sm">
                 <HiCalendar /> Period: {periodText}
               </p>
-              <p className="text-xs text-[#9CA3AF] mt-2">Generated on: {new Date().toLocaleDateString('en-US', { timeZone: 'Africa/Accra', month: 'long', day: 'numeric', year: 'numeric' })}</p>
+              <p className="text-xs text-gray-400 mt-2">Generated on: {new Date().toLocaleDateString('en-US', { timeZone: 'Africa/Accra', month: 'long', day: 'numeric', year: 'numeric' })}</p>
             </div>
 
             {/* 1. Inventory Summary */}
             <div className="mb-10">
-              <h3 className="text-base sm:text-lg font-black text-white mb-4 bg-[#0B0F19] p-3 rounded-2xl border border-[#2D3748]">
+              <h3 className="text-base sm:text-lg font-black text-gray-900 mb-4 bg-gray-50 p-3 rounded-2xl border border-gray-200">
                 1. INVENTORY SUMMARY
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-2">
-                <div className="bg-[#0B0F19] p-5 rounded-2xl border border-[#2D3748]">
-                  <h4 className="font-bold text-[#86efac] mb-3 border-b border-[#2D3748] pb-2 text-sm uppercase tracking-wider">
+                <div className="bg-gray-50 p-5 rounded-2xl border border-gray-200">
+                  <h4 className="font-bold text-[#4B6F23] mb-3 border-b border-gray-200 pb-2 text-sm uppercase tracking-wider">
                     Printing Materials Division
                   </h4>
-                  <ul className="space-y-2.5 text-xs sm:text-sm text-[#D1D5DB]">
-                    <li className="flex justify-between"><span>Total Catalog Items:</span> <span className="font-bold text-white">{reportData.materials.total}</span></li>
-                    <li className="flex justify-between"><span>In Stock:</span> <span className="font-bold text-emerald-400">{reportData.materials.inStock}</span></li>
-                    <li className="flex justify-between"><span>Out of Stock:</span> <span className="font-bold text-rose-400">{reportData.materials.outOfStock}</span></li>
-                    <li className="flex justify-between pt-2.5 border-t border-[#1F2937] mt-2"><span>Total Catalog Value:</span> <span className="font-bold text-[#86efac]">GHS {reportData.materials.catalogValue.toLocaleString()}</span></li>
+                  <ul className="space-y-2.5 text-xs sm:text-sm text-gray-700">
+                    <li className="flex justify-between"><span>Total Catalog Items:</span> <span className="font-bold text-gray-900">{reportData.materials.total}</span></li>
+                    <li className="flex justify-between"><span>In Stock:</span> <span className="font-bold text-emerald-600">{reportData.materials.inStock}</span></li>
+                    <li className="flex justify-between"><span>Out of Stock:</span> <span className="font-bold text-rose-600">{reportData.materials.outOfStock}</span></li>
+                    <li className="flex justify-between pt-2.5 border-t border-gray-200 mt-2"><span>Total Catalog Value:</span> <span className="font-bold text-[#4B6F23]">GHS {reportData.materials.catalogValue.toLocaleString()}</span></li>
                   </ul>
                 </div>
-                <div className="bg-[#0B0F19] p-5 rounded-2xl border border-[#2D3748]">
-                  <h4 className="font-bold text-blue-300 mb-3 border-b border-[#2D3748] pb-2 text-sm uppercase tracking-wider">
+                <div className="bg-gray-50 p-5 rounded-2xl border border-gray-200">
+                  <h4 className="font-bold text-blue-700 mb-3 border-b border-gray-200 pb-2 text-sm uppercase tracking-wider">
                     Automobile Division
                   </h4>
-                  <ul className="space-y-2.5 text-xs sm:text-sm text-[#D1D5DB]">
-                    <li className="flex justify-between"><span>Total Fleet Vehicles:</span> <span className="font-bold text-white">{reportData.vehicles.total}</span></li>
-                    <li className="flex justify-between"><span>Available in Stock:</span> <span className="font-bold text-emerald-400">{reportData.vehicles.available}</span></li>
-                    <li className="flex justify-between"><span>Sold:</span> <span className="font-bold text-[#9CA3AF]">{reportData.vehicles.sold}</span></li>
+                  <ul className="space-y-2.5 text-xs sm:text-sm text-gray-700">
+                    <li className="flex justify-between"><span>Total Fleet Vehicles:</span> <span className="font-bold text-gray-900">{reportData.vehicles.total}</span></li>
+                    <li className="flex justify-between"><span>Available in Stock:</span> <span className="font-bold text-emerald-600">{reportData.vehicles.available}</span></li>
+                    <li className="flex justify-between"><span>Sold:</span> <span className="font-bold text-gray-500">{reportData.vehicles.sold}</span></li>
                   </ul>
                 </div>
               </div>
@@ -285,13 +285,13 @@ export default function ReportsPage() {
 
             {/* 2. Printing Materials Breakdown (Reordered 1st) */}
             <div className="mb-10">
-              <h3 className="text-base sm:text-lg font-black text-white mb-4 bg-[#0B0F19] p-3 rounded-2xl border border-[#2D3748]">
+              <h3 className="text-base sm:text-lg font-black text-gray-900 mb-4 bg-gray-50 p-3 rounded-2xl border border-gray-200">
                 2. PRINTING MATERIALS BREAKDOWN
               </h3>
               <div className="overflow-x-auto">
                 <table className="w-full text-xs sm:text-sm text-left border-collapse">
                   <thead>
-                    <tr className="bg-[#0B0F19] border-y border-[#2D3748] text-[#9CA3AF] uppercase text-[11px] tracking-wider">
+                    <tr className="bg-gray-50 border-y border-gray-200 text-gray-600 uppercase text-[11px] tracking-wider">
                       <th className="px-4 py-3 font-bold">Item Name</th>
                       <th className="px-4 py-3 font-bold">Category</th>
                       <th className="px-4 py-3 font-bold">Price (GHS)</th>
@@ -299,23 +299,23 @@ export default function ReportsPage() {
                       <th className="px-4 py-3 font-bold">Status</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#1F2937]">
+                  <tbody className="divide-y divide-gray-100">
                     {reportData.materialsList.length > 0 ? (
                       reportData.materialsList.map((mat: Material) => (
-                        <tr key={mat.id} className="hover:bg-white/5 transition-colors">
-                          <td className="px-4 py-3 font-semibold text-white">{mat.name}</td>
-                          <td className="px-4 py-3 text-[#D1D5DB]">{mat.category}</td>
-                          <td className="px-4 py-3 font-mono font-bold text-[#86efac]">{mat.price.toLocaleString()}</td>
-                          <td className="px-4 py-3 text-[#9CA3AF]">{mat.unit}</td>
+                        <tr key={mat.id} className="hover:bg-gray-50/70 transition-colors">
+                          <td className="px-4 py-3 font-semibold text-gray-900">{mat.name}</td>
+                          <td className="px-4 py-3 text-gray-700">{mat.category}</td>
+                          <td className="px-4 py-3 font-mono font-bold text-[#4B6F23]">{mat.price.toLocaleString()}</td>
+                          <td className="px-4 py-3 text-gray-500">{mat.unit}</td>
                           <td className="px-4 py-3">
-                            <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider ${mat.stock_status === 'in_stock' ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-300 border border-rose-500/30'}`}>
+                            <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider ${mat.stock_status === 'in_stock' ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-rose-50 text-rose-800 border border-rose-200'}`}>
                               {mat.stock_status.replace('_', ' ')}
                             </span>
                           </td>
                         </tr>
                       ))
                     ) : (
-                      <tr><td colSpan={5} className="px-4 py-4 text-center text-[#9CA3AF] italic">No printing materials found.</td></tr>
+                      <tr><td colSpan={5} className="px-4 py-4 text-center text-gray-400 italic">No printing materials found.</td></tr>
                     )}
                   </tbody>
                 </table>
@@ -324,13 +324,13 @@ export default function ReportsPage() {
 
             {/* 3. Vehicle Breakdown (Reordered 2nd) */}
             <div className="mb-10">
-              <h3 className="text-base sm:text-lg font-black text-white mb-4 bg-[#0B0F19] p-3 rounded-2xl border border-[#2D3748]">
+              <h3 className="text-base sm:text-lg font-black text-gray-900 mb-4 bg-gray-50 p-3 rounded-2xl border border-gray-200">
                 3. AUTOMOBILE INVENTORY BREAKDOWN
               </h3>
               <div className="overflow-x-auto">
                 <table className="w-full text-xs sm:text-sm text-left border-collapse">
                   <thead>
-                    <tr className="bg-[#0B0F19] border-y border-[#2D3748] text-[#9CA3AF] uppercase text-[11px] tracking-wider">
+                    <tr className="bg-gray-50 border-y border-gray-200 text-gray-600 uppercase text-[11px] tracking-wider">
                       <th className="px-4 py-3 font-bold">Vehicle Model</th>
                       <th className="px-4 py-3 font-bold">Type</th>
                       <th className="px-4 py-3 font-bold">Brand</th>
@@ -339,24 +339,24 @@ export default function ReportsPage() {
                       <th className="px-4 py-3 font-bold">Status</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#1F2937]">
+                  <tbody className="divide-y divide-gray-100">
                     {reportData.carsList.length > 0 ? (
                       reportData.carsList.map((car: Car) => (
-                        <tr key={car.id} className="hover:bg-white/5 transition-colors">
-                          <td className="px-4 py-3 font-semibold text-white">{car.model_name}</td>
-                          <td className="px-4 py-3 text-[#D1D5DB]">{car.vehicle_type || 'SUV / Sedan'}</td>
-                          <td className="px-4 py-3 text-[#D1D5DB]">{car.brand || '-'}</td>
-                          <td className="px-4 py-3 text-[#D1D5DB]">{car.year || '-'}</td>
-                          <td className="px-4 py-3 font-mono font-bold text-blue-300">{car.price ? car.price.toLocaleString() : 'Negotiable'}</td>
+                        <tr key={car.id} className="hover:bg-gray-50/70 transition-colors">
+                          <td className="px-4 py-3 font-semibold text-gray-900">{car.model_name}</td>
+                          <td className="px-4 py-3 text-gray-700">{car.vehicle_type || 'SUV / Sedan'}</td>
+                          <td className="px-4 py-3 text-gray-700">{car.brand || '-'}</td>
+                          <td className="px-4 py-3 text-gray-700">{car.year || '-'}</td>
+                          <td className="px-4 py-3 font-mono font-bold text-blue-700">{car.price ? car.price.toLocaleString() : 'Negotiable'}</td>
                           <td className="px-4 py-3">
-                            <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider ${car.status === 'available' ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-slate-700 text-[#9CA3AF]'}`}>
+                            <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider ${car.status === 'available' ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-gray-100 text-gray-600 border border-gray-200'}`}>
                               {car.status}
                             </span>
                           </td>
                         </tr>
                       ))
                     ) : (
-                      <tr><td colSpan={6} className="px-4 py-4 text-center text-[#9CA3AF] italic">No vehicles found.</td></tr>
+                      <tr><td colSpan={6} className="px-4 py-4 text-center text-gray-400 italic">No vehicles found.</td></tr>
                     )}
                   </tbody>
                 </table>
@@ -365,30 +365,30 @@ export default function ReportsPage() {
 
             {/* 4. Leads Summary */}
             <div className="mb-8">
-              <h3 className="text-base sm:text-lg font-black text-white mb-4 bg-[#0B0F19] p-3 rounded-2xl border border-[#2D3748]">
-                4. CUSTOMER INQUIRIES & LEADS SUMMARY
+              <h3 className="text-base sm:text-lg font-black text-gray-900 mb-4 bg-gray-50 p-3 rounded-2xl border border-gray-200">
+                4. CUSTOMER INQUIRIES &amp; LEADS SUMMARY
               </h3>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 px-2">
-                <div className="bg-[#0B0F19] p-4 rounded-2xl border border-[#2D3748]">
-                  <span className="block text-[11px] font-bold text-[#9CA3AF] uppercase tracking-wider">Total Inquiries</span>
-                  <span className="text-2xl font-black text-white mt-1 block">{reportData.leads.total}</span>
+                <div className="bg-gray-50 p-4 rounded-2xl border border-gray-200">
+                  <span className="block text-[11px] font-bold text-gray-500 uppercase tracking-wider">Total Inquiries</span>
+                  <span className="text-2xl font-black text-gray-900 mt-1 block">{reportData.leads.total}</span>
                 </div>
-                <div className="bg-[#0B0F19] p-4 rounded-2xl border border-[#2D3748]">
-                  <span className="block text-[11px] font-bold text-[#9CA3AF] uppercase tracking-wider">Printing Materials</span>
-                  <span className="text-2xl font-black text-[#86efac] mt-1 block">{reportData.leads.materials}</span>
+                <div className="bg-gray-50 p-4 rounded-2xl border border-gray-200">
+                  <span className="block text-[11px] font-bold text-gray-500 uppercase tracking-wider">Printing Materials</span>
+                  <span className="text-2xl font-black text-[#4B6F23] mt-1 block">{reportData.leads.materials}</span>
                 </div>
-                <div className="bg-[#0B0F19] p-4 rounded-2xl border border-[#2D3748]">
-                  <span className="block text-[11px] font-bold text-[#9CA3AF] uppercase tracking-wider">Automobiles</span>
-                  <span className="text-2xl font-black text-blue-300 mt-1 block">{reportData.leads.cars}</span>
+                <div className="bg-gray-50 p-4 rounded-2xl border border-gray-200">
+                  <span className="block text-[11px] font-bold text-gray-500 uppercase tracking-wider">Automobiles</span>
+                  <span className="text-2xl font-black text-blue-700 mt-1 block">{reportData.leads.cars}</span>
                 </div>
-                <div className="bg-[#0B0F19] p-4 rounded-2xl border border-[#2D3748]">
-                  <span className="block text-[11px] font-bold text-[#9CA3AF] uppercase tracking-wider">General Import</span>
-                  <span className="text-2xl font-black text-amber-300 mt-1 block">{reportData.leads.importations}</span>
+                <div className="bg-gray-50 p-4 rounded-2xl border border-gray-200">
+                  <span className="block text-[11px] font-bold text-gray-500 uppercase tracking-wider">General Import</span>
+                  <span className="text-2xl font-black text-amber-700 mt-1 block">{reportData.leads.importations}</span>
                 </div>
               </div>
             </div>
 
-            <div className="mt-12 pt-6 border-t border-[#2D3748] text-center text-xs text-[#9CA3AF] font-medium">
+            <div className="mt-12 pt-6 border-t border-gray-200 text-center text-xs text-gray-500 font-medium">
               This report was auto-generated by Bengid Legacy Admin System • Official Santase Tech Station, Kumasi, Ghana
             </div>
           </div>

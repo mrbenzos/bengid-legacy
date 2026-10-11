@@ -9,11 +9,7 @@ import {
   HiPlus,
   HiPencil,
   HiTrash,
-  HiXMark,
-  HiCheck,
-  HiPhoto,
   HiMagnifyingGlass,
-  HiChevronDown,
 } from 'react-icons/hi2';
 
 const DEFAULT_VEHICLE_TYPES = ['Salon', 'SUV / 4WD', 'Heavy Duty', 'Pickup', 'Mini Van', 'Bus / Coaster'];
@@ -107,7 +103,7 @@ export default function AdminCarsPage() {
         registration_type: car.registration_type || 'Private',
         status: car.status || 'available',
         accessories: car.accessories || [],
-        images: car.images || (car.image_url ? [{ label: 'Exterior', url: car.image_url }] : []),
+        images: car.images && car.images.length > 0 ? car.images : (car.image_url ? [{ label: 'Front', url: car.image_url }] : []),
         image_url: car.image_url || '',
       });
     } else {
@@ -137,9 +133,9 @@ export default function AdminCarsPage() {
         const res = await fetch(`/api/cars/${id}`, { method: 'DELETE' });
         if (res.ok) {
           fetchCars();
-          toast.success('Vehicle deleted successfully.');
+          toast.success('Vehicle listing deleted successfully.');
         } else {
-          toast.error('Delete failed.');
+          toast.error('Failed to delete vehicle.');
         }
       } catch (error) {
         toast.error('Delete failed. Please try again.');
@@ -150,7 +146,7 @@ export default function AdminCarsPage() {
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
-    const toastId = toast.loading(editingCar ? 'Updating vehicle...' : 'Adding vehicle...');
+    const toastId = toast.loading(editingCar ? 'Updating vehicle...' : 'Adding vehicle listing...');
 
     try {
       const payload = {
@@ -165,49 +161,44 @@ export default function AdminCarsPage() {
         body: JSON.stringify(payload),
       });
 
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err.error || 'Failed to save vehicle.');
-      }
+      if (!res.ok) throw new Error('Request failed');
 
-      await fetchCars();
-      toast.success(editingCar ? 'Vehicle updated!' : 'Vehicle created!', { id: toastId });
+      toast.success(editingCar ? 'Vehicle updated successfully!' : 'Vehicle added successfully!', { id: toastId });
       handleCloseModal();
+      fetchCars();
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Error saving vehicle.', { id: toastId });
+      toast.error('Failed to save vehicle listing.', { id: toastId });
     } finally {
       setSaving(false);
     }
   };
 
   const searchLower = (searchTerm || '').toLowerCase();
-  const filteredCars = cars.filter((c) => {
+  const filteredCars = cars.filter(c => {
     if (!searchTerm) return true;
-    return (
-      (c.model_name || '').toLowerCase().includes(searchLower) ||
-      (c.brand || '').toLowerCase().includes(searchLower) ||
-      (c.vehicle_type || '').toLowerCase().includes(searchLower)
-    );
+    return (c.model_name || '').toLowerCase().includes(searchLower) ||
+           (c.brand || '').toLowerCase().includes(searchLower) ||
+           (c.vehicle_type || '').toLowerCase().includes(searchLower);
   });
 
   return (
-    <div className="space-y-6 animate-fadeIn text-white">
-      <Toaster position="top-right" toastOptions={{ style: { background: '#111827', color: '#fff', border: '1px solid #2D3748' } }} />
+    <div className="space-y-6 animate-fadeIn text-[#111827]">
+      <Toaster position="top-right" />
 
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-            Automobile Inventory Management
+          <h1 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight">
+            Automobile Fleet &amp; Showroom
           </h1>
-          <p className="text-xs sm:text-sm text-[#9CA3AF] mt-0.5">
-            Manage showroom vehicles, luxury SUVs, Chinese EV models, and commercial trucks in Kumasi.
+          <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
+            Manage showroom listings, foreign-used imports, and brand-new electric Chinese vehicles.
           </p>
         </div>
 
         <button
           onClick={() => handleOpenModal()}
-          className="inline-flex items-center gap-2 bg-[#4B6F23] hover:bg-[#556B2F] text-white px-5 py-2.5 rounded-full font-bold text-xs sm:text-sm shadow-md transition-all cursor-pointer"
+          className="inline-flex items-center gap-2 bg-[#4B6F23] hover:bg-[#3D5A1C] text-white px-5 py-2.5 rounded-full font-bold text-xs sm:text-sm shadow-sm transition-all cursor-pointer"
         >
           <HiPlus className="text-base" />
           <span>Add Vehicle</span>
@@ -215,32 +206,32 @@ export default function AdminCarsPage() {
       </div>
 
       {/* Main Table Card */}
-      <div className="bg-[#111827] rounded-3xl border border-[#2D3748] shadow-2xl overflow-hidden">
+      <div className="bg-white rounded-3xl border border-gray-200 shadow-sm overflow-hidden">
         {/* Search Bar */}
-        <div className="p-4 sm:p-5 border-b border-[#1F2937] flex items-center justify-between gap-4">
+        <div className="p-4 sm:p-5 border-b border-gray-200 flex items-center justify-between gap-4">
           <div className="relative w-full max-w-md">
-            <HiMagnifyingGlass className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm" />
+            <HiMagnifyingGlass className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm" />
             <input
               type="text"
-              placeholder="Search vehicles by model, brand, or body type..."
+              placeholder="Search vehicles by model, brand, or type..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-[#0B0F19] text-sm text-white rounded-full border border-[#2D3748] focus:border-[#4B6F23] focus:outline-none transition-all placeholder-slate-500"
+              className="w-full pl-10 pr-4 py-2.5 bg-[#F9FAFB] text-sm text-gray-900 rounded-full border border-gray-300 focus:border-[#4B6F23] focus:outline-none transition-all placeholder-gray-400"
             />
           </div>
-          <span className="text-xs font-mono font-bold text-[#86efac] whitespace-nowrap">
+          <span className="text-xs font-mono font-bold text-[#4B6F23] whitespace-nowrap">
             {filteredCars.length} vehicles
           </span>
         </div>
 
         {loading ? (
-          <div className="p-12 text-center text-[#9CA3AF] font-semibold text-sm">Loading vehicles...</div>
+          <div className="p-12 text-center text-gray-500 font-semibold text-sm">Loading vehicles...</div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-[#0B0F19] border-b border-[#1F2937] text-[11px] font-bold text-[#9CA3AF] uppercase tracking-wider">
-                  <th className="px-6 py-4">Vehicle Model</th>
+                <tr className="bg-gray-50 border-b border-gray-200 text-[11px] font-bold text-gray-600 uppercase tracking-wider">
+                  <th className="px-6 py-4">Vehicle Details</th>
                   <th className="px-6 py-4">Brand</th>
                   <th className="px-6 py-4">Year</th>
                   <th className="px-6 py-4">Price (GHS)</th>
@@ -248,33 +239,33 @@ export default function AdminCarsPage() {
                   <th className="px-6 py-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#1F2937]">
+              <tbody className="divide-y divide-gray-100">
                 {filteredCars.map((car) => (
-                  <tr key={car.id} className="hover:bg-white/5 transition-colors">
+                  <tr key={car.id} className="hover:bg-gray-50/70 transition-colors">
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <p className="text-sm font-bold text-white">{car.model_name}</p>
-                      <p className="text-[11px] text-[#9CA3AF]">{car.vehicle_type} • {car.fuel_type}</p>
+                      <p className="text-sm font-bold text-gray-900">{car.model_name}</p>
+                      <p className="text-[11px] text-gray-500">{car.vehicle_type} • {car.fuel_type}</p>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-[#0B0F19] text-[#86efac] border border-[#2D3748]">
+                      <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-gray-100 text-[#4B6F23] border border-gray-200">
                         {car.brand || 'Custom'}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-white">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                       {car.year || 'N/A'}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="text-sm font-extrabold text-white">
+                      <span className="text-sm font-extrabold text-gray-900">
                         GHS {Number(car.price || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold ${
                         car.status === 'available'
-                          ? 'bg-emerald-950/80 text-emerald-300 border border-emerald-500/30'
-                          : 'bg-zinc-900/80 text-zinc-400 border border-zinc-700'
+                          ? 'bg-emerald-50 text-[#4B6F23] border border-emerald-200'
+                          : 'bg-gray-100 text-gray-600 border border-gray-200'
                       }`}>
-                        <span className={`w-1.5 h-1.5 rounded-full ${car.status === 'available' ? 'bg-emerald-400' : 'bg-zinc-500'}`} />
+                        <span className={`w-1.5 h-1.5 rounded-full ${car.status === 'available' ? 'bg-[#4B6F23]' : 'bg-gray-400'}`} />
                         {car.status === 'available' ? 'Available' : 'Sold'}
                       </span>
                     </td>
@@ -282,14 +273,14 @@ export default function AdminCarsPage() {
                       <div className="flex items-center justify-end gap-2">
                         <button
                           onClick={() => handleOpenModal(car)}
-                          className="p-2 rounded-xl bg-[#0B0F19] border border-[#2D3748] hover:border-[#4B6F23] text-white hover:text-[#86efac] transition-all"
+                          className="p-2 rounded-xl bg-gray-50 border border-gray-200 hover:border-[#4B6F23] text-gray-700 hover:text-[#4B6F23] transition-all"
                           title="Edit"
                         >
                           <HiPencil className="text-sm" />
                         </button>
                         <button
                           onClick={() => handleDelete(car.id)}
-                          className="p-2 rounded-xl bg-[#0B0F19] border border-[#2D3748] hover:border-rose-500 text-slate-400 hover:text-rose-400 transition-all"
+                          className="p-2 rounded-xl bg-gray-50 border border-gray-200 hover:border-rose-400 text-gray-400 hover:text-rose-600 transition-all"
                           title="Delete"
                         >
                           <HiTrash className="text-sm" />
@@ -304,13 +295,13 @@ export default function AdminCarsPage() {
         )}
       </div>
 
-      {/* Modal in Dark Theme */}
-      <Modal isOpen={showModal} onClose={handleCloseModal} title={editingCar ? 'Edit Vehicle Listing' : 'Add New Vehicle'}>
-        <form onSubmit={handleSave} className="space-y-6 text-white">
+      {/* Modal with Crisp Light Theme */}
+      <Modal open={showModal} onClose={handleCloseModal} title={editingCar ? 'Edit Vehicle Listing' : 'Add New Vehicle'}>
+        <form onSubmit={handleSave} className="space-y-6 text-gray-900 p-6 overflow-y-auto max-h-[75vh]">
           <div className="space-y-4">
             <div>
-              <label className="block text-xs font-bold text-[#E5E7EB] mb-1.5">
-                Model Name <span className="text-red-400">*</span>
+              <label className="block text-xs font-bold text-gray-700 mb-1.5">
+                Model Name <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -318,14 +309,14 @@ export default function AdminCarsPage() {
                 placeholder="e.g. BYD Seal EV Performance AWD / Toyota Yaris"
                 value={formData.model_name}
                 onChange={(e) => setFormData({ ...formData, model_name: e.target.value })}
-                className="w-full px-4 py-2.5 rounded-xl bg-[#0B0F19] border border-[#2D3748] text-sm text-white focus:outline-none focus:border-[#4B6F23]"
+                className="w-full px-4 py-2.5 rounded-xl bg-[#F9FAFB] border border-gray-300 text-sm text-gray-900 focus:outline-none focus:border-[#4B6F23]"
               />
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
-                <label className="block text-xs font-bold text-[#E5E7EB] mb-1.5">
-                  Brand <span className="text-red-400">*</span>
+                <label className="block text-xs font-bold text-gray-700 mb-1.5">
+                  Brand <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -333,18 +324,18 @@ export default function AdminCarsPage() {
                   placeholder="e.g. BYD / Changan / Toyota"
                   value={formData.brand}
                   onChange={(e) => setFormData({ ...formData, brand: e.target.value })}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#0B0F19] border border-[#2D3748] text-sm text-white focus:outline-none focus:border-[#4B6F23]"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#F9FAFB] border border-gray-300 text-sm text-gray-900 focus:outline-none focus:border-[#4B6F23]"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#E5E7EB] mb-1.5">
-                  Vehicle Type <span className="text-red-400">*</span>
+                <label className="block text-xs font-bold text-gray-700 mb-1.5">
+                  Vehicle Type <span className="text-red-500">*</span>
                 </label>
                 <select
                   value={formData.vehicle_type}
                   onChange={(e) => setFormData({ ...formData, vehicle_type: e.target.value })}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#0B0F19] border border-[#2D3748] text-sm text-white focus:outline-none focus:border-[#4B6F23] cursor-pointer"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#F9FAFB] border border-gray-300 text-sm text-gray-900 focus:outline-none focus:border-[#4B6F23] cursor-pointer"
                 >
                   {DEFAULT_VEHICLE_TYPES.map((t) => (
                     <option key={t} value={t}>{t}</option>
@@ -353,22 +344,22 @@ export default function AdminCarsPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#E5E7EB] mb-1.5">
+                <label className="block text-xs font-bold text-gray-700 mb-1.5">
                   Year
                 </label>
                 <input
                   type="number"
                   value={formData.year}
                   onChange={(e) => setFormData({ ...formData, year: parseInt(e.target.value) || new Date().getFullYear() })}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#0B0F19] border border-[#2D3748] text-sm text-white focus:outline-none focus:border-[#4B6F23]"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#F9FAFB] border border-gray-300 text-sm text-gray-900 focus:outline-none focus:border-[#4B6F23]"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
-                <label className="block text-xs font-bold text-[#E5E7EB] mb-1.5">
-                  Price (GHS) <span className="text-red-400">*</span>
+                <label className="block text-xs font-bold text-gray-700 mb-1.5">
+                  Price (GHS) <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="number"
@@ -377,18 +368,18 @@ export default function AdminCarsPage() {
                   placeholder="0.00"
                   value={formData.price}
                   onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) || 0 })}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#0B0F19] border border-[#2D3748] text-sm text-white focus:outline-none focus:border-[#4B6F23]"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#F9FAFB] border border-gray-300 text-sm text-gray-900 focus:outline-none focus:border-[#4B6F23]"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#E5E7EB] mb-1.5">
+                <label className="block text-xs font-bold text-gray-700 mb-1.5">
                   Fuel Type
                 </label>
                 <select
                   value={formData.fuel_type}
                   onChange={(e) => setFormData({ ...formData, fuel_type: e.target.value })}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#0B0F19] border border-[#2D3748] text-sm text-white focus:outline-none focus:border-[#4B6F23] cursor-pointer"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#F9FAFB] border border-gray-300 text-sm text-gray-900 focus:outline-none focus:border-[#4B6F23] cursor-pointer"
                 >
                   {FUEL_TYPES.map((f) => (
                     <option key={f} value={f}>{f}</option>
@@ -397,13 +388,13 @@ export default function AdminCarsPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#E5E7EB] mb-1.5">
+                <label className="block text-xs font-bold text-gray-700 mb-1.5">
                   Status
                 </label>
                 <select
                   value={formData.status}
                   onChange={(e) => setFormData({ ...formData, status: e.target.value as 'available' | 'sold' })}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#0B0F19] border border-[#2D3748] text-sm text-white focus:outline-none focus:border-[#4B6F23] cursor-pointer"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#F9FAFB] border border-gray-300 text-sm text-gray-900 focus:outline-none focus:border-[#4B6F23] cursor-pointer"
                 >
                   <option value="available">Available</option>
                   <option value="sold">Sold</option>
@@ -412,20 +403,20 @@ export default function AdminCarsPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-[#E5E7EB] mb-1.5">Vehicle Overview</label>
+              <label className="block text-xs font-bold text-gray-700 mb-1.5">Vehicle Overview</label>
               <textarea
                 rows={3}
                 placeholder="Overview of mechanical condition, transmission, customs papers..."
                 value={formData.overview}
                 onChange={(e) => setFormData({ ...formData, overview: e.target.value })}
-                className="w-full px-4 py-2.5 rounded-xl bg-[#0B0F19] border border-[#2D3748] text-sm text-white focus:outline-none focus:border-[#4B6F23] resize-none"
+                className="w-full px-4 py-2.5 rounded-xl bg-[#F9FAFB] border border-gray-300 text-sm text-gray-900 focus:outline-none focus:border-[#4B6F23] resize-none"
               ></textarea>
             </div>
 
             {/* Accessories Selection */}
             <div>
-              <label className="block text-xs font-bold text-[#E5E7EB] mb-2">Accessories &amp; Features</label>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-40 overflow-y-auto p-3 bg-[#0B0F19] rounded-2xl border border-[#2D3748]">
+              <label className="block text-xs font-bold text-gray-700 mb-2">Accessories &amp; Features</label>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-40 overflow-y-auto p-3 bg-gray-50 rounded-2xl border border-gray-200">
                 {DEFAULT_ACCESSORIES.map((acc) => {
                   const isChecked = formData.accessories.includes(acc);
                   return (
@@ -433,10 +424,10 @@ export default function AdminCarsPage() {
                       type="button"
                       key={acc}
                       onClick={() => toggleAccessory(acc)}
-                      className={`text-left text-xs px-2.5 py-1.5 rounded-lg border transition-colors flex items-center gap-1.5 ${
+                      className={`text-left text-xs px-2.5 py-1.5 rounded-lg border transition-colors flex items-center gap-1.5 cursor-pointer ${
                         isChecked
-                          ? 'bg-[#4B6F23] text-white border-[#86efac]'
-                          : 'bg-[#111827] text-[#9CA3AF] border-[#2D3748] hover:text-white'
+                          ? 'bg-[#4B6F23] text-white border-[#4B6F23]'
+                          : 'bg-white text-gray-700 border-gray-200 hover:border-gray-300'
                       }`}
                     >
                       <span className="text-[10px]">{isChecked ? '✓' : '+'}</span>
@@ -449,26 +440,26 @@ export default function AdminCarsPage() {
 
             {/* Vehicle Media Slots */}
             <div>
-              <label className="block text-xs font-bold text-[#E5E7EB] mb-2">Vehicle Image Photos</label>
+              <label className="block text-xs font-bold text-gray-700 mb-2">Vehicle Image Photos</label>
               <VehicleMediaSlots
-                media={formData.images}
+                images={formData.images}
                 onChange={(imgs) => setFormData({ ...formData, images: imgs })}
               />
             </div>
           </div>
 
-          <div className="flex items-center justify-end gap-3 pt-6 border-t border-[#1F2937]">
+          <div className="flex items-center justify-end gap-3 pt-6 border-t border-gray-200">
             <button
               type="button"
               onClick={handleCloseModal}
-              className="px-5 py-2.5 rounded-full text-xs font-bold text-[#9CA3AF] hover:text-white hover:bg-white/5 transition-all"
+              className="px-5 py-2.5 rounded-full text-xs font-bold text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-all cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={saving}
-              className="px-6 py-2.5 rounded-full bg-[#4B6F23] hover:bg-[#556B2F] text-white text-xs font-bold shadow-md transition-all disabled:opacity-50"
+              className="px-6 py-2.5 rounded-full bg-[#4B6F23] hover:bg-[#3D5A1C] text-white text-xs font-bold shadow-sm transition-all disabled:opacity-50 cursor-pointer"
             >
               {saving ? 'Saving...' : editingCar ? 'Update Vehicle' : 'Create Vehicle Listing'}
             </button>

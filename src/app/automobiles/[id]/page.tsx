@@ -23,19 +23,24 @@ export default function AutomobileDetailPage() {
     async function fetchCar() {
       try {
         const res = await fetch(`/api/cars/${id}`);
-        if (!res.ok) throw new Error('Not found');
-        const data: Car = await res.json();
-        setCar(data);
-
-        // Fetch similar cars
-        const resAll = await fetch('/api/cars');
-        if (resAll.ok) {
-          const allCars: Car[] = await resAll.json();
-          setSimilarCars(allCars.filter(c => c.id !== data.id).slice(0, 3));
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.id) {
+            setCar(data as Car);
+            setSimilarCars(INITIAL_CARS.filter(c => c.id !== data.id).slice(0, 3));
+            setLoading(false);
+            return;
+          }
+        }
+        const found = INITIAL_CARS.find(c => c.id === id);
+        if (found) {
+          setCar(found);
+          setSimilarCars(INITIAL_CARS.filter(c => c.id !== found.id).slice(0, 3));
+        } else {
+          setCar(null);
         }
       } catch (err) {
-        // Fallback to local catalog
-        const found = INITIAL_CARS.find(c => c.id === id || c.sku === id);
+        const found = INITIAL_CARS.find(c => c.id === id);
         if (found) {
           setCar(found);
           setSimilarCars(INITIAL_CARS.filter(c => c.id !== found.id).slice(0, 3));
@@ -51,11 +56,11 @@ export default function AutomobileDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0B0F19] p-6 md:p-12 animate-pulse pt-32">
-        <div className="h-6 w-48 bg-[#111827] rounded mb-8"></div>
-        <div className="grid lg:grid-cols-12 gap-8 max-w-7xl mx-auto">
-          <div className="lg:col-span-7 h-96 bg-[#111827] rounded-3xl"></div>
-          <div className="lg:col-span-5 h-96 bg-[#111827] rounded-3xl"></div>
+      <div className="min-h-screen bg-[#F9FAFB] p-6 md:p-12 animate-pulse pt-32">
+        <div className="h-6 w-48 bg-gray-200 rounded mb-8"></div>
+        <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+          <div className="h-96 bg-gray-200 rounded-3xl"></div>
+          <div className="h-96 bg-gray-200 rounded-3xl"></div>
         </div>
       </div>
     );
@@ -63,12 +68,13 @@ export default function AutomobileDetailPage() {
 
   if (!car) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-[#0B0F19] text-white px-4">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[#F9FAFB] text-gray-900 px-4">
+        <HiShieldCheck className="text-6xl text-[#4B6F23] mb-4" />
         <h1 className="text-3xl font-black mb-3">Vehicle Not Found</h1>
-        <p className="text-[#9CA3AF] mb-8 text-sm">The requested vehicle listing is unavailable or has been sold.</p>
+        <p className="text-gray-600 mb-8 text-sm">The requested automobile is not listed or has been sold.</p>
         <Link 
           href="/automobiles" 
-          className="px-6 py-3 rounded-full bg-[#4B6F23] hover:bg-[#556B2F] text-white font-bold flex items-center gap-2 transition-all shadow-lg text-sm"
+          className="px-6 py-3 rounded-full bg-[#4B6F23] hover:bg-[#3D5A1C] text-white font-bold flex items-center gap-2 transition-all shadow-md text-sm"
         >
           <HiArrowLeft /> ← Back to Automobile Showroom
         </Link>
@@ -79,12 +85,7 @@ export default function AutomobileDetailPage() {
   const sku = car.sku || `BGL-CAR-${car.id.slice(0, 4).toUpperCase()}`;
   // Exclusively hardcoded official WhatsApp line: 0205761698 (+233205761698)
   const whatsappNumber = '233205761698';
-  const formattedPrice =
-    car.price != null
-      ? `GHS ${Number(car.price).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-      : 'Negotiable';
-
-  const whatsappMsg = `Hello BENGID LEGACY,\n\nI am inquiring about vehicle ${car.model_name}${car.year ? ` (${car.year})` : ''} (Ref: ${sku}).\nPrice: ${formattedPrice}\n\nPlease advise on availability and arrange physical inspection at Santase Tech Station, Kumasi.`;
+  const whatsappMsg = `Hello BENGID LEGACY,\n\nI am inquiring about this vehicle:\n- Vehicle: ${car.model_name}${car.year ? ` (${car.year})` : ''}\n- Ref: ${sku}\n- Brand: ${car.brand || 'Automobile'}\n- Price: GHS ${car.price ? car.price.toLocaleString() : 'Negotiable'}\n\nPlease advise on vehicle inspection availability at Santase Tech Station, Kumasi.`;
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMsg)}`;
 
   const allImages: string[] = [];
@@ -103,22 +104,22 @@ export default function AutomobileDetailPage() {
   const isAvailable = car.status?.toLowerCase() === 'available';
 
   return (
-    <div className="min-h-screen bg-[#0B0F19] text-white pb-24">
+    <div className="min-h-screen bg-[#F9FAFB] text-[#111827] pb-24">
       <div className="max-w-7xl mx-auto px-4 md:px-8 pt-32">
         
         {/* Breadcrumb Navigation */}
         <Link 
           href="/automobiles" 
-          className="inline-flex items-center gap-2 text-[#9CA3AF] hover:text-white mb-8 font-semibold text-sm transition-colors"
+          className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-8 font-semibold text-sm transition-colors"
         >
           <HiArrowLeft /> ← Back to Automobile Showroom
         </Link>
         
         {/* TOP SECTION: Media Gallery & Vehicle Specifications */}
-        <div className="flex flex-col lg:flex-row gap-10 mb-20 bg-[#111827] rounded-3xl p-6 sm:p-10 border border-[#2D3748] shadow-2xl">
+        <div className="flex flex-col lg:flex-row gap-10 mb-20 bg-white rounded-3xl p-6 sm:p-10 border border-gray-200 shadow-md">
           {/* Left: Image Gallery */}
           <div className="w-full lg:w-3/5 flex flex-col">
-            <div className="relative w-full h-80 sm:h-[460px] rounded-2xl overflow-hidden bg-[#0B0F19] shadow-lg border border-[#2D3748] mb-4 group">
+            <div className="relative w-full h-80 sm:h-[460px] rounded-2xl overflow-hidden bg-gray-100 shadow-sm border border-gray-200 mb-4 group">
               <Image 
                 src={allImages[activeImageIdx] || allImages[0]} 
                 alt={car.model_name} 
@@ -154,7 +155,7 @@ export default function AutomobileDetailPage() {
                     key={idx} 
                     onClick={() => setActiveImageIdx(idx)}
                     className={`relative w-24 h-18 rounded-xl overflow-hidden border-2 flex-shrink-0 transition-all ${
-                      activeImageIdx === idx ? 'border-[#4B6F23] scale-105' : 'border-[#2D3748] opacity-60 hover:opacity-100'
+                      activeImageIdx === idx ? 'border-[#4B6F23] scale-105' : 'border-gray-200 opacity-70 hover:opacity-100'
                     }`}
                   >
                     <Image src={img} alt={`Thumbnail ${idx + 1}`} fill className="object-cover" />
@@ -171,80 +172,78 @@ export default function AutomobileDetailPage() {
               <div className="flex flex-wrap items-center gap-2 mb-4">
                 <span className={`px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider border ${
                   isAvailable 
-                    ? 'bg-emerald-950/80 text-emerald-300 border-emerald-500/40' 
-                    : 'bg-zinc-900/80 text-zinc-400 border-zinc-700'
+                    ? 'bg-emerald-50 text-emerald-800 border-emerald-200' 
+                    : 'bg-gray-100 text-gray-600 border-gray-300'
                 }`}>
                   {isAvailable ? '● Available' : '○ Sold'}
                 </span>
                 {car.brand && (
-                  <span className="px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-[#0B0F19] text-[#86efac] border border-[#2D3748]">
+                  <span className="px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-gray-100 text-gray-800 border border-gray-200">
                     {car.brand}
                   </span>
                 )}
-                {car.vehicle_type && (
-                  <span className="px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-[#0B0F19] text-[#9CA3AF] border border-[#2D3748]">
-                    {car.vehicle_type}
-                  </span>
-                )}
-                <span className="px-2.5 py-1 rounded text-xs font-mono font-bold text-[#9CA3AF] bg-[#0B0F19] border border-[#2D3748]">
+                <span className="px-2.5 py-1 rounded text-xs font-mono font-bold text-gray-600 bg-gray-50 border border-gray-200">
                   {sku}
                 </span>
               </div>
 
-              {/* Vehicle Title & Model */}
-              <h1 className="text-2xl sm:text-3xl font-black text-white leading-tight mb-4">
+              {/* Title */}
+              <h1 className="text-2xl sm:text-4xl font-black text-gray-900 leading-tight mb-2">
                 {car.model_name}
               </h1>
+              <p className="text-xs text-[#4B6F23] font-bold uppercase tracking-wider mb-6">
+                {car.vehicle_type || 'Vehicle'} • Year: {car.year || 'Certified'}
+              </p>
 
-              {/* Price Box */}
-              <div className="bg-[#0B0F19] p-5 rounded-2xl border border-[#2D3748] mb-6">
-                <span className="text-[11px] font-bold text-[#9CA3AF] uppercase tracking-wider block mb-1">
-                  Asking Price (Ghana Cedis)
+              {/* Pricing Box */}
+              <div className="bg-gray-50 p-5 rounded-2xl border border-gray-200 mb-6">
+                <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider block mb-1">
+                  Official Showroom Price (Ghana Cedis)
                 </span>
-                <span className="text-3xl sm:text-4xl font-black text-white">
-                  {formattedPrice}
+                <span className="text-3xl sm:text-4xl font-black text-gray-900 block">
+                  {car.price != null ? `GHS ${car.price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : 'Price on Request'}
                 </span>
               </div>
 
-              {/* Quick Specs Grid */}
-              <div className="grid grid-cols-2 gap-3 mb-6 bg-[#0B0F19] p-4 rounded-2xl border border-[#2D3748]">
-                <div>
-                  <span className="text-[10px] font-bold text-[#9CA3AF] uppercase block">Year</span>
-                  <span className="text-sm font-bold text-white">{car.year || 'N/A'}</span>
+              {/* Quick Specs 2-Col Grid */}
+              <div className="grid grid-cols-2 gap-3 mb-6">
+                <div className="bg-gray-50 p-3 rounded-xl border border-gray-200">
+                  <span className="text-[10px] text-gray-500 font-bold uppercase block">Color</span>
+                  <span className="text-xs font-bold text-gray-800">{car.color || 'Standard'}</span>
                 </div>
-                <div>
-                  <span className="text-[10px] font-bold text-[#9CA3AF] uppercase block">Fuel Type</span>
-                  <span className="text-sm font-bold text-white">{car.fuel_type || 'Petrol'}</span>
+                <div className="bg-gray-50 p-3 rounded-xl border border-gray-200">
+                  <span className="text-[10px] text-gray-500 font-bold uppercase block">Fuel Type</span>
+                  <span className="text-xs font-bold text-gray-800">{car.fuel_type || 'Petrol'}</span>
                 </div>
-                <div>
-                  <span className="text-[10px] font-bold text-[#9CA3AF] uppercase block">Color</span>
-                  <span className="text-sm font-bold text-white">{car.color || 'Standard'}</span>
+                <div className="bg-gray-50 p-3 rounded-xl border border-gray-200">
+                  <span className="text-[10px] text-gray-500 font-bold uppercase block">Seating</span>
+                  <span className="text-xs font-bold text-gray-800">{car.seating_capacity ? `${car.seating_capacity} Seats` : '5 Seats'}</span>
                 </div>
-                <div>
-                  <span className="text-[10px] font-bold text-[#9CA3AF] uppercase block">Seating</span>
-                  <span className="text-sm font-bold text-white">{car.seating_capacity ? `${car.seating_capacity} Seats` : '5 Seats'}</span>
+                <div className="bg-gray-50 p-3 rounded-xl border border-gray-200">
+                  <span className="text-[10px] text-gray-500 font-bold uppercase block">Registration</span>
+                  <span className="text-xs font-bold text-gray-800">{car.registration_type || 'Private Duty Paid'}</span>
                 </div>
               </div>
 
               {/* Overview */}
               {car.overview && (
                 <div className="mb-6">
-                  <h3 className="text-xs font-bold text-[#9CA3AF] uppercase tracking-wider mb-2">Vehicle Overview</h3>
-                  <p className="text-sm text-[#E5E7EB] leading-relaxed font-normal">
+                  <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Vehicle Overview</h3>
+                  <p className="text-sm text-gray-700 leading-relaxed font-normal">
                     {car.overview}
                   </p>
                 </div>
               )}
 
-              {/* Accessories / Features */}
+              {/* Accessories Checklist */}
               {car.accessories && car.accessories.length > 0 && (
-                <div className="mb-6">
-                  <h3 className="text-xs font-bold text-[#9CA3AF] uppercase tracking-wider mb-2.5">Key Accessories &amp; Features</h3>
+                <div className="mb-8">
+                  <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Key Features &amp; Accessories</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     {car.accessories.map((acc, i) => (
-                      <div key={i} className="flex items-center gap-2 text-xs text-[#E5E7EB] font-medium bg-[#0B0F19] px-3 py-1.5 rounded-xl border border-[#2D3748]">
-                        <HiCheckCircle className="text-[#86efac] text-sm flex-shrink-0" />
-                        <span className="truncate">{acc}</span>
+                      <div key={i} className="flex items-center gap-2 text-xs text-gray-800 font-medium bg-gray-50 px-3 py-2 rounded-xl border border-gray-200">
+                        <HiCheckCircle className="text-[#4B6F23] text-base flex-shrink-0" />
+                        <span>{acc}</span>
                       </div>
                     ))}
                   </div>
@@ -253,54 +252,63 @@ export default function AutomobileDetailPage() {
             </div>
 
             {/* Direct Action Buttons */}
-            <div className="space-y-3 pt-6 border-t border-[#1F2937]">
-              <a
-                href={whatsappUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full py-4 bg-[#25D366] hover:bg-[#20ba59] text-white rounded-full font-bold text-sm tracking-wide transition-all shadow-[0_6px_25px_rgba(37,211,102,0.35)] flex items-center justify-center gap-2"
-              >
-                <IoLogoWhatsapp className="text-xl" />
-                <span>Inquire on WhatsApp (0205761698)</span>
-              </a>
+            <div className="space-y-3 pt-6 border-t border-gray-100">
+              {isAvailable ? (
+                <a
+                  href={whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full py-4 bg-[#4B6F23] hover:bg-[#3D5A1C] text-white rounded-full font-bold text-sm tracking-wide transition-all shadow-md flex items-center justify-center gap-2"
+                >
+                  <IoLogoWhatsapp className="text-xl" />
+                  <span>Inquire on WhatsApp (0205761698)</span>
+                </a>
+              ) : (
+                <button
+                  disabled
+                  className="w-full py-4 bg-gray-100 text-gray-400 rounded-full font-bold text-sm flex items-center justify-center cursor-not-allowed border border-gray-200"
+                >
+                  Vehicle Marked as Sold
+                </button>
+              )}
 
               <div className="flex flex-col sm:flex-row gap-3">
                 <a
                   href="tel:0241749931"
-                  className="flex-1 py-3 bg-[#1F2937] hover:bg-[#2D3748] text-white rounded-full font-bold text-xs uppercase tracking-wider text-center transition-colors flex items-center justify-center gap-2 border border-[#2D3748]"
+                  className="flex-1 py-3 bg-white hover:bg-gray-50 text-gray-800 rounded-full font-bold text-xs uppercase tracking-wider text-center transition-colors flex items-center justify-center gap-2 border border-gray-300 shadow-xs"
                 >
                   <HiPhone className="text-sm text-[#4B6F23]" />
                   <span>Call: 0241749931</span>
                 </a>
                 <a
                   href="tel:0593132725"
-                  className="flex-1 py-3 bg-[#1F2937] hover:bg-[#2D3748] text-white rounded-full font-bold text-xs uppercase tracking-wider text-center transition-colors flex items-center justify-center gap-2 border border-[#2D3748]"
+                  className="flex-1 py-3 bg-white hover:bg-gray-50 text-gray-800 rounded-full font-bold text-xs uppercase tracking-wider text-center transition-colors flex items-center justify-center gap-2 border border-gray-300 shadow-xs"
                 >
                   <HiPhone className="text-sm text-[#4B6F23]" />
                   <span>Call: 0593132725</span>
                 </a>
               </div>
 
-              <div className="flex items-center justify-center gap-2 text-[11px] text-[#9CA3AF] pt-2">
+              <div className="flex items-center justify-center gap-2 text-[11px] text-gray-500 pt-2">
                 <HiMapPin className="text-[#4B6F23]" />
-                <span>Inspection Location: Santase Tech Station, Kumasi, Ghana</span>
+                <span>Showroom Location: Santase Tech Station, Kumasi, Ghana</span>
               </div>
             </div>
           </div>
         </div>
 
-        {/* SIMILAR AUTOMOBILES */}
+        {/* SIMILAR VEHICLES */}
         {similarCars.length > 0 && (
           <div>
             <div className="flex items-center justify-between mb-8">
-              <h2 className="text-2xl font-black text-white">Other Vehicles in Stock</h2>
-              <Link href="/automobiles" className="text-xs font-bold text-[#86efac] hover:underline">
-                View All Automobiles →
+              <h2 className="text-2xl font-black text-gray-900">Similar Vehicles In Showroom</h2>
+              <Link href="/automobiles" className="text-xs font-bold text-[#4B6F23] hover:underline">
+                View All Vehicles →
               </Link>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              {similarCars.map((sim) => (
-                <CarCard key={sim.id} car={sim} />
+              {similarCars.map((c) => (
+                <CarCard key={c.id} car={c} />
               ))}
             </div>
           </div>

@@ -59,53 +59,52 @@ export default function GeneralImportationsPage() {
   const whatsappUrl = `https://wa.me/233205761698?text=${whatsappMessage}`;
 
   return (
-    <div className="min-h-screen bg-[#0B0F19] text-white">
-      {/* 1. CINEMATIC HERO SECTION (Preserving exact layout and typography structure in dark palette) */}
-      <section className="relative w-full min-h-[90vh] flex flex-col justify-between overflow-hidden pt-28 pb-12 border-b border-[#1F2937]">
-        {/* Full-bleed background port image with dark overlays */}
+    <div className="min-h-screen bg-[#F9FAFB] text-[#111827]">
+      {/* 1. CINEMATIC HERO SECTION (Preserving exact layout and typography structure in light theme) */}
+      <section className="relative w-full pt-28 sm:pt-36 pb-12 overflow-hidden border-b border-gray-200">
+        {/* Full-bleed background port image with light overlays */}
         <div className="absolute inset-0 z-0">
           <Image
             src="/images/imports-hero.jpg"
             alt="BENGID LEGACY GHANA LIMITED Global Cargo Ship & Freight"
             fill
-            className="object-cover object-center opacity-40 scale-105 transition-transform duration-1000"
+            className="object-cover object-center scale-105 transition-transform duration-1000"
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0B0F19] via-[#0B0F19]/80 to-[#0B0F19]/40" />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#0B0F19] via-[#0B0F19]/60 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-b from-white/40 via-white/80 to-[#F9FAFB]" />
         </div>
 
-        <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8 my-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-end">
+        <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-end mb-12">
             
             {/* Left Column: Headline + Floating Stat Badge */}
             <div className="lg:col-span-8">
-              <span className="text-xs font-mono font-bold text-[#86efac] uppercase tracking-widest block mb-3">
+              <span className="text-xs font-mono font-bold text-[#4B6F23] uppercase tracking-widest block mb-2">
                 DIVISION 03 • INTERNATIONAL PROCUREMENT &amp; LOGISTICS
               </span>
 
-              <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black text-white mb-6 leading-tight tracking-tight drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)]">
+              <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black text-gray-900 mb-6 leading-tight tracking-tight">
                 GLOBAL IMPORTATION,<br />
-                <span className="text-[#4B6F23] drop-shadow-md">
+                <span className="text-[#4B6F23]">
                   SIMPLIFIED.
                 </span>
               </h1>
 
               {/* Floating Stat Badge */}
-              <div className="inline-flex items-center gap-4 p-4 rounded-2xl bg-[#111827]/90 border border-[#2D3748] backdrop-blur-md shadow-2xl max-w-md">
-                <div className="w-12 h-12 rounded-xl bg-[#4B6F23] flex items-center justify-center flex-shrink-0">
+              <div className="inline-flex items-center gap-4 p-4 rounded-2xl bg-white/95 border border-gray-200 backdrop-blur-md shadow-lg max-w-md">
+                <div className="w-12 h-12 rounded-xl bg-[#4B6F23] flex items-center justify-center flex-shrink-0 shadow-sm">
                   <FaShip className="text-white text-2xl" />
                 </div>
                 <div>
-                  <div className="text-lg font-black text-white tracking-tight">500+ Containers Cleared</div>
-                  <div className="text-xs text-[#9CA3AF] font-medium">Direct factory sourcing across Asia, Europe &amp; the Americas — delivered to Kumasi.</div>
+                  <div className="text-lg font-black text-gray-900 tracking-tight">500+ Containers Cleared</div>
+                  <div className="text-xs text-gray-600 font-medium">Direct factory sourcing across Asia, Europe &amp; the Americas — delivered to Kumasi.</div>
                 </div>
               </div>
             </div>
 
             {/* Right Column: Description + Dual Action Buttons */}
-            <div className="lg:col-span-4 space-y-6">
-              <p className="text-[#E5E7EB] text-sm sm:text-base leading-relaxed font-normal bg-[#111827]/80 p-6 rounded-2xl border border-[#2D3748] backdrop-blur-md">
+            <div className="lg:col-span-4 space-y-4">
+              <p className="text-gray-700 text-sm sm:text-base leading-relaxed font-normal bg-white/90 p-6 rounded-2xl border border-gray-200 backdrop-blur-md shadow-sm">
                 We connect Ghanaian commercial enterprises with verified global manufacturers, managing factory procurement, ocean freight, customs clearance at Tema Port, and inland haulage to Kumasi.
               </p>
 
@@ -115,7 +114,7 @@ export default function GeneralImportationsPage() {
                   href={whatsappUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex-1 px-6 py-4 bg-[#25D366] hover:bg-[#20ba59] text-white font-bold text-xs uppercase tracking-wider rounded-full flex items-center justify-center gap-2 transition-all shadow-[0_6px_25px_rgba(37,211,102,0.35)]"
+                  className="flex-1 px-6 py-3.5 bg-[#4B6F23] hover:bg-[#3D5A1C] text-white font-bold text-xs uppercase tracking-wider rounded-full flex items-center justify-center gap-2 transition-all shadow-md"
                 >
                   <IoLogoWhatsapp className="text-lg" /> 
                   <span>Ship Your Cargo</span>
@@ -123,7 +122,7 @@ export default function GeneralImportationsPage() {
                 </a>
                 <a
                   href="#quote-bar"
-                  className="px-6 py-4 bg-[#1F2937] hover:bg-[#2D3748] text-white border border-[#2D3748] shadow-sm font-bold text-xs uppercase tracking-wider rounded-full flex items-center justify-center transition-all backdrop-blur-sm"
+                  className="px-6 py-3.5 bg-white hover:bg-gray-50 text-gray-800 border border-gray-300 shadow-xs font-bold text-xs uppercase tracking-wider rounded-full flex items-center justify-center transition-all"
                 >
                   Get A Quote
                 </a>
@@ -134,14 +133,14 @@ export default function GeneralImportationsPage() {
         </div>
 
         {/* TRUSTED CLIENTS TICKER BAR AT BOTTOM OF HERO */}
-        <div className="relative z-10 border-t border-[#1F2937] bg-[#111827]/80 backdrop-blur-md py-4 mt-12">
+        <div className="relative z-10 border-t border-gray-200 bg-white/80 backdrop-blur-md py-4 mt-6">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
-            <span className="text-xs font-mono font-bold text-[#9CA3AF] uppercase tracking-widest flex-shrink-0">
+            <span className="text-xs font-mono font-bold text-gray-600 uppercase tracking-widest flex-shrink-0">
               TRUSTED FREIGHT LINES &amp; LOGISTICS PARTNERS
             </span>
-            <div className="flex flex-wrap items-center gap-6 md:gap-10 opacity-80">
+            <div className="flex flex-wrap items-center gap-6 md:gap-10">
               {TRUSTED_LOGOS.map((partner, idx) => (
-                <span key={idx} className="font-extrabold text-xs sm:text-sm tracking-widest text-[#E5E7EB] hover:text-white transition-colors">
+                <span key={idx} className="font-extrabold text-xs sm:text-sm tracking-widest text-gray-800 hover:text-[#4B6F23] transition-colors">
                   {partner}
                 </span>
               ))}
@@ -151,23 +150,23 @@ export default function GeneralImportationsPage() {
       </section>
 
       {/* 2. INSTANT SOURCING CALCULATOR / ESTIMATION SECTION */}
-      <section id="quote-bar" className="py-14 bg-[#0B0F19] border-b border-[#1F2937]">
+      <section id="quote-bar" className="py-14 bg-white border-b border-gray-200">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-[#111827] rounded-3xl p-6 sm:p-10 border border-[#2D3748] shadow-2xl">
-            <div className="text-xs font-mono font-bold text-[#86efac] uppercase tracking-widest mb-2">
+          <div className="bg-[#F9FAFB] rounded-3xl p-6 sm:p-10 border border-gray-200 shadow-sm">
+            <div className="text-xs font-mono font-bold text-[#4B6F23] uppercase tracking-widest mb-1">
               INSTANT CARGO SOURCING INQUIRY
             </div>
-            <h2 className="text-2xl sm:text-3xl font-black text-white mb-6">
+            <h2 className="text-2xl sm:text-3xl font-black text-gray-900 mb-6">
               Request Your Custom Importation Quote
             </h2>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="bg-[#0B0F19] p-4 rounded-2xl border border-[#2D3748]">
-                <label className="block text-xs font-semibold text-[#9CA3AF] mb-2">Category to Import</label>
+              <div className="bg-white p-4 rounded-2xl border border-gray-200">
+                <label className="block text-xs font-bold text-gray-600 mb-2">Category to Import</label>
                 <select
                   value={productCategory}
                   onChange={(e) => setProductCategory(e.target.value)}
-                  className="w-full bg-[#111827] text-white text-sm font-bold p-3 rounded-xl outline-none border border-[#2D3748] cursor-pointer"
+                  className="w-full bg-gray-50 text-gray-900 text-sm font-bold p-3 rounded-xl outline-none border border-gray-300 cursor-pointer focus:border-[#4B6F23]"
                 >
                   <option value="Industrial & Heavy Machinery">Industrial &amp; Heavy Machinery</option>
                   <option value="Commercial Electronics & IT">Commercial Electronics &amp; IT</option>
@@ -177,12 +176,12 @@ export default function GeneralImportationsPage() {
                 </select>
               </div>
 
-              <div className="bg-[#0B0F19] p-4 rounded-2xl border border-[#2D3748]">
-                <label className="block text-xs font-semibold text-[#9CA3AF] mb-2">Destination Depot in Ghana</label>
+              <div className="bg-white p-4 rounded-2xl border border-gray-200">
+                <label className="block text-xs font-bold text-gray-600 mb-2">Destination Depot in Ghana</label>
                 <select
                   value={targetDestination}
                   onChange={(e) => setTargetDestination(e.target.value)}
-                  className="w-full bg-[#111827] text-white text-sm font-bold p-3 rounded-xl outline-none border border-[#2D3748] cursor-pointer"
+                  className="w-full bg-gray-50 text-gray-900 text-sm font-bold p-3 rounded-xl outline-none border border-gray-300 cursor-pointer focus:border-[#4B6F23]"
                 >
                   <option value="Kumasi (Ashanti Region)">Kumasi — Santase Tech Station</option>
                   <option value="Accra (Greater Accra)">Accra Central &amp; Tema Depot</option>
@@ -197,7 +196,7 @@ export default function GeneralImportationsPage() {
                   href={whatsappUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full p-4 bg-[#4B6F23] hover:bg-[#556B2F] text-white font-bold text-xs uppercase tracking-wider rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg"
+                  className="w-full p-4 bg-[#4B6F23] hover:bg-[#3D5A1C] text-white font-bold text-xs uppercase tracking-wider rounded-xl flex items-center justify-center gap-2 transition-all shadow-md"
                 >
                   <IoLogoWhatsapp className="text-xl" /> Send Sourcing Inquiry (0205761698)
                 </a>
@@ -208,18 +207,18 @@ export default function GeneralImportationsPage() {
       </section>
 
       {/* 3. VISUAL CATEGORIES GRID WITH DYNAMIC PARAMETRIC ROUTING */}
-      <section className="py-20 bg-[#0B0F19] border-b border-[#1F2937]">
+      <section className="py-20 bg-[#F9FAFB] border-b border-gray-200">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
             <div>
-              <span className="text-xs font-mono font-bold text-[#4B6F23] uppercase tracking-widest block mb-2">
+              <span className="text-xs font-mono font-bold text-[#4B6F23] uppercase tracking-widest block mb-1">
                 PRODUCT SPECTRUM
               </span>
-              <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight uppercase">
+              <h2 className="text-3xl sm:text-4xl font-black text-gray-900 tracking-tight uppercase">
                 Importation Divisions
               </h2>
             </div>
-            <p className="text-[#9CA3AF] text-sm max-w-md mt-4 md:mt-0 font-normal">
+            <p className="text-gray-600 text-sm max-w-md mt-2 md:mt-0 font-normal">
               BENGID LEGACY GHANA LIMITED sources certified factory goods with guaranteed shipping schedules and complete customs handling.
             </p>
           </div>
@@ -229,33 +228,33 @@ export default function GeneralImportationsPage() {
               <Link
                 key={cat.id}
                 href={`/general-importations/${cat.id}`}
-                className="group relative h-[440px] w-full rounded-3xl overflow-hidden cursor-pointer border border-[#2D3748] hover:border-[#4B6F23] transition-all duration-500 shadow-xl flex flex-col justify-between p-6 bg-[#111827]"
+                className="group relative h-[440px] w-full rounded-3xl overflow-hidden cursor-pointer border border-gray-200 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between p-6 bg-white hover:-translate-y-1"
               >
                 <Image
                   src={cat.image}
                   alt={cat.name}
                   fill
-                  className="object-cover object-center group-hover:scale-110 transition-transform duration-700 opacity-50"
+                  className="object-cover object-center group-hover:scale-108 transition-transform duration-500"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0B0F19] via-[#0B0F19]/60 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/20" />
                 
                 <div className="relative z-10">
-                  <span className="text-[10px] font-mono font-bold text-[#86efac] uppercase tracking-widest bg-black/70 backdrop-blur-md px-2.5 py-1 rounded border border-white/10 inline-block mb-3">
+                  <span className="text-[10px] font-mono font-bold text-white uppercase tracking-widest bg-black/60 backdrop-blur-md px-2.5 py-1 rounded border border-white/20 inline-block mb-3">
                     CATEGORY 0{idx + 1}
                   </span>
-                  <h3 className="text-2xl font-bold text-white leading-tight group-hover:text-[#86efac] transition-colors">
+                  <h3 className="text-2xl font-bold text-white leading-tight group-hover:text-[#A3E635] transition-colors">
                     {cat.name}
                   </h3>
-                  <p className="text-xs text-[#E5E7EB] font-normal mt-2 line-clamp-3">
+                  <p className="text-xs text-gray-200 font-normal mt-2 line-clamp-3">
                     {cat.desc}
                   </p>
                 </div>
 
-                <div className="relative z-10 flex items-center justify-between border-t border-[#2D3748] pt-4 mt-auto">
-                  <span className="text-xs font-bold text-white uppercase tracking-wider group-hover:text-[#86efac] transition-colors">
+                <div className="relative z-10 flex items-center justify-between border-t border-white/20 pt-4 mt-auto">
+                  <span className="text-xs font-bold text-white uppercase tracking-wider group-hover:text-[#A3E635] transition-colors">
                     View Sourcing Specs
                   </span>
-                  <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur flex items-center justify-center group-hover:bg-[#4B6F23] transition-colors">
+                  <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-xs flex items-center justify-center group-hover:bg-[#4B6F23] transition-colors">
                     <HiArrowRight className="text-base text-white" />
                   </div>
                 </div>
@@ -266,47 +265,47 @@ export default function GeneralImportationsPage() {
       </section>
 
       {/* 4. VERIFIED LOGISTICS ROADMAP */}
-      <section className="py-20 bg-[#0B0F19]">
+      <section className="py-20 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <span className="text-xs font-mono font-bold text-[#4B6F23] uppercase tracking-widest block mb-2">
+            <span className="text-xs font-mono font-bold text-[#4B6F23] uppercase tracking-widest block mb-1">
               END-TO-END SUPPLY CHAIN
             </span>
-            <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight uppercase">
+            <h2 className="text-3xl sm:text-4xl font-black text-gray-900 tracking-tight uppercase">
               How We Deliver Cargo To Ghana
             </h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-[#111827] rounded-3xl p-8 border border-[#2D3748] relative shadow-lg">
-              <div className="w-14 h-14 rounded-2xl bg-[#4B6F23]/20 border border-[#4B6F23]/40 text-[#86efac] flex items-center justify-center text-3xl font-black mb-6">
+            <div className="bg-[#F9FAFB] rounded-3xl p-8 border border-gray-200 shadow-sm">
+              <div className="w-14 h-14 rounded-2xl bg-[#EAF4EC] border border-[#C8E6D0] text-[#4B6F23] flex items-center justify-center text-3xl font-black mb-6">
                 <HiGlobeAlt />
               </div>
-              <span className="text-xs font-mono font-bold text-[#9CA3AF] uppercase tracking-widest block mb-1">STAGE 01</span>
-              <h3 className="text-xl font-bold text-white mb-3">1. International Factory Procurement</h3>
-              <p className="text-[#9CA3AF] text-sm leading-relaxed font-normal">
+              <span className="text-xs font-mono font-bold text-[#4B6F23] uppercase tracking-widest block mb-1">STAGE 01</span>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">1. International Factory Procurement</h3>
+              <p className="text-gray-600 text-sm leading-relaxed font-normal">
                 Direct purchasing from verified manufacturers in China, Europe, and US with negotiated wholesale trade pricing and factory inspections.
               </p>
             </div>
 
-            <div className="bg-[#111827] rounded-3xl p-8 border border-[#2D3748] relative shadow-lg">
-              <div className="w-14 h-14 rounded-2xl bg-[#4B6F23]/20 border border-[#4B6F23]/40 text-[#86efac] flex items-center justify-center text-3xl font-black mb-6">
+            <div className="bg-[#F9FAFB] rounded-3xl p-8 border border-gray-200 shadow-sm">
+              <div className="w-14 h-14 rounded-2xl bg-[#EAF4EC] border border-[#C8E6D0] text-[#4B6F23] flex items-center justify-center text-3xl font-black mb-6">
                 <HiShieldCheck />
               </div>
-              <span className="text-xs font-mono font-bold text-[#9CA3AF] uppercase tracking-widest block mb-1">STAGE 02</span>
-              <h3 className="text-xl font-bold text-white mb-3">2. Pre-Shipment Inspection &amp; Freight</h3>
-              <p className="text-[#9CA3AF] text-sm leading-relaxed font-normal">
+              <span className="text-xs font-mono font-bold text-[#4B6F23] uppercase tracking-widest block mb-1">STAGE 02</span>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">2. Pre-Shipment Inspection &amp; Freight</h3>
+              <p className="text-gray-600 text-sm leading-relaxed font-normal">
                 Full quality verification before container loading, comprehensive marine cargo insurance, and ocean freight booking with top shipping lines.
               </p>
             </div>
 
-            <div className="bg-[#111827] rounded-3xl p-8 border border-[#2D3748] relative shadow-lg">
-              <div className="w-14 h-14 rounded-2xl bg-[#4B6F23]/20 border border-[#4B6F23]/40 text-[#86efac] flex items-center justify-center text-3xl font-black mb-6">
+            <div className="bg-[#F9FAFB] rounded-3xl p-8 border border-gray-200 shadow-sm">
+              <div className="w-14 h-14 rounded-2xl bg-[#EAF4EC] border border-[#C8E6D0] text-[#4B6F23] flex items-center justify-center text-3xl font-black mb-6">
                 <HiTruck />
               </div>
-              <span className="text-xs font-mono font-bold text-[#9CA3AF] uppercase tracking-widest block mb-1">STAGE 03</span>
-              <h3 className="text-xl font-bold text-white mb-3">3. Customs Clearance &amp; Inland Haulage</h3>
-              <p className="text-[#9CA3AF] text-sm leading-relaxed font-normal">
+              <span className="text-xs font-mono font-bold text-[#4B6F23] uppercase tracking-widest block mb-1">STAGE 03</span>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">3. Customs Clearance &amp; Inland Haulage</h3>
+              <p className="text-gray-600 text-sm leading-relaxed font-normal">
                 Seamless clearance at Tema Port / Kotoka Airport and direct transport to your warehouse in Kumasi or Accra with zero demurrage delays.
               </p>
             </div>
