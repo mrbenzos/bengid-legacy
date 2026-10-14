@@ -9,13 +9,46 @@ import MaterialCard from '@/components/ui/MaterialCard';
 import { Material } from '@/lib/types';
 import { INITIAL_MATERIALS } from '@/lib/initialData';
 
+const OFFICIAL_CATEGORIES = [
+  'Inks',
+  'Stationary',
+  'Photo Papers',
+  'Lamination Films',
+  'Hardwares',
+  'Delivery Service',
+];
+
 const CATEGORIES = [
-  { name: 'Photo Papers', image: 'https://images.unsplash.com/photo-1588696879815-585a21b3e7bc?q=80&w=800&auto=format&fit=crop', desc: 'High-Gloss & Matte Professional RC Photo Papers' },
-  { name: 'Lamination Films', image: 'https://images.unsplash.com/photo-1586075010923-2dd4570fb338?q=80&w=800&auto=format&fit=crop', desc: 'Thermal & Cold Protective Roll Laminates (Gloss/Matte)' },
-  { name: 'Inks & Toners', image: 'https://images.unsplash.com/photo-1525909002-1b05e0c869d8?q=80&w=800&auto=format&fit=crop', desc: 'Eco-Solvent, Sublimation & Pigment Printing Inks' },
-  { name: 'Flex & Banner Media', image: 'https://images.unsplash.com/photo-1621360841013-c76831f1dbce?q=80&w=800&auto=format&fit=crop', desc: 'Heavy-Duty 440gsm Frontlit & Backlit Billboard Flex' },
-  { name: 'Vinyl Stickers', image: 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?q=80&w=800&auto=format&fit=crop', desc: 'Self-Adhesive Polymeric & Monomeric Vinyl Rolls' },
-  { name: 'One-Way-Vision', image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=800&auto=format&fit=crop', desc: 'Micro-Perforated Architectural & Vehicle Window Film' },
+  { 
+    name: 'Inks', 
+    image: 'https://images.unsplash.com/photo-1525909002-1b05e0c869d8?q=80&w=800&auto=format&fit=crop', 
+    desc: 'Eco-Solvent, Sublimation, Pigment & Large Format Inks' 
+  },
+  { 
+    name: 'Stationary', 
+    image: 'https://images.unsplash.com/photo-1583485088034-697b5bc54ccd?q=80&w=800&auto=format&fit=crop', 
+    desc: 'Heavy-Duty Rotary Trimmers, Precision Cutters & Studio Supplies' 
+  },
+  { 
+    name: 'Photo Papers', 
+    image: 'https://images.unsplash.com/photo-1588696879815-585a21b3e7bc?q=80&w=800&auto=format&fit=crop', 
+    desc: 'High-Gloss & Matte Professional Resin-Coated Photo Papers' 
+  },
+  { 
+    name: 'Lamination Films', 
+    image: 'https://images.unsplash.com/photo-1586075010923-2dd4570fb338?q=80&w=800&auto=format&fit=crop', 
+    desc: 'Thermal & Cold Protective Laminate Roll Films (Gloss / Matte)' 
+  },
+  { 
+    name: 'Hardwares', 
+    image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?q=80&w=800&auto=format&fit=crop', 
+    desc: 'Heat Press Machines, Cutters, Plotters & Commercial Hardwares' 
+  },
+  { 
+    name: 'Delivery Service', 
+    image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=800&auto=format&fit=crop', 
+    desc: 'Express Doorstep Delivery & Freight Dispatch Across Ghana' 
+  },
 ];
 
 export default function PrintingMaterialsPage() {
@@ -49,8 +82,21 @@ export default function PrintingMaterialsPage() {
 
   const filteredMaterials = useMemo(() => {
     return materials.filter((mat) => {
-      const matchesCategory = activeCategory === 'All' || mat.category?.toLowerCase() === activeCategory.toLowerCase();
-      const matchesSearch = !searchQuery || mat.name.toLowerCase().includes(searchQuery.toLowerCase()) || (Boolean(mat.sku) && (mat.sku as string).toLowerCase().includes(searchQuery.toLowerCase()));
+      let matchesCategory = true;
+      if (activeCategory !== 'All') {
+        if (activeCategory === 'Other') {
+          // Dynamic category match: any product not belonging to the 6 official standard categories
+          matchesCategory = !OFFICIAL_CATEGORIES.some(
+            c => c.toLowerCase() === (mat.category || '').toLowerCase()
+          );
+        } else {
+          matchesCategory = (mat.category || '').toLowerCase() === activeCategory.toLowerCase();
+        }
+      }
+      const matchesSearch = !searchQuery || 
+        (mat.name || '').toLowerCase().includes(searchQuery.toLowerCase()) || 
+        (Boolean(mat.sku) && (mat.sku as string).toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (Boolean(mat.category) && (mat.category as string).toLowerCase().includes(searchQuery.toLowerCase()));
       return matchesCategory && matchesSearch;
     });
   }, [materials, activeCategory, searchQuery]);
@@ -118,10 +164,10 @@ export default function PrintingMaterialsPage() {
         <div className="relative z-10 border-t border-gray-200 bg-white/80 backdrop-blur-md py-4">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
             <span className="text-xs font-mono font-bold text-gray-600 uppercase tracking-widest flex-shrink-0">
-              FEATURED PRINTING MATERIAL CATEGORIES
+              OFFICIAL PRINTING MATERIAL CATEGORIES
             </span>
             <div className="flex flex-wrap items-center gap-4 sm:gap-6">
-              {['Photo Papers', 'Lamination Films', 'Inks & Toners', 'Flex Banners', 'Vinyl Stickers'].map((cat, idx) => (
+              {OFFICIAL_CATEGORIES.map((cat, idx) => (
                 <button
                   key={idx}
                   onClick={() => handleCategorySelect(cat)}
@@ -192,22 +238,46 @@ export default function PrintingMaterialsPage() {
                 </p>
               </div>
 
-              {/* Search input */}
-              <div className="relative w-full lg:w-96">
-                <HiMagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg" />
-                <input
-                  type="text"
-                  placeholder="Search printing materials by name or SKU..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3 bg-gray-50 rounded-full border border-gray-300 focus:border-[#4B6F23] focus:bg-white text-sm text-gray-900 placeholder-gray-400 outline-none transition-all shadow-inner"
-                />
+              {/* Search input & Category Dropdown Filter */}
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full lg:w-auto">
+                <div className="relative w-full sm:w-72 lg:w-80">
+                  <HiMagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg" />
+                  <input
+                    type="text"
+                    placeholder="Search printing materials by name or SKU..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full pl-12 pr-4 py-3 bg-gray-50 rounded-full border border-gray-300 focus:border-[#4B6F23] focus:bg-white text-sm text-gray-900 placeholder-gray-400 outline-none transition-all shadow-inner"
+                  />
+                </div>
+
+                {/* Frontend Category Dropdown Filter */}
+                <div className="relative sm:w-56">
+                  <select
+                    id="frontend-category-filter"
+                    aria-label="Filter by category"
+                    value={activeCategory}
+                    onChange={(e) => setActiveCategory(e.target.value)}
+                    className="w-full px-4 py-3 bg-gray-50 rounded-full border border-gray-300 focus:border-[#4B6F23] focus:bg-white text-xs sm:text-sm font-semibold text-gray-800 outline-none transition-all cursor-pointer shadow-inner appearance-none pr-10"
+                  >
+                    <option value="All">All Categories</option>
+                    {OFFICIAL_CATEGORIES.map((cat) => (
+                      <option key={cat} value={cat}>{cat}</option>
+                    ))}
+                    <option value="Other">Other (Custom)</option>
+                  </select>
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
+                    <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20">
+                      <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+                    </svg>
+                  </div>
+                </div>
               </div>
             </div>
 
             {/* Category Filter Pills */}
             <div className="flex flex-wrap gap-2 mt-6 pt-6 border-t border-gray-100">
-              {['All', 'Photo Papers', 'Lamination Films', 'Inks & Toners', 'Flex', 'Vinyl', 'One-Way-Vision'].map((cat) => (
+              {['All', ...OFFICIAL_CATEGORIES, 'Other'].map((cat) => (
                 <button
                   key={cat}
                   onClick={() => setActiveCategory(cat)}
@@ -217,7 +287,7 @@ export default function PrintingMaterialsPage() {
                       : 'bg-white hover:bg-gray-100 text-gray-700 hover:text-gray-950 border border-gray-200 shadow-2xs'
                   }`}
                 >
-                  {cat}
+                  {cat === 'Other' ? 'Other (Custom)' : cat}
                 </button>
               ))}
             </div>

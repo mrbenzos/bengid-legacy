@@ -2,10 +2,18 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- Materials table
+-- Official Categories:
+-- 1. Inks
+-- 2. Stationary
+-- 3. Photo Papers
+-- 4. Lamination Films
+-- 5. Hardwares
+-- 6. Delivery Service
+-- 7. Other (supports dynamic custom category string in category column)
 CREATE TABLE materials (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     name TEXT NOT NULL,
-    category TEXT NOT NULL,
+    category TEXT NOT NULL, -- Holds official category or dynamic custom category string
     price NUMERIC(10,2) NOT NULL,
     unit TEXT DEFAULT 'per roll',
     image_url TEXT,

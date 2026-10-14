@@ -1,8 +1,19 @@
+export const PRINTING_MATERIAL_CATEGORIES = [
+  'Inks',
+  'Stationary',
+  'Photo Papers',
+  'Lamination Films',
+  'Hardwares',
+  'Delivery Service',
+] as const;
+
+export type StandardPrintingCategory = typeof PRINTING_MATERIAL_CATEGORIES[number];
+
 export interface Material {
   id: string;
   sku: string | null;
   name: string;
-  category: string;
+  category: string; // Official category or dynamic custom category string
   brand: string | null;
   color: string | null;
   overview: string | null;

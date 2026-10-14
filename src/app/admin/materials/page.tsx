@@ -29,15 +29,12 @@ interface Material {
 }
 
 const DEFAULT_CATEGORIES = [
+  'Inks',
+  'Stationary',
   'Photo Papers',
   'Lamination Films',
-  'Inks & Toners',
-  'Flex',
-  'Vinyl',
-  'One-Way-Vision',
-  'Stationery & Cutters',
-  'Canvas',
-  'Tarpaulin',
+  'Hardwares',
+  'Delivery Service',
 ];
 
 const emptyForm = () => ({
@@ -57,6 +54,7 @@ const emptyForm = () => ({
 export default function AdminPrintingMaterialsPage() {
   const [materials, setMaterials] = useState<Material[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState('All');
   const [showModal, setShowModal] = useState(false);
   const [editingMaterial, setEditingMaterial] = useState<Material | null>(null);
   const [loading, setLoading] = useState(true);
@@ -87,10 +85,12 @@ export default function AdminPrintingMaterialsPage() {
   const handleOpenModal = (material: Material | null = null) => {
     if (material) {
       setEditingMaterial(material);
-      const isStandard = DEFAULT_CATEGORIES.some(c => c.toLowerCase() === (material.category || '').toLowerCase());
+      const matchedCategory = DEFAULT_CATEGORIES.find(
+        c => c.toLowerCase() === (material.category || '').toLowerCase()
+      );
       setFormData({
         name: material.name || '',
-        category: isStandard ? material.category : 'Other',
+        category: matchedCategory ? matchedCategory : 'Other',
         brand: material.brand || '',
         color: material.color || '',
         price: material.price || 0,
@@ -101,7 +101,7 @@ export default function AdminPrintingMaterialsPage() {
         images: (material.images && material.images.length > 0) ? material.images : (material.image_url ? [{ label: 'Main Media', url: material.image_url }] : []),
         image_url: material.image_url || '',
       });
-      setCustomCategory(isStandard ? '' : material.category);
+      setCustomCategory(matchedCategory ? '' : (material.category || ''));
     } else {
       setEditingMaterial(null);
       setFormData(emptyForm());
@@ -179,10 +179,21 @@ export default function AdminPrintingMaterialsPage() {
 
   const searchLower = (searchTerm || '').toLowerCase();
   const filteredMaterials = materials.filter(m => {
-    if (!searchTerm) return true;
-    return (m.name || '').toLowerCase().includes(searchLower) || 
-           (m.category || '').toLowerCase().includes(searchLower) ||
-           (m.brand || '').toLowerCase().includes(searchLower);
+    const matchesSearch = !searchTerm || 
+      (m.name || '').toLowerCase().includes(searchLower) || 
+      (m.category || '').toLowerCase().includes(searchLower) ||
+      (m.brand || '').toLowerCase().includes(searchLower);
+
+    let matchesCategory = true;
+    if (categoryFilter !== 'All') {
+      if (categoryFilter === 'Other') {
+        matchesCategory = !DEFAULT_CATEGORIES.some(c => c.toLowerCase() === (m.category || '').toLowerCase());
+      } else {
+        matchesCategory = (m.category || '').toLowerCase() === categoryFilter.toLowerCase();
+      }
+    }
+
+    return matchesSearch && matchesCategory;
   });
 
   return (
@@ -211,17 +222,32 @@ export default function AdminPrintingMaterialsPage() {
 
       {/* Main Table Card */}
       <div className="bg-white rounded-3xl border border-gray-200 shadow-sm overflow-hidden">
-        {/* Search Bar */}
-        <div className="p-4 sm:p-5 border-b border-gray-200 flex items-center justify-between gap-4">
-          <div className="relative w-full max-w-md">
-            <HiMagnifyingGlass className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm" />
-            <input
-              type="text"
-              placeholder="Search printing materials by name, category, or brand..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-[#F9FAFB] text-sm text-gray-900 rounded-full border border-gray-300 focus:border-[#4B6F23] focus:outline-none transition-all placeholder-gray-400"
-            />
+        {/* Search & Category Filter Bar */}
+        <div className="p-4 sm:p-5 border-b border-gray-200 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto flex-1 max-w-2xl">
+            <div className="relative flex-1">
+              <HiMagnifyingGlass className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm" />
+              <input
+                type="text"
+                placeholder="Search printing materials by name, category, or brand..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-2.5 bg-[#F9FAFB] text-sm text-gray-900 rounded-full border border-gray-300 focus:border-[#4B6F23] focus:outline-none transition-all placeholder-gray-400"
+              />
+            </div>
+
+            {/* Category Dropdown Filter */}
+            <select
+              value={categoryFilter}
+              onChange={(e) => setCategoryFilter(e.target.value)}
+              className="px-4 py-2.5 bg-[#F9FAFB] text-xs sm:text-sm font-semibold text-gray-800 rounded-full border border-gray-300 focus:border-[#4B6F23] focus:outline-none transition-all cursor-pointer"
+            >
+              <option value="All">All Categories</option>
+              {DEFAULT_CATEGORIES.map((c) => (
+                <option key={c} value={c}>{c}</option>
+              ))}
+              <option value="Other">Other (Custom)</option>
+            </select>
           </div>
           <span className="text-xs font-mono font-bold text-[#4B6F23] whitespace-nowrap">
             {filteredMaterials.length} printing materials
@@ -336,7 +362,13 @@ export default function AdminPrintingMaterialsPage() {
                 <select
                   required
                   value={formData.category}
-                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setFormData({ ...formData, category: val });
+                    if (val !== 'Other') {
+                      setCustomCategory('');
+                    }
+                  }}
                   className="w-full px-4 py-2.5 rounded-xl bg-[#F9FAFB] border border-gray-300 text-sm text-gray-900 focus:outline-none focus:border-[#4B6F23] cursor-pointer"
                 >
                   <option value="">Select a category</option>
@@ -345,25 +377,25 @@ export default function AdminPrintingMaterialsPage() {
                   ))}
                   <option value="Other">Other</option>
                 </select>
+
+                {/* DYNAMIC CATEGORY FIELD: Rendered directly underneath dropdown when "Other" is chosen */}
+                {formData.category === 'Other' && (
+                  <div className="animate-fadeIn mt-2.5 p-3.5 rounded-xl bg-emerald-50/80 border border-[#4B6F23]/40 shadow-xs">
+                    <label className="block text-xs font-bold text-[#4B6F23] mb-1.5">
+                      Custom Category Name <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="Enter custom category name (e.g. Backlit Film Media)"
+                      value={customCategory}
+                      onChange={(e) => setCustomCategory(e.target.value)}
+                      className="w-full px-3.5 py-2 rounded-lg bg-white border border-[#4B6F23] text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4B6F23]/20"
+                    />
+                  </div>
+                )}
               </div>
             </div>
-
-            {/* DYNAMIC CATEGORY FIELD: Rendered directly underneath select box when "Other" is chosen */}
-            {formData.category === 'Other' && (
-              <div className="animate-fadeIn p-4 rounded-2xl bg-emerald-50/70 border border-[#4B6F23]/30 shadow-sm">
-                <label className="block text-xs font-bold text-[#4B6F23] mb-1.5">
-                  Custom Category Name <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  required
-                  placeholder="Enter custom category name (e.g. Backlit Film Media)"
-                  value={customCategory}
-                  onChange={(e) => setCustomCategory(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-white border border-[#4B6F23] text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4B6F23]/20"
-                />
-              </div>
-            )}
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>

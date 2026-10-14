@@ -16,7 +16,7 @@ const THREE_DIVISIONS = [
     num: '01',
     title: 'Import & Supply of Printing Materials',
     tagline: 'Wholesale & Retail Consumables',
-    desc: 'Premium supply of Photo Papers, Thermal Lamination Films, Eco-Solvent Inks, Vinyl Stickers, and Printing Hardwares.',
+    desc: 'Premium supply of Inks, Stationary, Photo Papers, Lamination Films, Hardwares, and Delivery Service across Ghana.',
     href: '/materials',
     btnText: 'Explore Printing Materials',
     image: '/images/materials-hero.jpg',
@@ -220,7 +220,7 @@ export default function HomePage() {
               <span className="text-xs font-bold text-[#4B6F23] uppercase tracking-widest mb-1 block">Division 01 • Printing Materials</span>
               <h2 className="text-3xl sm:text-4xl font-black text-gray-900 tracking-tight">Wholesale Printing Consumables &amp; Supplies</h2>
               <p className="text-sm text-gray-600 mt-1 max-w-xl">
-                Premium grade RC Photo Papers, Thermal Lamination Roll Films, Eco-Solvent CMYK Inks, and Heavy-Duty PVC Flex Banners.
+                Premium grade Inks, Studio Stationary, RC Photo Papers, Thermal Lamination Films, and Printing Hardwares with reliable dispatch.
               </p>
             </div>
             <Link 
