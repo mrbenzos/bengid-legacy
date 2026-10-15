@@ -305,7 +305,17 @@ export default function ReportsPage() {
                         <tr key={mat.id} className="hover:bg-gray-50/70 transition-colors">
                           <td className="px-4 py-3 font-semibold text-gray-900">{mat.name}</td>
                           <td className="px-4 py-3 text-gray-700">{mat.category}</td>
-                          <td className="px-4 py-3 font-mono font-bold text-[#4B6F23]">{mat.price.toLocaleString()}</td>
+                          <td className="px-4 py-3 font-mono font-bold">
+                            {mat.priceOnRequest || mat.price_on_request ? (
+                              <span className="text-amber-800 bg-amber-50 px-2 py-0.5 rounded text-xs border border-amber-200">
+                                On Request
+                              </span>
+                            ) : (
+                              <span className="text-[#4B6F23]">
+                                GHS {mat.price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                              </span>
+                            )}
+                          </td>
                           <td className="px-4 py-3 text-gray-500">{mat.unit}</td>
                           <td className="px-4 py-3">
                             <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider ${mat.stock_status === 'in_stock' ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-rose-50 text-rose-800 border border-rose-200'}`}>

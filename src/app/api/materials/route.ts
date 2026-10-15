@@ -34,13 +34,19 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { name, category, brand, color, overview, features, images, price, unit, image_url, stock_status } = body;
+    const { name, category, brand, color, overview, features, images, price, unit, image_url, stock_status, priceOnRequest, price_on_request } = body;
 
-    if (!name || !category || price === undefined) {
-      return NextResponse.json({ error: 'Name, category, and price are required' }, { status: 400 });
+    const isPriceOnRequest = Boolean(priceOnRequest || price_on_request);
+
+    if (!name || !category) {
+      return NextResponse.json({ error: 'Name and category are required' }, { status: 400 });
     }
 
-    const numericPrice = Number(price);
+    if (!isPriceOnRequest && (price === undefined || price === null || isNaN(Number(price)))) {
+      return NextResponse.json({ error: 'Price is required when Contact for Price is disabled' }, { status: 400 });
+    }
+
+    const numericPrice = isPriceOnRequest ? (Number(price) || 0) : Number(price);
     const formattedUnit = unit || 'per roll';
     
     // Fix: Supabase check constraint requires 'in_stock' or 'out_of_stock'
@@ -59,7 +65,8 @@ export async function POST(request: Request) {
           .from('materials')
           .insert({ 
              name, category, brand, color, overview, features, images, 
-             price: numericPrice, unit: formattedUnit, image_url, stock_status: formattedStock 
+             price: numericPrice, price_on_request: isPriceOnRequest,
+             unit: formattedUnit, image_url, stock_status: formattedStock 
           })
           .select()
           .single();
@@ -83,6 +90,8 @@ export async function POST(request: Request) {
         features: features || [],
         images: images || [],
         price: numericPrice,
+        priceOnRequest: isPriceOnRequest,
+        price_on_request: isPriceOnRequest,
         unit: formattedUnit,
         image_url: image_url || null,
         stock_status: formattedStock,

@@ -85,7 +85,11 @@ export default function MaterialDetailPage() {
   const sku = material.sku || `BGL-MAT-${material.id.slice(0, 4).toUpperCase()}`;
   // Exclusively hardcoded official WhatsApp line: 0205761698 (+233205761698)
   const whatsappNumber = '233205761698';
-  const whatsappMsg = `Hello BENGID LEGACY,\n\nI am inquiring about the following Printing Material:\n- Product: ${material.name}\n- Ref: ${sku}\n- Category: ${material.category}\n- Price: GHS ${material.price.toFixed(2)} (${material.unit})\n\nPlease advise on stock availability at Santase Tech Station, Kumasi.`;
+  const isPriceOnRequest = Boolean(material.priceOnRequest || material.price_on_request);
+
+  const whatsappMsg = isPriceOnRequest
+    ? `Hello BENGID LEGACY,\n\nI am inquiring about the price for the following Printing Material:\n- Product: ${material.name}\n- Ref: ${sku}\n- Category: ${material.category}\n- Unit: ${material.unit}\n\nPlease advise on pricing and stock availability at Santase Tech Station, Kumasi.`
+    : `Hello BENGID LEGACY,\n\nI am inquiring about the following Printing Material:\n- Product: ${material.name}\n- Ref: ${sku}\n- Category: ${material.category}\n- Price: GHS ${material.price.toFixed(2)} (${material.unit})\n\nPlease advise on stock availability at Santase Tech Station, Kumasi.`;
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMsg)}`;
 
   const allImages: string[] = [];
@@ -196,19 +200,38 @@ export default function MaterialDetailPage() {
               )}
 
               {/* Pricing Box */}
-              <div className="bg-gray-50 p-5 rounded-2xl border border-gray-200 mb-6">
-                <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider block mb-1">
-                  Wholesale Price (Ghana Cedis)
-                </span>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-3xl sm:text-4xl font-black text-gray-900">
-                    GHS {material.price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              {isPriceOnRequest ? (
+                <div className="bg-amber-50/80 p-5 rounded-2xl border border-amber-200/90 mb-6 shadow-2xs">
+                  <span className="text-[11px] font-bold text-amber-800 uppercase tracking-wider block mb-1.5">
+                    Pricing Information
                   </span>
-                  <span className="text-sm font-semibold text-[#4B6F23]">
-                    / {material.unit}
-                  </span>
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div className="inline-flex items-center px-4 py-1.5 rounded-full text-base font-black bg-amber-100 text-amber-900 border border-amber-300 shadow-2xs">
+                      Contact for Price
+                    </div>
+                    <span className="text-xs font-semibold text-amber-800 bg-amber-100/60 px-3 py-1 rounded-lg border border-amber-200/80">
+                      Unit: {material.unit}
+                    </span>
+                  </div>
+                  <p className="text-xs text-amber-800/90 font-medium mt-2.5">
+                    Custom wholesale pricing available upon inquiry. Connect directly with our Kumasi team for current quotes.
+                  </p>
                 </div>
-              </div>
+              ) : (
+                <div className="bg-gray-50 p-5 rounded-2xl border border-gray-200 mb-6">
+                  <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider block mb-1">
+                    Wholesale Price (Ghana Cedis)
+                  </span>
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-3xl sm:text-4xl font-black text-gray-900">
+                      GHS {material.price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </span>
+                    <span className="text-sm font-semibold text-[#4B6F23]">
+                      / {material.unit}
+                    </span>
+                  </div>
+                </div>
+              )}
 
               {/* Overview */}
               {material.overview && (
@@ -242,10 +265,14 @@ export default function MaterialDetailPage() {
                 href={whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full py-4 bg-[#4B6F23] hover:bg-[#3D5A1C] text-white rounded-full font-bold text-sm tracking-wide transition-all shadow-md flex items-center justify-center gap-2"
+                className="w-full py-4 bg-[#4B6F23] hover:bg-[#3D5A1C] text-white rounded-full font-bold text-sm tracking-wide transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
               >
                 <IoLogoWhatsapp className="text-xl" />
-                <span>Order via WhatsApp (0205761698)</span>
+                <span>
+                  {isPriceOnRequest
+                    ? 'Contact for Price via WhatsApp (0205761698)'
+                    : 'Order via WhatsApp (0205761698)'}
+                </span>
               </a>
 
               <div className="flex flex-col sm:flex-row gap-3">

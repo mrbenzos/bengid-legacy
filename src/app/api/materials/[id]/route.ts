@@ -37,6 +37,15 @@ export async function PUT(request: Request, { params }: { params: { id: string }
   try {
     const id = params.id;
     const body = await request.json();
+
+    if (body.priceOnRequest !== undefined) {
+      body.price_on_request = Boolean(body.priceOnRequest);
+      body.priceOnRequest = Boolean(body.priceOnRequest);
+    } else if (body.price_on_request !== undefined) {
+      body.priceOnRequest = Boolean(body.price_on_request);
+      body.price_on_request = Boolean(body.price_on_request);
+    }
+
     const isPlaceholderSupabase = !process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL.includes('placeholder');
 
     let existingMaterial = null;
@@ -48,7 +57,9 @@ export async function PUT(request: Request, { params }: { params: { id: string }
         const { data } = await supabase.from('materials').select('*').eq('id', id).single();
         if (data) {
           existingMaterial = data;
-          const { data: updated } = await supabase.from('materials').update(body).eq('id', id).select().single();
+          const supabaseData = { ...body };
+          delete supabaseData.priceOnRequest;
+          const { data: updated } = await supabase.from('materials').update(supabaseData).eq('id', id).select().single();
           if (updated) updatedMaterial = updated;
         }
       } catch (err) {

@@ -37,11 +37,16 @@ export default function MaterialCard({ material }: MaterialCardProps) {
   const displayImage = material.image_url || CATEGORY_DEFAULT_IMAGES[material.category] || DEFAULT_IMAGE;
   const sku = material.sku || `BGL-MAT-${material.id.slice(0, 4).toUpperCase()}`;
 
-  const totalPrice = material.price * qty;
+  const isPriceOnRequest = Boolean(material.priceOnRequest || material.price_on_request);
+  const totalPrice = (material.price || 0) * qty;
 
-  const message = encodeURIComponent(
-    `Hello BENGID LEGACY,\n\nI would like to order the following Printing Material:\n- Product: ${material.name}\n- Ref: ${sku}\n- Quantity: ${qty} ${material.unit}\n- Total: GHS ${totalPrice.toFixed(2)}\n\nPlease confirm availability and delivery.`
-  );
+  const message = isPriceOnRequest
+    ? encodeURIComponent(
+        `Hello BENGID LEGACY,\n\nI am inquiring about the price for the following Printing Material:\n- Product: ${material.name}\n- Ref: ${sku}\n- Category: ${material.category}\n- Unit: ${material.unit}\n\nPlease provide your latest price quote and availability.`
+      )
+    : encodeURIComponent(
+        `Hello BENGID LEGACY,\n\nI would like to order the following Printing Material:\n- Product: ${material.name}\n- Ref: ${sku}\n- Quantity: ${qty} ${material.unit}\n- Total: GHS ${totalPrice.toFixed(2)}\n\nPlease confirm availability and delivery.`
+      );
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${message}`;
 
   return (
@@ -121,37 +126,51 @@ export default function MaterialCard({ material }: MaterialCardProps) {
 
         <div className="pt-4 border-t border-gray-100 mt-2">
           {/* Price & Quantity Selector */}
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <span className="text-[10px] uppercase font-bold text-gray-500 tracking-wider block">Ghana Cedis</span>
-              <div className="text-xl font-black text-gray-900 leading-none">
-                GHS {material.price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          {isPriceOnRequest ? (
+            <div className="flex items-center justify-between mb-4 py-1">
+              <div>
+                <span className="text-[10px] uppercase font-bold text-amber-700 tracking-wider block">Price</span>
+                <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-black bg-amber-50 text-amber-900 border border-amber-300 shadow-2xs">
+                  Contact for Price
+                </span>
+              </div>
+              <span className="text-[11px] font-semibold text-gray-400 italic">
+                Quote on Request
+              </span>
+            </div>
+          ) : (
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <span className="text-[10px] uppercase font-bold text-gray-500 tracking-wider block">Ghana Cedis</span>
+                <div className="text-xl font-black text-gray-900 leading-none">
+                  GHS {material.price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                </div>
+              </div>
+
+              {/* Quantity Stepper */}
+              <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden bg-gray-50">
+                <button
+                  type="button"
+                  onClick={() => setQty(Math.max(1, qty - 1))}
+                  className="w-7 h-7 flex items-center justify-center text-gray-600 hover:bg-gray-200 transition-colors font-bold text-xs"
+                  aria-label="Decrease quantity"
+                >
+                  -
+                </button>
+                <span className="w-8 text-center text-xs font-bold text-gray-800">
+                  {qty}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setQty(qty + 1)}
+                  className="w-7 h-7 flex items-center justify-center text-gray-600 hover:bg-gray-200 transition-colors font-bold text-xs"
+                  aria-label="Increase quantity"
+                >
+                  +
+                </button>
               </div>
             </div>
-
-            {/* Quantity Stepper */}
-            <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden bg-gray-50">
-              <button
-                type="button"
-                onClick={() => setQty(Math.max(1, qty - 1))}
-                className="w-7 h-7 flex items-center justify-center text-gray-600 hover:bg-gray-200 transition-colors font-bold text-xs"
-                aria-label="Decrease quantity"
-              >
-                -
-              </button>
-              <span className="w-8 text-center text-xs font-bold text-gray-800">
-                {qty}
-              </span>
-              <button
-                type="button"
-                onClick={() => setQty(qty + 1)}
-                className="w-7 h-7 flex items-center justify-center text-gray-600 hover:bg-gray-200 transition-colors font-bold text-xs"
-                aria-label="Increase quantity"
-              >
-                +
-              </button>
-            </div>
-          </div>
+          )}
 
           {/* Action Buttons */}
           <div className="space-y-2">
@@ -162,7 +181,11 @@ export default function MaterialCard({ material }: MaterialCardProps) {
               className="w-full bg-[#4B6F23] hover:bg-[#3D5A1C] text-white py-2.5 px-4 rounded-xl font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all hover:-translate-y-0.5 cursor-pointer"
             >
               <IoLogoWhatsapp className="text-base text-white" />
-              <span>Order via WhatsApp (GHS {totalPrice.toFixed(2)})</span>
+              <span>
+                {isPriceOnRequest
+                  ? 'Contact for Price via WhatsApp'
+                  : `Order via WhatsApp (GHS ${totalPrice.toFixed(2)})`}
+              </span>
             </a>
 
             <Link

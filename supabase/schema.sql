@@ -14,7 +14,8 @@ CREATE TABLE materials (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     name TEXT NOT NULL,
     category TEXT NOT NULL, -- Holds official category or dynamic custom category string
-    price NUMERIC(10,2) NOT NULL,
+    price NUMERIC(10,2) DEFAULT 0,
+    price_on_request BOOLEAN DEFAULT false, -- True if Contact for Price is enabled
     unit TEXT DEFAULT 'per roll',
     image_url TEXT,
     stock_status TEXT DEFAULT 'in_stock' CHECK (stock_status IN ('in_stock', 'out_of_stock')),
