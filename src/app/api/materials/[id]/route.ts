@@ -57,10 +57,41 @@ export async function PUT(request: Request, { params }: { params: { id: string }
         const { data } = await supabase.from('materials').select('*').eq('id', id).single();
         if (data) {
           existingMaterial = data;
-          const supabaseData = { ...body };
+
+          // Build Supabase payload — strip camelCase fields that are not DB columns
+          const supabaseData: Record<string, unknown> = { ...body };
           delete supabaseData.priceOnRequest;
-          const { data: updated } = await supabase.from('materials').update(supabaseData).eq('id', id).select().single();
-          if (updated) updatedMaterial = updated;
+
+          // Attempt update; if price_on_request column doesn't exist yet (PGRST204 / 42703),
+          // retry without it so the rest of the record still saves successfully.
+          let { data: updated, error: updateErr } = await supabase
+            .from('materials')
+            .update(supabaseData)
+            .eq('id', id)
+            .select()
+            .single();
+
+          if (updateErr && (updateErr.code === 'PGRST204' || updateErr.code === '42703')) {
+            console.warn('[materials PUT] price_on_request column not yet in Supabase — retrying without it. Run migration SQL to add the column.');
+            delete supabaseData.price_on_request;
+            const retry = await supabase
+              .from('materials')
+              .update(supabaseData)
+              .eq('id', id)
+              .select()
+              .single();
+            updated   = retry.data;
+            updateErr = retry.error;
+          }
+
+          if (!updateErr && updated) {
+            // Merge the priceOnRequest flag into the response so the frontend stays consistent
+            updatedMaterial = {
+              ...updated,
+              priceOnRequest:   body.priceOnRequest   ?? false,
+              price_on_request: body.price_on_request ?? false,
+            };
+          }
         }
       } catch (err) {
         console.warn('Supabase PUT failed, using local store:', err);

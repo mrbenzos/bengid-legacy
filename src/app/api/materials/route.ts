@@ -61,18 +61,33 @@ export async function POST(request: Request) {
     if (!isPlaceholderSupabase) {
       try {
         const supabase = createAdminClient();
-        const { data: material, error } = await supabase
+        const insertPayload: Record<string, unknown> = {
+          name, category, brand, color, overview, features, images,
+          price: numericPrice, price_on_request: isPriceOnRequest,
+          unit: formattedUnit, image_url, stock_status: formattedStock
+        };
+
+        let { data: material, error } = await supabase
           .from('materials')
-          .insert({ 
-             name, category, brand, color, overview, features, images, 
-             price: numericPrice, price_on_request: isPriceOnRequest,
-             unit: formattedUnit, image_url, stock_status: formattedStock 
-          })
+          .insert(insertPayload)
           .select()
           .single();
 
+        // If price_on_request column doesn't exist yet, retry without it
+        if (error && (error.code === 'PGRST204' || error.code === '42703' || error.code === '23502')) {
+          console.warn('[materials POST] price_on_request column not in Supabase yet — retrying without it.');
+          delete insertPayload.price_on_request;
+          const retry = await supabase
+            .from('materials')
+            .insert(insertPayload)
+            .select()
+            .single();
+          material = retry.data;
+          error    = retry.error;
+        }
+
         if (!error && material) {
-          createdItem = material;
+          createdItem = { ...material, priceOnRequest: isPriceOnRequest, price_on_request: isPriceOnRequest };
         }
       } catch (err) {
         console.warn('Supabase insert failed, using local store:', err);

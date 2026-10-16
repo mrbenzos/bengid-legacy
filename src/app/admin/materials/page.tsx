@@ -22,6 +22,8 @@ interface Material {
   features: string[];
   images: { label: string; url: string }[];
   price: number;
+  priceOnRequest?: boolean | null;
+  price_on_request?: boolean | null;
   unit: string;
   image_url: string | null;
   stock_status: string;
