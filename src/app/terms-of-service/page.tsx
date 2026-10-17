@@ -30,7 +30,7 @@ export default function TermsOfServicePage() {
               1. Corporate Entity &amp; Divisions
             </h2>
             <p>
-              BENGID LEGACY GHANA LIMITED is a duly registered commercial company operating under the laws of the Republic of Ghana, with headquarters at Santase Tech Station, Kumasi, Ashanti Region. The company operates three core business units:
+              Established in 2010, BENGID LEGACY GHANA LIMITED is a duly registered commercial company operating under the laws of the Republic of Ghana, with headquarters at Santase Tech Station, Kumasi, Ashanti Region. The company operates three core business units:
             </p>
             <ul className="list-disc pl-6 space-y-1.5 mt-3 text-gray-600">
               <li><strong className="text-gray-900">Division 01:</strong> Import &amp; Supply of Printing Materials (Photo papers, lamination films, eco-solvent inks, vinyl, banners).</li>

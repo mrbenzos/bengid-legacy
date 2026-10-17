@@ -48,7 +48,7 @@ export default function Footer() {
           <div className="md:col-span-1 space-y-4">
             <BrandLogo />
             <p className="text-[#9CA3AF] text-sm leading-relaxed mt-4 font-normal">
-              BENGID LEGACY GHANA LIMITED is a registered commercial enterprise specializing in the import &amp; supply of printing materials, verified automobiles, and global cargo importations.
+              Established in 2010, BENGID LEGACY GHANA LIMITED is a registered commercial enterprise specializing in the import &amp; supply of printing materials, verified automobiles, and global cargo importations.
             </p>
           </div>
 

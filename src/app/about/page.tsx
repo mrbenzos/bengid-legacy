@@ -35,7 +35,7 @@ export default function AboutPage() {
             </h1>
 
             <p className="text-base sm:text-lg text-gray-700 max-w-2xl leading-relaxed font-normal mb-8">
-              BENGID LEGACY GHANA LIMITED is a registered commercial enterprise operating in Kumasi, Ashanti Region. We specialize in the import &amp; supply of printing materials, verified automobile sales, and international cargo importations across Ghana.
+              Established in 2010, BENGID LEGACY GHANA LIMITED is a registered commercial enterprise operating in Kumasi, Ashanti Region. We specialize in the import &amp; supply of printing materials, verified automobile sales, and international cargo importations across Ghana.
             </p>
 
             <div className="flex flex-wrap gap-3.5">
@@ -63,7 +63,7 @@ export default function AboutPage() {
         <div className="relative z-10 border-t border-gray-200 bg-white/80 backdrop-blur-md py-6">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             <div className="p-2">
-              <span className="text-3xl sm:text-4xl font-black text-gray-900 block">2020</span>
+              <span className="text-3xl sm:text-4xl font-black text-gray-900 block">2010</span>
               <span className="text-xs font-bold text-gray-500 uppercase tracking-wider mt-1 block">Established in Ghana</span>
             </div>
             <div className="p-2">
