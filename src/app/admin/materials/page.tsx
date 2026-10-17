@@ -179,13 +179,16 @@ export default function AdminPrintingMaterialsPage() {
         body: JSON.stringify(payload),
       });
 
-      if (!res.ok) throw new Error('Request failed');
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.error || 'Request failed');
+      }
 
       toast.success(editingMaterial ? 'Printing material updated!' : 'Printing material added!', { id: toastId });
       handleCloseModal();
       fetchMaterials();
-    } catch (error) {
-      toast.error('Failed to save printing material.', { id: toastId });
+    } catch (error: any) {
+      toast.error(error?.message || 'Failed to save printing material.', { id: toastId });
     } finally {
       setSaving(false);
     }
