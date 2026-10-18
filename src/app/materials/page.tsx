@@ -21,32 +21,32 @@ const OFFICIAL_CATEGORIES = [
 const CATEGORIES = [
   { 
     name: 'Inks', 
-    image: 'https://images.unsplash.com/photo-1525909002-1b05e0c869d8?q=80&w=800&auto=format&fit=crop', 
+    image: '/images/categories/inks-toners.jpg', 
     desc: 'Eco-Solvent, Sublimation, Pigment & Large Format Inks' 
   },
   { 
     name: 'Stationary', 
-    image: 'https://images.unsplash.com/photo-1583485088034-697b5bc54ccd?q=80&w=800&auto=format&fit=crop', 
+    image: '/images/categories/stationery-cutters.jpg', 
     desc: 'Heavy-Duty Rotary Trimmers, Precision Cutters & Studio Supplies' 
   },
   { 
     name: 'Photo Papers', 
-    image: 'https://images.unsplash.com/photo-1588696879815-585a21b3e7bc?q=80&w=800&auto=format&fit=crop', 
+    image: '/images/categories/photo-papers.jpg', 
     desc: 'High-Gloss & Matte Professional Resin-Coated Photo Papers' 
   },
   { 
     name: 'Lamination Films', 
-    image: 'https://images.unsplash.com/photo-1586075010923-2dd4570fb338?q=80&w=800&auto=format&fit=crop', 
+    image: '/images/categories/lamination-films.jpg', 
     desc: 'Thermal & Cold Protective Laminate Roll Films (Gloss / Matte)' 
   },
   { 
     name: 'Hardwares', 
-    image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?q=80&w=800&auto=format&fit=crop', 
+    image: '/images/categories/heavy-machinery.jpg', 
     desc: 'Heat Press Machines, Cutters, Plotters & Commercial Hardwares' 
   },
   { 
     name: 'Delivery Service', 
-    image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=800&auto=format&fit=crop', 
+    image: '/images/warehouse-logistics.jpg', 
     desc: 'Express Doorstep Delivery & Freight Dispatch Across Ghana' 
   },
 ];

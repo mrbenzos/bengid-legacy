@@ -102,7 +102,7 @@ export default function MaterialDetailPage() {
     });
   }
   if (allImages.length === 0) {
-    allImages.push('https://images.unsplash.com/photo-1588696879815-585a21b3e7bc?q=80&w=800&auto=format&fit=crop');
+    allImages.push('/images/categories/photo-papers.jpg');
   }
 
   const inStock = material.stock_status === 'in_stock';

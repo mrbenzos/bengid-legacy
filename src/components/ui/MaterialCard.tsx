@@ -12,21 +12,21 @@ interface MaterialCardProps {
 }
 
 const CATEGORY_DEFAULT_IMAGES: Record<string, string> = {
-  'Inks': 'https://images.unsplash.com/photo-1525909002-1b05e0c869d8?q=80&w=800&auto=format&fit=crop',
-  'Stationary': 'https://images.unsplash.com/photo-1583485088034-697b5bc54ccd?q=80&w=800&auto=format&fit=crop',
-  'Stationery': 'https://images.unsplash.com/photo-1583485088034-697b5bc54ccd?q=80&w=800&auto=format&fit=crop',
-  'Photo Papers': 'https://images.unsplash.com/photo-1588696879815-585a21b3e7bc?q=80&w=800&auto=format&fit=crop',
-  'Photo Paper': 'https://images.unsplash.com/photo-1588696879815-585a21b3e7bc?q=80&w=800&auto=format&fit=crop',
-  'Lamination Films': 'https://images.unsplash.com/photo-1586075010923-2dd4570fb338?q=80&w=800&auto=format&fit=crop',
-  'Lamination': 'https://images.unsplash.com/photo-1586075010923-2dd4570fb338?q=80&w=800&auto=format&fit=crop',
-  'Hardwares': 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?q=80&w=800&auto=format&fit=crop',
-  'Hardware': 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?q=80&w=800&auto=format&fit=crop',
-  'Delivery Service': 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=800&auto=format&fit=crop',
-  'Delivery': 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=800&auto=format&fit=crop',
-  'Other': 'https://images.unsplash.com/photo-1588696879815-585a21b3e7bc?q=80&w=800&auto=format&fit=crop',
+  'Inks': '/images/categories/inks-toners.jpg',
+  'Stationary': '/images/categories/stationery-cutters.jpg',
+  'Stationery': '/images/categories/stationery-cutters.jpg',
+  'Photo Papers': '/images/categories/photo-papers.jpg',
+  'Photo Paper': '/images/categories/photo-papers.jpg',
+  'Lamination Films': '/images/categories/lamination-films.jpg',
+  'Lamination': '/images/categories/lamination-films.jpg',
+  'Hardwares': '/images/categories/heavy-machinery.jpg',
+  'Hardware': '/images/categories/heavy-machinery.jpg',
+  'Delivery Service': '/images/warehouse-logistics.jpg',
+  'Delivery': '/images/warehouse-logistics.jpg',
+  'Other': '/images/categories/photo-papers.jpg',
 };
 
-const DEFAULT_IMAGE = 'https://images.unsplash.com/photo-1588696879815-585a21b3e7bc?q=80&w=800&auto=format&fit=crop';
+const DEFAULT_IMAGE = '/images/categories/photo-papers.jpg';
 
 export default function MaterialCard({ material }: MaterialCardProps) {
   const [qty, setQty] = useState(1);

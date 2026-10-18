@@ -10,11 +10,11 @@ export const INITIAL_MATERIALS: Material[] = [
     color: 'CMYK Complete Set', 
     overview: 'Vibrant, high-density eco-solvent ink formulated for Roland, Mimaki, and large format Chinese piezo print heads.', 
     features: ['Wide Color Gamut', '3-Year Outdoor Durability', 'Non-Corrosive Formula', 'Zero Head Clogging'], 
-    images: [{ label: 'Bottles Set', url: 'https://images.unsplash.com/photo-1525909002-1b05e0c869d8?q=80&w=800&auto=format&fit=crop' }], 
+    images: [{ label: 'Bottles Set', url: '/images/categories/inks-toners.jpg' }], 
     price: 1250.0, 
     unit: 'per 4-bottle set', 
     stock_status: 'in_stock', 
-    image_url: 'https://images.unsplash.com/photo-1525909002-1b05e0c869d8?q=80&w=800&auto=format&fit=crop', 
+    image_url: '/images/categories/inks-toners.jpg', 
     created_at: new Date().toISOString() 
   },
   { 
@@ -26,11 +26,11 @@ export const INITIAL_MATERIALS: Material[] = [
     color: 'Steel Grey', 
     overview: 'Industrial steel base paper trimmer with self-sharpening rotary blade for photography studios and commercial print finishing.', 
     features: ['Self-Sharpening Blade', 'Grid Alignment Ruler', 'Heavy Metal Base', 'Cuts Up to 15 Sheets'], 
-    images: [{ label: 'Trimmer', url: 'https://images.unsplash.com/photo-1583485088034-697b5bc54ccd?q=80&w=800&auto=format&fit=crop' }], 
+    images: [{ label: 'Trimmer', url: '/images/categories/stationery-cutters.jpg' }], 
     price: 480.0, 
     unit: 'per unit', 
     stock_status: 'in_stock', 
-    image_url: 'https://images.unsplash.com/photo-1583485088034-697b5bc54ccd?q=80&w=800&auto=format&fit=crop', 
+    image_url: '/images/categories/stationery-cutters.jpg', 
     created_at: new Date().toISOString() 
   },
   { 
@@ -42,11 +42,11 @@ export const INITIAL_MATERIALS: Material[] = [
     color: 'Pure White', 
     overview: 'Professional resin-coated photo paper engineered for ultra-high-resolution photo studios and commercial digital print production.', 
     features: ['High Gloss Finish', 'Water Resistant Barrier', 'Instant Dry Technology', 'True Color Reproduction'], 
-    images: [{ label: 'Front View', url: 'https://images.unsplash.com/photo-1588696879815-585a21b3e7bc?q=80&w=800&auto=format&fit=crop' }], 
+    images: [{ label: 'Front View', url: '/images/categories/photo-papers.jpg' }], 
     price: 350.0, 
     unit: 'per pack (100 sheets)', 
     stock_status: 'in_stock', 
-    image_url: 'https://images.unsplash.com/photo-1588696879815-585a21b3e7bc?q=80&w=800&auto=format&fit=crop', 
+    image_url: '/images/categories/photo-papers.jpg', 
     created_at: new Date().toISOString() 
   },
   { 
@@ -58,11 +58,11 @@ export const INITIAL_MATERIALS: Material[] = [
     color: 'Crystal Clear', 
     overview: 'High-clarity thermal protective laminate roll ideal for ID cards, certificate coatings, and book cover protections.', 
     features: ['Superb Adhesion', 'Anti-Curl Formula', 'Scratch Resistant', 'UV Light Barrier'], 
-    images: [{ label: 'Roll Display', url: 'https://images.unsplash.com/photo-1586075010923-2dd4570fb338?q=80&w=800&auto=format&fit=crop' }], 
+    images: [{ label: 'Roll Display', url: '/images/categories/lamination-films.jpg' }], 
     price: 450.0, 
     unit: 'per roll (50m)', 
     stock_status: 'in_stock', 
-    image_url: 'https://images.unsplash.com/photo-1586075010923-2dd4570fb338?q=80&w=800&auto=format&fit=crop', 
+    image_url: '/images/categories/lamination-films.jpg', 
     created_at: new Date().toISOString() 
   },
   { 
@@ -74,11 +74,11 @@ export const INITIAL_MATERIALS: Material[] = [
     color: 'Industrial Black / Red', 
     overview: 'Heavy-duty digital clamshell heat press machine for apparel t-shirt transfers, sublimations, and promotional merchandise.', 
     features: ['Digital LCD Timer & Temp Control', 'Even Heat Platen', 'Teflon-Coated Surface', 'Heavy Pressure Arm'], 
-    images: [{ label: 'Machine Display', url: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?q=80&w=800&auto=format&fit=crop' }], 
+    images: [{ label: 'Machine Display', url: '/images/categories/heavy-machinery.jpg' }], 
     price: 3800.0, 
     unit: 'per unit', 
     stock_status: 'in_stock', 
-    image_url: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?q=80&w=800&auto=format&fit=crop', 
+    image_url: '/images/categories/heavy-machinery.jpg', 
     created_at: new Date().toISOString() 
   },
   { 
@@ -90,13 +90,13 @@ export const INITIAL_MATERIALS: Material[] = [
     color: 'Corporate Olive', 
     overview: 'Expedited courier and direct truck freight logistics for bulk printing media orders from Santase Tech Station, Kumasi to Accra, Takoradi, Tamale, and all regions.', 
     features: ['Doorstep Delivery', 'Safe Cargo Handling', 'Real-Time Dispatch Updates', 'Bulk Freight Rates'], 
-    images: [{ label: 'Delivery Cargo', url: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=800&auto=format&fit=crop' }], 
+    images: [{ label: 'Delivery Cargo', url: '/images/warehouse-logistics.jpg' }], 
     price: 0, 
-    priceOnRequest: true,
-    price_on_request: true,
+    priceOnRequest: true, 
+    price_on_request: true, 
     unit: 'per delivery', 
     stock_status: 'in_stock', 
-    image_url: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=800&auto=format&fit=crop', 
+    image_url: '/images/warehouse-logistics.jpg', 
     created_at: new Date().toISOString() 
   },
   { 
