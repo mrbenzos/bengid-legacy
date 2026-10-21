@@ -17,7 +17,7 @@ export default function Navbar() {
 
   const navLinks = [
     { name: 'Home', href: '/', icon: HiHome },
-    { name: 'Materials', href: '/materials', icon: HiShoppingBag },
+    { name: 'Printing Materials', href: '/materials', icon: HiShoppingBag },
     { name: 'General Import', href: '/general-importations', icon: HiGlobe },
     { name: 'Automobiles', href: '/automobiles', icon: HiBriefcase },
     { name: 'About', href: '/about', icon: HiInformationCircle },

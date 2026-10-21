@@ -55,7 +55,27 @@ export default function HomePage() {
         if (matRes && matRes.ok) {
           const matData = await matRes.json();
           if (Array.isArray(matData) && matData.length > 0) {
-            setMaterials(matData.slice(0, 6) as Material[]);
+            // Prioritize important core printing consumables & equipment on the homepage
+            // Filter out minor stationery and small accessories (e.g., SD cards, pendrives, rubber bands, staple pins, arch files)
+            const minorKeywords = ['sd card', 'pendrive', 'rubber band', 'staple pin', 'stapler', 'binding ring', 'brown envelope', 'arch file'];
+            const isMinor = (m: Material) => minorKeywords.some(k => (m.name || '').toLowerCase().includes(k));
+
+            // Importance scoring: core printing materials first (Inks, DTF, Photo Papers, Lamination Films, Hardware)
+            const getScore = (m: Material) => {
+              const name = (m.name || '').toLowerCase();
+              const cat = (m.category || '').toLowerCase();
+              if (cat.includes('ink') || name.includes('ink')) return 100;
+              if (cat.includes('photo') || name.includes('photo paper') || name.includes('sublimation')) return 90;
+              if (cat.includes('lamination') || name.includes('dtf') || name.includes('film')) return 80;
+              if (cat.includes('hardware') || name.includes('press') || name.includes('printer')) return 70;
+              return 10;
+            };
+
+            const important = (matData as Material[])
+              .filter(m => !isMinor(m))
+              .sort((a, b) => getScore(b) - getScore(a));
+
+            setMaterials(important.slice(0, 6));
           }
         }
 
