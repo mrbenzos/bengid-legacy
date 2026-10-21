@@ -196,14 +196,38 @@ export default function AutomobileDetailPage() {
               </p>
 
               {/* Pricing Box */}
-              <div className="bg-gray-50 p-5 rounded-2xl border border-gray-200 mb-6">
-                <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider block mb-1">
-                  Official Showroom Price (Ghana Cedis)
-                </span>
-                <span className="text-3xl sm:text-4xl font-black text-gray-900 block">
-                  {car.price != null ? `GHS ${car.price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : 'Price on Request'}
-                </span>
-              </div>
+              {car.price == null ? (
+                <div className="bg-amber-50/80 p-5 rounded-2xl border border-amber-200/90 mb-6 shadow-2xs">
+                  <span className="text-[11px] font-bold text-amber-800 uppercase tracking-wider block mb-1.5">
+                    Pricing Information
+                  </span>
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <button
+                      type="button"
+                      onClick={() => window.open(whatsappUrl, "_blank")}
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-black bg-amber-100 text-amber-900 border border-amber-300 hover:bg-amber-200/80 transition-all shadow-2xs cursor-pointer"
+                    >
+                      <IoLogoWhatsapp className="text-lg text-emerald-600" />
+                      <span>Contact for Price</span>
+                    </button>
+                    <span className="text-xs font-semibold text-amber-800 bg-amber-100/60 px-3 py-1 rounded-lg border border-amber-200/80">
+                      Showroom Inspection Available
+                    </span>
+                  </div>
+                  <p className="text-xs text-amber-800/90 font-medium mt-2.5">
+                    Price available upon request. Connect directly with our Kumasi showroom team via WhatsApp to arrange physical inspection.
+                  </p>
+                </div>
+              ) : (
+                <div className="bg-gray-50 p-5 rounded-2xl border border-gray-200 mb-6">
+                  <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider block mb-1">
+                    Official Showroom Price (Ghana Cedis)
+                  </span>
+                  <span className="text-3xl sm:text-4xl font-black text-gray-900 block">
+                    GHS {car.price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  </span>
+                </div>
+              )}
 
               {/* Quick Specs 2-Col Grid */}
               <div className="grid grid-cols-2 gap-3 mb-6">

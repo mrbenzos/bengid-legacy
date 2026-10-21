@@ -126,16 +126,37 @@ export default function CarCard({ car }: CarCardProps) {
 
         <div className="pt-4 border-t border-gray-100 mt-2">
           {/* Price */}
-          <div className="mb-4">
-            <span className="text-[10px] uppercase font-bold text-gray-500 tracking-wider block">Official Price (Ghana Cedis)</span>
-            <div className="text-xl font-black text-gray-900 leading-none mt-0.5">
-              {formattedPrice}
+          {car.price == null ? (
+            <div className="flex items-center justify-between mb-4 py-1">
+              <div>
+                <span className="text-[10px] uppercase font-bold text-amber-700 tracking-wider block">Price</span>
+                <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-black bg-amber-50 text-amber-900 border border-amber-300 shadow-2xs">
+                  Contact for Price
+                </span>
+              </div>
+              <span className="text-[11px] font-semibold text-gray-400 italic">
+                Inspection on Request
+              </span>
             </div>
-          </div>
+          ) : (
+            <div className="mb-4">
+              <span className="text-[10px] uppercase font-bold text-gray-500 tracking-wider block">Official Price (Ghana Cedis)</span>
+              <div className="text-xl font-black text-gray-900 leading-none mt-0.5">
+                {formattedPrice}
+              </div>
+            </div>
+          )}
 
           {/* Action Buttons */}
           <div className="space-y-2">
-            {isAvailable ? (
+            {!isAvailable ? (
+              <button
+                disabled
+                className="w-full bg-gray-100 text-gray-400 py-2.5 px-4 rounded-xl font-bold text-xs flex items-center justify-center gap-2 cursor-not-allowed border border-gray-200"
+              >
+                <span>Vehicle Marked as Sold</span>
+              </button>
+            ) : (
               <a
                 href={whatsappUrl}
                 target="_blank"
@@ -143,15 +164,10 @@ export default function CarCard({ car }: CarCardProps) {
                 className="w-full bg-[#4B6F23] hover:bg-[#3D5A1C] text-white py-2.5 px-4 rounded-xl font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all hover:-translate-y-0.5 cursor-pointer"
               >
                 <IoLogoWhatsapp className="text-base text-white" />
-                <span>Inquire on WhatsApp</span>
+                <span>
+                  {car.price == null ? 'Contact for Price via WhatsApp' : 'Inquire on WhatsApp'}
+                </span>
               </a>
-            ) : (
-              <button
-                disabled
-                className="w-full bg-gray-100 text-gray-400 py-2.5 px-4 rounded-xl font-bold text-xs flex items-center justify-center gap-2 cursor-not-allowed border border-gray-200"
-              >
-                <span>Vehicle Marked as Sold</span>
-              </button>
             )}
 
             <Link

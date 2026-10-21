@@ -118,7 +118,8 @@ export const config = {
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
      * - public folder static images/assets (.png, .jpg, .svg, etc.)
+     * - 500 error page (required for static generation)
      */
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/((?!_next/static|_next/image|favicon.ico|500|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 };
