@@ -55,27 +55,47 @@ export default function HomePage() {
         if (matRes && matRes.ok) {
           const matData = await matRes.json();
           if (Array.isArray(matData) && matData.length > 0) {
-            // Prioritize important core printing consumables & equipment on the homepage
-            // Filter out minor stationery and small accessories (e.g., SD cards, pendrives, rubber bands, staple pins, arch files)
-            const minorKeywords = ['sd card', 'pendrive', 'rubber band', 'staple pin', 'stapler', 'binding ring', 'brown envelope', 'arch file'];
-            const isMinor = (m: Material) => minorKeywords.some(k => (m.name || '').toLowerCase().includes(k));
+            const all = matData as Material[];
 
-            // Importance scoring: core printing materials first (Inks, DTF, Photo Papers, Lamination Films, Hardware)
-            const getScore = (m: Material) => {
-              const name = (m.name || '').toLowerCase();
-              const cat = (m.category || '').toLowerCase();
-              if (cat.includes('ink') || name.includes('ink')) return 100;
-              if (cat.includes('photo') || name.includes('photo paper') || name.includes('sublimation')) return 90;
-              if (cat.includes('lamination') || name.includes('dtf') || name.includes('film')) return 80;
-              if (cat.includes('hardware') || name.includes('press') || name.includes('printer')) return 70;
-              return 10;
-            };
+            // 1. A4 sheets
+            const a4Sheets = all.find(m => (m.name || '').toLowerCase().includes('a4 sheets'));
 
-            const important = (matData as Material[])
-              .filter(m => !isMinor(m))
-              .sort((a, b) => getScore(b) - getScore(a));
+            // 2. Photo Papers - Double sided
+            const photoDouble = all.find(
+              m => (m.name || '').toLowerCase().includes('photo paper') &&
+                   ((m.overview || '').toLowerCase().includes('double') || (m.name || '').toLowerCase().includes('double'))
+            );
 
-            setMaterials(important.slice(0, 6));
+            // 3. Lamination films
+            const lamination = all.find(
+              m => (m.name || '').toLowerCase().includes('lamination pouches') ||
+                   (m.name || '').toLowerCase().includes('lamination film')
+            );
+
+            // 4. Sticker papers
+            const sticker = all.find(m => (m.name || '').toLowerCase().includes('sticker'));
+
+            // 5. Photo papers - Single Sided
+            const photoSingle = all.find(
+              m => (m.name || '').toLowerCase().includes('photo paper') &&
+                   !(m.overview || '').toLowerCase().includes('double') &&
+                   !(m.name || '').toLowerCase().includes('sticker')
+            );
+
+            const requestedItems = [
+              a4Sheets ? { ...a4Sheets, name: 'A4 Sheets' } : null,
+              photoDouble ? { ...photoDouble, name: 'Photo Papers - Double Sided' } : null,
+              lamination ? { ...lamination, name: 'Lamination Films' } : null,
+              sticker ? { ...sticker, name: 'Sticker Papers' } : null,
+              photoSingle ? { ...photoSingle, name: 'Photo Papers - Single Sided' } : null,
+            ].filter(Boolean) as Material[];
+
+            // Fallback in case any item wasn't matched
+            if (requestedItems.length > 0) {
+              setMaterials(requestedItems);
+            } else {
+              setMaterials(all.slice(0, 6));
+            }
           }
         }
 
