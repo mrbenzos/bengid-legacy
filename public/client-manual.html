@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bengid Legacy Ghana Limited — Official Client Manual & Operations Guide</title>
+  <style>
+    /* Reset & Base Typography */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      color: #1e293b;
+      background-color: #ffffff;
+      line-height: 1.6;
+      font-size: 15px;
+      -webkit-font-smoothing: antialiased;
+      padding: 40px 20px;
+    }
+
+    .manual-container {
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    /* Print Header & Footer Rules */
+    @page {
+      size: A4;
+      margin: 18mm 16mm;
+    }
+
+    @media print {
+      body {
+        padding: 0;
+        font-size: 13.5px;
+        line-height: 1.5;
+        color: #0f172a;
+      }
+      .manual-container {
+        max-width: 100%;
+      }
+      .page-break {
+        page-break-before: always !important;
+        break-before: page !important;
+      }
+      .no-break {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      .print-hide {
+        display: none !important;
+      }
+      .screen-card {
+        box-shadow: none !important;
+        border: 1px solid #cbd5e1 !important;
+      }
+    }
+
+    /* Top Running Header */
+    .doc-running-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: #64748b;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 8px;
+      margin-bottom: 24px;
+    }
+
+    /* Header Section */
+    .doc-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #059669;
+      margin-bottom: 12px;
+    }
+
+    h1.doc-title {
+      font-size: 32px;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: 8px;
+    }
+
+    p.doc-subtitle {
+      font-size: 16px;
+      color: #64748b;
+      margin-bottom: 22px;
+    }
+
+    /* Metadata Grid */
+    .meta-grid {
+      display: grid;
+      grid-template-columns: 1.3fr 1.3fr 1.4fr;
+      gap: 16px;
+      font-size: 13px;
+      margin-bottom: 20px;
+    }
+
+    .meta-item {
+      color: #334155;
+    }
+
+    .meta-item strong {
+      color: #0f172a;
+      font-weight: 600;
+    }
+
+    .meta-item a {
+      color: #059669;
+      text-decoration: underline;
+    }
+
+    hr.divider {
+      border: 0;
+      height: 1px;
+      background: #e2e8f0;
+      margin: 24px 0 32px 0;
+    }
+
+    /* Section Headings */
+    h2.section-title {
+      font-size: 22px;
+      font-weight: 800;
+      color: #0f172a;
+      margin-top: 36px;
+      margin-bottom: 16px;
+      letter-spacing: -0.01em;
+    }
+
+    h3.sub-title {
+      font-size: 16.5px;
+      font-weight: 700;
+      color: #0f172a;
+      margin-top: 24px;
+      margin-bottom: 10px;
+    }
+
+    p.desc {
+      color: #334155;
+      margin-bottom: 16px;
+      line-height: 1.65;
+    }
+
+    /* Key Advantage Callout Box */
+    .callout-box {
+      border-left: 4px solid #059669;
+      background-color: #f8fafc;
+      padding: 16px 20px;
+      border-radius: 0 8px 8px 0;
+      margin: 22px 0;
+      font-size: 14.5px;
+      line-height: 1.6;
+      color: #1e293b;
+    }
+
+    .callout-box strong {
+      color: #059669;
+      font-weight: 700;
+    }
+
+    /* Screenshot Frames */
+    .screen-container {
+      margin: 22px 0 28px 0;
+      page-break-inside: avoid;
+    }
+
+    .screen-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+      background: #f8fafc;
+    }
+
+    .browser-bar {
+      display: flex;
+      align-items: center;
+      background: #f1f5f9;
+      padding: 8px 14px;
+      border-bottom: 1px solid #e2e8f0;
+      gap: 12px;
+    }
+
+    .browser-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .browser-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+    .dot-red { background: #ef4444; }
+    .dot-yellow { background: #f59e0b; }
+    .dot-green { background: #10b981; }
+
+    .browser-url {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      padding: 2px 12px;
+      font-size: 11px;
+      color: #64748b;
+      flex: 1;
+      max-width: 420px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .screen-img {
+      width: 100%;
+      height: auto;
+      display: block;
+      max-height: 480px;
+      object-fit: cover;
+      object-position: top;
+    }
+
+    .screen-caption {
+      text-align: center;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: #475569;
+      margin-top: 10px;
+      margin-bottom: 18px;
+    }
+
+    /* Mock Visual Layouts (used for crisp mockups when img isn't available) */
+    .mock-storefront {
+      background: #ffffff;
+      padding: 24px;
+    }
+
+    .mock-hero {
+      background: linear-gradient(135deg, #064e3b 0%, #065f46 100%);
+      color: white;
+      padding: 32px 24px;
+      border-radius: 8px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .mock-hero h4 {
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+    }
+
+    .mock-hero p {
+      font-size: 13px;
+      opacity: 0.9;
+      max-width: 540px;
+      margin: 0 auto 16px auto;
+    }
+
+    .mock-divisions {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .mock-div-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 14px;
+      text-align: center;
+    }
+
+    .mock-div-card strong {
+      display: block;
+      font-size: 13px;
+      color: #0f172a;
+      margin-bottom: 4px;
+    }
+
+    .mock-div-card span {
+      font-size: 11px;
+      color: #64748b;
+    }
+
+    /* Product Grid Mock */
+    .mock-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .mock-product {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .mock-tag {
+      align-self: flex-start;
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-bottom: 8px;
+    }
+    .tag-green { background: #dcfce7; color: #15803d; }
+    .tag-amber { background: #fef3c7; color: #b45309; }
+    .tag-red { background: #fee2e2; color: #b91c1c; }
+
+    .mock-product h5 {
+      font-size: 13px;
+      color: #0f172a;
+      margin-bottom: 4px;
+    }
+
+    .mock-product .mock-price {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #059669;
+      margin-top: 6px;
+    }
+
+    .mock-btn {
+      margin-top: 10px;
+      background: #25d366;
+      color: white;
+      text-align: center;
+      padding: 6px 10px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    /* Dark Admin UI Mocks */
+    .mock-admin-dark {
+      background: #0f172a;
+      color: #f8fafc;
+      padding: 24px;
+      border-radius: 0 0 8px 8px;
+    }
+
+    .mock-admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid #334155;
+    }
+
+    .mock-admin-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .mock-stat-box {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 6px;
+      padding: 14px;
+    }
+
+    .mock-stat-box .title {
+      font-size: 11px;
+      color: #94a3b8;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .mock-stat-box .value {
+      font-size: 22px;
+      font-weight: 800;
+      color: #10b981;
+    }
+
+    /* Action Tables */
+    .action-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 18px 0 24px 0;
+      font-size: 13.5px;
+      page-break-inside: avoid;
+    }
+
+    .action-table th {
+      background: #f8fafc;
+      color: #0f172a;
+      font-weight: 700;
+      text-align: left;
+      padding: 10px 14px;
+      border: 1px solid #e2e8f0;
+      font-size: 12.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .action-table td {
+      padding: 12px 14px;
+      border: 1px solid #e2e8f0;
+      color: #334155;
+      vertical-align: top;
+    }
+
+    .action-table tr:nth-child(even) td {
+      background: #fdfdfe;
+    }
+
+    .btn-pill {
+      display: inline-block;
+      background: #e2e8f0;
+      color: #0f172a;
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+
+    .btn-pill.green {
+      background: #059669;
+      color: #ffffff;
+    }
+
+    /* Daily Routine Steps */
+    .sop-step {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 20px;
+      page-break-inside: avoid;
+    }
+
+    .step-number {
+      width: 32px;
+      height: 32px;
+      background: #0f172a;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+
+    .step-content {
+      flex: 1;
+    }
+
+    .step-title {
+      font-size: 15.5px;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 4px;
+    }
+
+    .step-desc {
+      color: #334155;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    /* Contacts & Support */
+    .support-list {
+      list-style: none;
+      margin: 16px 0 28px 0;
+      font-size: 14.5px;
+    }
+
+    .support-list li {
+      margin-bottom: 10px;
+      color: #334155;
+    }
+
+    .support-list li strong {
+      color: #0f172a;
+      display: inline-block;
+      width: 220px;
+    }
+
+    /* Footer Copyright */
+    .doc-footer {
+      border-top: 1px solid #e2e8f0;
+      padding-top: 18px;
+      margin-top: 40px;
+      font-size: 12px;
+      color: #64748b;
+      text-align: center;
+    }
+
+    /* Print Button */
+    .print-bar {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #059669;
+      color: white;
+      padding: 12px 22px;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 14px;
+      box-shadow: 0 4px 16px rgba(5, 150, 105, 0.4);
+      cursor: pointer;
+      border: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      z-index: 9999;
+    }
+
+    .print-bar:hover {
+      background: #047857;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating Print Button -->
+  <button class="print-bar print-hide" onclick="window.print()">
+    🖨️ Print / Save as PDF
+  </button>
+
+  <div class="manual-container">
+
+    <!-- Running Header -->
+    <div class="doc-running-header">
+      <span>Bengid Legacy Ghana Limited — Official Client Manual & Operations Guide</span>
+      <span>Live URL: bengidlegacyghltd.com</span>
+    </div>
+
+    <!-- Cover / Header Block -->
+    <div class="doc-badge">OFFICIAL CLIENT MANUAL & SOP</div>
+    <h1 class="doc-title">Bengid Legacy Ghana Limited</h1>
+    <p class="doc-subtitle">Complete Storefront & Admin Operations Manual for Business Owners & Staff</p>
+
+    <!-- Meta Information Grid -->
+    <div class="meta-grid">
+      <div class="meta-item">
+        <strong>Live Website:</strong> <a href="https://www.bengidlegacyghltd.com" target="_blank">bengidlegacyghltd.com</a>
+      </div>
+      <div class="meta-item">
+        <strong>Admin Portal:</strong> /admin (Protected OTP Login)
+      </div>
+      <div class="meta-item">
+        <strong>Official WhatsApp:</strong> +233 20 576 1698
+      </div>
+      <div class="meta-item">
+        <strong>Official Support:</strong> admin@bengidlegacy.com
+      </div>
+      <div class="meta-item">
+        <strong>Head Office:</strong> Accra / Western Region, Ghana
+      </div>
+      <div class="meta-item">
+        <strong>Established:</strong> 2010
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- SECTION 1 -->
+    <h2 class="section-title">1. Platform Purpose & Overview</h2>
+    <p class="desc">
+      The Bengid Legacy Ghana Limited platform is a bespoke multi-division e-commerce, automobile showroom, and general importation management system built specifically for the Ghanaian commercial environment. It empowers prospective buyers and enterprise clients across Accra, Kumasi, Takoradi, and nationwide to discover authentic commercial printing supplies, inspect premium imported automobiles with transparent pricing or price-on-request options, place instant orders via WhatsApp, and request direct procurement quotes.
+    </p>
+
+    <div class="callout-box">
+      <strong>Key Client Advantage:</strong> The admin console requires zero technical or coding knowledge. Managers can add new printing supplies, list vehicles, update prices, enable the "Contact for Price" feature, mark items sold, and review customer inquiries through a clean visual dashboard on any desktop, laptop, or mobile smartphone.
+    </div>
+
+    <!-- SECTION 2 -->
+    <h2 class="section-title">2. Customer Storefront Features</h2>
+
+    <h3 class="sub-title">2.1 Homepage & Hero Presentation</h3>
+    <p class="desc">
+      The homepage introduces the Bengid Legacy brand with high-definition visuals, clear division cards highlighting the three core business arms (Printing Materials, Automobile Sales, and General Importations), five prioritized flagship printing supplies, and instant triggers to browse inventory or chat directly with sales on WhatsApp.
+    </p>
+
+    <div class="screen-container">
+      <div class="screen-card">
+        <div class="browser-bar">
+          <div class="browser-dots">
+            <div class="browser-dot dot-red"></div>
+            <div class="browser-dot dot-yellow"></div>
+            <div class="browser-dot dot-green"></div>
+          </div>
+          <div class="browser-url">https://www.bengidlegacyghltd.com</div>
+        </div>
+        <!-- Mock Hero / Showcase -->
+        <div class="mock-storefront">
+          <div class="mock-hero">
+            <h4>BENGID LEGACY GHANA LIMITED</h4>
+            <p>Your Trusted Partner in Commercial Printing Materials, Automobile Sales & Direct Global Importations. Established 2010.</p>
+            <div style="display:inline-block; background:#10b981; color:white; padding:8px 18px; border-radius:6px; font-weight:700; font-size:12px;">Explore Core Divisions ↓</div>
+          </div>
+          <div class="mock-divisions">
+            <div class="mock-div-card">
+              <strong>🖨️ Printing Materials</strong>
+              <span>A4 Sheets, Photo Papers, Inks & Films</span>
+            </div>
+            <div class="mock-div-card">
+              <strong>🚗 Automobile Sales</strong>
+              <span>Foreign Used & Brand New Fleet</span>
+            </div>
+            <div class="mock-div-card">
+              <strong>🚢 General Importations</strong>
+              <span>Global Sourcing & Customs Clearance</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-caption">Screen 1: Homepage Hero showcasing the three core business divisions and instant navigation triggers.</div>
+    </div>
+
+    <!-- PAGE BREAK FOR CLEAN PRINTING -->
+    <div class="page-break"></div>
+
+    <h3 class="sub-title">2.2 Printing Materials Catalog & Stock Indicators</h3>
+    <p class="desc">
+      The catalog displays all commercial printing materials with live stock badges (IN STOCK / OUT OF STOCK), pricing in Ghanaian Cedis (GH₵), category filters (Inks, Stationary, Photo Papers, Lamination Films, Hardwares), and the golden "Contact for Price" badge for negotiated or fluctuating materials.
+    </p>
+
+    <div class="screen-container">
+      <div class="screen-card">
+        <div class="browser-bar">
+          <div class="browser-dots">
+            <div class="browser-dot dot-red"></div>
+            <div class="browser-dot dot-yellow"></div>
+            <div class="browser-dot dot-green"></div>
+          </div>
+          <div class="browser-url">https://www.bengidlegacyghltd.com/materials</div>
+        </div>
+        <img class="screen-img" src="/manual-assets/materials-nav.png" alt="Printing Materials Catalog" onerror="this.style.display='none'; document.getElementById('mock-materials-catalog').style.display='block';">
+        <!-- Fallback Mock if image path differs -->
+        <div id="mock-materials-catalog" style="display:none; padding:20px; background:#fff;">
+          <div class="mock-grid">
+            <div class="mock-product">
+              <span class="mock-tag tag-green">In Stock</span>
+              <h5>A4 Copy Sheets (80gsm)</h5>
+              <div class="mock-price">GH₵ 75.00 / ream</div>
+              <div class="mock-btn">Order via WhatsApp</div>
+            </div>
+            <div class="mock-product">
+              <span class="mock-tag tag-amber">Contact for Price</span>
+              <h5>Double-Sided RC Photo Paper</h5>
+              <div class="mock-price" style="color:#b45309; font-size:12px;">Price on Request</div>
+              <div class="mock-btn">Inquire on WhatsApp</div>
+            </div>
+            <div class="mock-product">
+              <span class="mock-tag tag-green">In Stock</span>
+              <h5>Thermal Lamination Pouches (100pk)</h5>
+              <div class="mock-price">GH₵ 110.00 / pack</div>
+              <div class="mock-btn">Order via WhatsApp</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-caption">Screen 2: Printing materials inventory catalog showing real-time stock tags, category filters, and "Contact for Price" badges.</div>
+    </div>
+
+    <h3 class="sub-title">2.3 Individual Product Details & 1-Click WhatsApp Ordering</h3>
+    <p class="desc">
+      Each product page provides high-resolution photography, detailed technical overviews (pack size, paper weight, printer compatibility), and gives customers two frictionless actions: 1-click WhatsApp ordering pre-filled with the exact product name, or direct phone inquiries.
+    </p>
+
+    <div class="screen-container">
+      <div class="screen-card">
+        <div class="browser-bar">
+          <div class="browser-dots">
+            <div class="browser-dot dot-red"></div>
+            <div class="browser-dot dot-yellow"></div>
+            <div class="browser-dot dot-green"></div>
+          </div>
+          <div class="browser-url">https://www.bengidlegacyghltd.com/materials/photo-papers-double-sided</div>
+        </div>
+        <div class="mock-storefront" style="padding:20px;">
+          <div style="display:grid; grid-template-columns:1fr 1.4fr; gap:24px; align-items:start;">
+            <div style="background:#f1f5f9; height:180px; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#64748b; font-weight:600; font-size:13px;">
+              [High-Resolution Product Gallery]
+            </div>
+            <div>
+              <span class="mock-tag tag-amber" style="margin-bottom:6px;">Contact for Price</span>
+              <h4 style="font-size:18px; margin-bottom:4px; color:#0f172a;">Premium Double-Sided RC Glossy Photo Paper</h4>
+              <p style="font-size:12px; color:#64748b; margin-bottom:12px;">Category: Photo Papers | Brand: Bengid Quality Choice</p>
+              <div style="background:#fffbeb; border:1px solid #fde68a; padding:10px 14px; border-radius:6px; margin-bottom:12px; font-size:12px; color:#92400e;">
+                <strong>Pricing Note:</strong> Price on request based on order quantity. Tap below to receive our wholesale quotation instantly.
+              </div>
+              <div style="background:#25d366; color:white; padding:10px 16px; border-radius:6px; font-weight:700; font-size:13px; text-align:center; display:inline-block;">
+                📱 Inquire via WhatsApp (+233 20 576 1698)
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-caption">Screen 3: Detailed product specification view featuring quantity-based pricing note and instant WhatsApp trigger.</div>
+    </div>
+
+    <!-- PAGE BREAK -->
+    <div class="page-break"></div>
+
+    <h3 class="sub-title">2.4 Automobiles & Vehicle Showroom</h3>
+    <p class="desc">
+      The automobile showroom presents our complete vehicle fleet with brand filtering (Toyota, BYD, Changan, Hyundai, Kia, Honda), vehicle type sorting (Salon, SUV / 4WD, Pickup, Heavy Duty, Mini Van), fuel types, and dynamic badges indicating whether a vehicle is Available or Sold.
+    </p>
+
+    <div class="screen-container">
+      <div class="screen-card">
+        <div class="browser-bar">
+          <div class="browser-dots">
+            <div class="browser-dot dot-red"></div>
+            <div class="browser-dot dot-yellow"></div>
+            <div class="browser-dot dot-green"></div>
+          </div>
+          <div class="browser-url">https://www.bengidlegacyghltd.com/automobiles</div>
+        </div>
+        <div class="mock-storefront" style="padding:20px;">
+          <div class="mock-grid">
+            <div class="mock-product">
+              <span class="mock-tag tag-green">Available</span>
+              <h5>Toyota Yaris Sedan (2022)</h5>
+              <div style="font-size:11px; color:#64748b; margin-top:2px;">Salon • Petrol • Automatic</div>
+              <div class="mock-price">GH₵ 145,000</div>
+              <div class="mock-btn">Inquire on WhatsApp</div>
+            </div>
+            <div class="mock-product">
+              <span class="mock-tag tag-amber">Contact for Price</span>
+              <h5>BYD Seal EV Performance AWD</h5>
+              <div style="font-size:11px; color:#64748b; margin-top:2px;">Salon • 100% Electric • Luxury</div>
+              <div class="mock-price" style="color:#b45309; font-size:12px;">Contact for Price</div>
+              <div class="mock-btn">Inquire on WhatsApp</div>
+            </div>
+            <div class="mock-product">
+              <span class="mock-tag tag-red">Sold</span>
+              <h5>Hyundai Accent 1.6L (2020)</h5>
+              <div style="font-size:11px; color:#64748b; margin-top:2px;">Salon • Petrol • Registered</div>
+              <div class="mock-price" style="color:#94a3b8; text-decoration:line-through;">GH₵ 120,000</div>
+              <div class="mock-btn" style="background:#94a3b8;">Vehicle Sold</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-caption">Screen 4: Automobile showroom displaying live inventory status, vehicle classes, and transparent pricing.</div>
+    </div>
+
+    <h3 class="sub-title">2.5 Vehicle Details, 20-Point Specs & WhatsApp Inquiries</h3>
+    <p class="desc">
+      Prospective car buyers can inspect complete mechanical overviews, duty/customs documentation status, transmission type, fuel economy, and a 20-point verified checklist of accessories (A/C, ABS, Airbags, Reverse Camera, Leather Seats, Sunroof).
+    </p>
+
+    <div class="screen-container">
+      <div class="screen-card">
+        <div class="browser-bar">
+          <div class="browser-dots">
+            <div class="browser-dot dot-red"></div>
+            <div class="browser-dot dot-yellow"></div>
+            <div class="browser-dot dot-green"></div>
+          </div>
+          <div class="browser-url">https://www.bengidlegacyghltd.com/automobiles/byd-seal-ev-performance</div>
+        </div>
+        <div class="mock-storefront" style="padding:20px;">
+          <div style="display:grid; grid-template-columns:1fr 1.3fr; gap:20px;">
+            <div style="background:#f1f5f9; height:180px; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#64748b; font-weight:600; font-size:12px;">
+              [Vehicle Showcase Photo Gallery]
+            </div>
+            <div>
+              <span class="mock-tag tag-amber">Contact for Price</span>
+              <h4 style="font-size:17px; color:#0f172a; margin-bottom:4px;">BYD Seal EV Performance AWD (2026)</h4>
+              <p style="font-size:11.5px; color:#475569; margin-bottom:10px;">Brand: BYD | Fuel: Electric | Reg: Dealer Ready | Condition: Brand New</p>
+              <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; padding:8px 12px; font-size:11px; margin-bottom:12px;">
+                <strong>Included Features:</strong> Air Conditioner, Reverse Camera, Leather Seats, Sun Roof, Cruise Control, ABS, Airbag.
+              </div>
+              <div style="background:#25d366; color:white; padding:8px 14px; border-radius:6px; font-weight:700; font-size:12px; display:inline-block;">
+                💬 Chat with Auto Sales Desk on WhatsApp
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-caption">Screen 5: Detailed vehicle specification view with 20-point verified accessories checklist and direct sales chat.</div>
+    </div>
+
+    <!-- PAGE BREAK -->
+    <div class="page-break"></div>
+
+    <h3 class="sub-title">2.6 General Importations & Direct Inquiry</h3>
+    <p class="desc">
+      Our general importation portal introduces enterprise clients to Bengid Legacy's international procurement routes from Asia, Europe, and the Americas, covering factory ordering, freight forwarding, and local port clearance in Tema and Takoradi.
+    </p>
+
+    <div class="screen-container">
+      <div class="screen-card">
+        <div class="browser-bar">
+          <div class="browser-dots">
+            <div class="browser-dot dot-red"></div>
+            <div class="browser-dot dot-yellow"></div>
+            <div class="browser-dot dot-green"></div>
+          </div>
+          <div class="browser-url">https://www.bengidlegacyghltd.com/general-importations</div>
+        </div>
+        <div class="mock-storefront" style="padding:22px; text-align:center;">
+          <h4 style="font-size:18px; color:#0f172a; margin-bottom:6px;">Global Sourcing & Port Clearance Services</h4>
+          <p style="font-size:12.5px; color:#64748b; max-width:580px; margin:0 auto 16px auto;">
+            From industrial printing machines to commercial vehicles and consumer goods, Bengid Legacy manages foreign purchasing, container logistics, and Ghana Customs clearance safely.
+          </p>
+          <div style="display:flex; justify-content:center; gap:12px;">
+            <div style="background:#f8fafc; border:1px solid #e2e8f0; padding:10px 18px; border-radius:6px; font-size:12px; font-weight:600;">1. Sourcing & Quotation</div>
+            <div style="background:#f8fafc; border:1px solid #e2e8f0; padding:10px 18px; border-radius:6px; font-size:12px; font-weight:600;">2. Freight & Shipping</div>
+            <div style="background:#f8fafc; border:1px solid #e2e8f0; padding:10px 18px; border-radius:6px; font-size:12px; font-weight:600;">3. Customs & Delivery</div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-caption">Screen 6: General importations portal showing structured end-to-end procurement workflow.</div>
+    </div>
+
+    <h2 class="section-title">3. Admin Management Console</h2>
+
+    <h3 class="sub-title">3.1 Secure One-Time Password Login (Email OTP)</h3>
+    <p class="desc">
+      To protect inventory, financial pricing, and client records, the admin console uses two-factor authentication via email OTP. Entering the administrative email triggers an instant 6-digit security code sent to <code>admin@bengidlegacy.com</code> with zero passwords to remember or lose.
+    </p>
+
+    <div class="screen-container">
+      <div class="screen-card">
+        <div class="browser-bar">
+          <div class="browser-dots">
+            <div class="browser-dot dot-red"></div>
+            <div class="browser-dot dot-yellow"></div>
+            <div class="browser-dot dot-green"></div>
+          </div>
+          <div class="browser-url">https://www.bengidlegacyghltd.com/admin/login</div>
+        </div>
+        <div class="mock-admin-dark" style="text-align:center; padding:36px 20px;">
+          <div style="max-width:340px; margin:0 auto; background:#1e293b; border:1px solid #334155; padding:24px; border-radius:8px;">
+            <div style="font-size:24px; margin-bottom:6px;">🛡️</div>
+            <h4 style="font-size:16px; margin-bottom:4px;">Bengid Admin Console</h4>
+            <p style="font-size:11px; color:#94a3b8; margin-bottom:16px;">Two-Factor Email OTP Protection</p>
+            <div style="background:#0f172a; border:1px solid #475569; padding:8px 12px; border-radius:4px; font-size:12px; color:#e2e8f0; text-align:left; margin-bottom:12px;">
+              admin@bengidlegacy.com
+            </div>
+            <div style="background:#059669; color:white; padding:8px; border-radius:4px; font-size:12px; font-weight:700;">
+              Send Security Code →
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-caption">Screen 7: Secure admin authentication screen with automated one-time verification.</div>
+    </div>
+
+    <!-- PAGE BREAK -->
+    <div class="page-break"></div>
+
+    <h3 class="sub-title">3.2 Executive Operations Dashboard</h3>
+    <p class="desc">
+      Provides the business owner and managing director with an instant live snapshot of materials inventory, active vehicle fleet, customer inquiries, and recent activity logs across all divisions.
+    </p>
+
+    <div class="screen-container">
+      <div class="screen-card">
+        <div class="browser-bar">
+          <div class="browser-dots">
+            <div class="browser-dot dot-red"></div>
+            <div class="browser-dot dot-yellow"></div>
+            <div class="browser-dot dot-green"></div>
+          </div>
+          <div class="browser-url">https://www.bengidlegacyghltd.com/admin</div>
+        </div>
+        <div class="mock-admin-dark">
+          <div class="mock-admin-header">
+            <div>
+              <h4 style="font-size:17px; margin-bottom:2px;">Executive Command Center</h4>
+              <span style="font-size:11px; color:#94a3b8;">Real-time inventory overview & operations tracker</span>
+            </div>
+            <div style="background:#059669; color:white; padding:6px 14px; border-radius:4px; font-size:11px; font-weight:700;">
+              + Quick Add
+            </div>
+          </div>
+          <div class="mock-admin-stats">
+            <div class="mock-stat-box">
+              <div class="title">Total Materials</div>
+              <div class="value">31</div>
+            </div>
+            <div class="mock-stat-box">
+              <div class="title">Total Vehicles</div>
+              <div class="value">6</div>
+            </div>
+            <div class="mock-stat-box">
+              <div class="title">In Stock</div>
+              <div class="value" style="color:#38bdf8;">29</div>
+            </div>
+            <div class="mock-stat-box">
+              <div class="title">Customer Leads</div>
+              <div class="value" style="color:#f59e0b;">12</div>
+            </div>
+          </div>
+          <div style="background:#1e293b; border:1px solid #334155; border-radius:6px; padding:12px 16px; font-size:11.5px; color:#94a3b8;">
+            <strong style="color:#e2e8f0;">Recent Activity:</strong> Vehicle BYD Seal EV Performance AWD updated with "Contact for Price" enabled by admin.
+          </div>
+        </div>
+      </div>
+      <div class="screen-caption">Screen 8: Executive dashboard showing live stock levels, vehicle counts, and audit activity.</div>
+    </div>
+
+    <h3 class="sub-title">3.3 Printing Materials Inventory Management (CRUD)</h3>
+    <p class="desc">
+      The materials management console allows managers to add new supplies, update pricing in GHS, toggle the "Contact for Price" feature with one click, upload multiple product photos, and switch items between In Stock and Out of Stock.
+    </p>
+
+    <div class="screen-container">
+      <div class="screen-card">
+        <div class="browser-bar">
+          <div class="browser-dots">
+            <div class="browser-dot dot-red"></div>
+            <div class="browser-dot dot-yellow"></div>
+            <div class="browser-dot dot-green"></div>
+          </div>
+          <div class="browser-url">https://www.bengidlegacyghltd.com/admin/materials</div>
+        </div>
+        <div class="mock-admin-dark" style="padding:18px;">
+          <div style="display:flex; justify-content:space-between; margin-bottom:14px;">
+            <input type="text" placeholder="Search materials by title or brand..." style="background:#1e293b; border:1px solid #475569; color:#fff; padding:6px 12px; border-radius:4px; font-size:12px; width:280px;" disabled value="Search materials...">
+            <div style="background:#059669; color:white; padding:6px 14px; border-radius:4px; font-size:12px; font-weight:700;">+ Add New Material</div>
+          </div>
+          <table style="width:100%; border-collapse:collapse; font-size:12px; color:#cbd5e1;">
+            <thead>
+              <tr style="border-bottom:1px solid #334155; text-align:left; color:#94a3b8;">
+                <th style="padding:8px;">Product</th>
+                <th style="padding:8px;">Category</th>
+                <th style="padding:8px;">Price (GH₵)</th>
+                <th style="padding:8px;">Status</th>
+                <th style="padding:8px; text-align:right;">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom:1px solid #1e293b;">
+                <td style="padding:10px 8px; font-weight:600; color:#fff;">A4 Copy Sheets</td>
+                <td style="padding:10px 8px;">Stationary</td>
+                <td style="padding:10px 8px; color:#10b981;">75.00</td>
+                <td style="padding:10px 8px;"><span style="background:#064e3b; color:#34d399; padding:2px 6px; border-radius:3px; font-size:10px;">In Stock</span></td>
+                <td style="padding:10px 8px; text-align:right;">✏️ 🗑️</td>
+              </tr>
+              <tr style="border-bottom:1px solid #1e293b;">
+                <td style="padding:10px 8px; font-weight:600; color:#fff;">Photo Paper - Double Sided</td>
+                <td style="padding:10px 8px;">Photo Papers</td>
+                <td style="padding:10px 8px;"><span style="background:#78350f; color:#fde68a; padding:2px 6px; border-radius:3px; font-size:10px;">Contact for Price</span></td>
+                <td style="padding:10px 8px;"><span style="background:#064e3b; color:#34d399; padding:2px 6px; border-radius:3px; font-size:10px;">In Stock</span></td>
+                <td style="padding:10px 8px; text-align:right;">✏️ 🗑️</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="screen-caption">Screen 9: Materials management console with quick edit, Contact for Price, and stock toggles.</div>
+    </div>
+
+    <!-- Action Table -->
+    <table class="action-table">
+      <thead>
+        <tr>
+          <th style="width:24%;">Action</th>
+          <th style="width:26%;">Button / Control</th>
+          <th style="width:50%;">What It Does</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Add New Material</strong></td>
+          <td><span class="btn-pill green">+ Add Material</span></td>
+          <td>Opens a popup to enter product name, brand, category, price, stock status, overview, features, and photos. Publishes live immediately.</td>
+        </tr>
+        <tr>
+          <td><strong>Edit Material</strong></td>
+          <td><span class="btn-pill">Pencil Icon</span></td>
+          <td>Updates the price, photos, product features, or description anytime.</td>
+        </tr>
+        <tr>
+          <td><strong>Contact for Price</strong></td>
+          <td><span class="btn-pill">Checkbox (Ticked)</span></td>
+          <td>Hides the price input and displays the amber "Contact for Price" badge on the website, routing buyers to WhatsApp for negotiation.</td>
+        </tr>
+        <tr>
+          <td><strong>Stock Toggle</strong></td>
+          <td><span class="btn-pill">In Stock / Out of Stock</span></td>
+          <td>Changes live stock badge so clients know availability before messaging.</td>
+        </tr>
+        <tr>
+          <td><strong>Delete Material</strong></td>
+          <td><span class="btn-pill">Trash Can Icon</span></td>
+          <td>Permanently removes the product from the catalog.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- PAGE BREAK -->
+    <div class="page-break"></div>
+
+    <h3 class="sub-title">3.4 Vehicle Fleet Management & Showroom Controls</h3>
+    <p class="desc">
+      The vehicle manager provides total oversight of automobile stock. Staff can register new cars, choose from 6 vehicle classes, tick from 20 verified accessories, upload multiple exterior/interior angles, enable "Contact for Price", or mark vehicles as Sold.
+    </p>
+
+    <div class="screen-container">
+      <div class="screen-card">
+        <div class="browser-bar">
+          <div class="browser-dots">
+            <div class="browser-dot dot-red"></div>
+            <div class="browser-dot dot-yellow"></div>
+            <div class="browser-dot dot-green"></div>
+          </div>
+          <div class="browser-url">https://www.bengidlegacyghltd.com/admin/cars</div>
+        </div>
+        <img class="screen-img" src="/manual-assets/add-vehicle-modal.png" alt="Add Vehicle Modal" onerror="this.style.display='none'; document.getElementById('mock-vehicle-modal').style.display='block';">
+        <div id="mock-vehicle-modal" style="display:none; padding:24px; background:#fff;">
+          <h4 style="font-size:16px; margin-bottom:12px; color:#0f172a;">Add New Vehicle Form</h4>
+          <div style="font-size:12px; color:#64748b; line-height:1.8;">
+            Fields: Model Name*, Brand*, Vehicle Type (Salon, SUV, Pickup, Heavy Duty, Mini Van, Bus), Year, Fuel Type, Registration, Price (GHS) or "Contact for Price" Checkbox, Overview, and 20 verified accessories checkboxes.
+          </div>
+        </div>
+      </div>
+      <div class="screen-caption">Screen 10: Vehicle showroom management form with Contact for Price toggle and accessories checklist.</div>
+    </div>
+
+    <!-- Action Table for Cars -->
+    <table class="action-table">
+      <thead>
+        <tr>
+          <th style="width:24%;">Action</th>
+          <th style="width:26%;">Button / Control</th>
+          <th style="width:50%;">What It Does</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Add New Vehicle</strong></td>
+          <td><span class="btn-pill green">+ Add Vehicle</span></td>
+          <td>Opens form to enter model name, brand, vehicle class, year, fuel type, price, overview, accessories, and images. Publishes live instantly.</td>
+        </tr>
+        <tr>
+          <td><strong>Edit Vehicle / Price</strong></td>
+          <td><span class="btn-pill">Pencil Icon</span></td>
+          <td>Updates vehicle pricing, condition notes, or uploaded photos anytime.</td>
+        </tr>
+        <tr>
+          <td><strong>Contact for Price</strong></td>
+          <td><span class="btn-pill">Checkbox (Ticked)</span></td>
+          <td>Hides numerical price and displays the amber "Contact for Price" notice on the automobile listing and detail page.</td>
+        </tr>
+        <tr>
+          <td><strong>Mark as Sold</strong></td>
+          <td><span class="btn-pill">Status: Sold</span></td>
+          <td>Displays a red "SOLD" badge on the storefront while retaining the vehicle in showroom history to build social proof.</td>
+        </tr>
+        <tr>
+          <td><strong>Delete Vehicle</strong></td>
+          <td><span class="btn-pill">Trash Can Icon</span></td>
+          <td>Permanently removes the vehicle from the database.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 class="sub-title">3.5 Customer Leads & Inquiries</h3>
+    <p class="desc">
+      Logs every customer message sent through website forms, capturing the client's name, telephone number, inquiry subject, and timestamp for direct follow-up.
+    </p>
+
+    <div class="screen-container">
+      <div class="screen-card">
+        <div class="browser-bar">
+          <div class="browser-dots">
+            <div class="browser-dot dot-red"></div>
+            <div class="browser-dot dot-yellow"></div>
+            <div class="browser-dot dot-green"></div>
+          </div>
+          <div class="browser-url">https://www.bengidlegacyghltd.com/admin/leads</div>
+        </div>
+        <div class="mock-admin-dark" style="padding:18px;">
+          <table style="width:100%; border-collapse:collapse; font-size:12px; color:#cbd5e1;">
+            <thead>
+              <tr style="border-bottom:1px solid #334155; text-align:left; color:#94a3b8;">
+                <th style="padding:8px;">Client Name</th>
+                <th style="padding:8px;">Phone</th>
+                <th style="padding:8px;">Interested In</th>
+                <th style="padding:8px;">Date</th>
+                <th style="padding:8px; text-align:right;">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom:1px solid #1e293b;">
+                <td style="padding:10px 8px; font-weight:600; color:#fff;">Kwame Mensah</td>
+                <td style="padding:10px 8px; color:#38bdf8;">0244123456</td>
+                <td style="padding:10px 8px;">A4 Sheets Wholesale (50 Reams)</td>
+                <td style="padding:10px 8px; color:#94a3b8;">Nov 05, 2026</td>
+                <td style="padding:10px 8px; text-align:right;"><span style="background:#059669; color:#fff; padding:3px 8px; border-radius:3px; font-size:10px;">WhatsApp</span></td>
+              </tr>
+              <tr style="border-bottom:1px solid #1e293b;">
+                <td style="padding:10px 8px; font-weight:600; color:#fff;">Kofi Asante</td>
+                <td style="padding:10px 8px; color:#38bdf8;">0509876543</td>
+                <td style="padding:10px 8px;">BYD Seal EV Performance AWD</td>
+                <td style="padding:10px 8px; color:#94a3b8;">Nov 04, 2026</td>
+                <td style="padding:10px 8px; text-align:right;"><span style="background:#059669; color:#fff; padding:3px 8px; border-radius:3px; font-size:10px;">WhatsApp</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="screen-caption">Screen 11: Customer leads tracking and direct follow-up dispatch interface.</div>
+    </div>
+
+    <!-- PAGE BREAK -->
+    <div class="page-break"></div>
+
+    <h3 class="sub-title">3.6 System Audit Trail & Activity Logs</h3>
+    <p class="desc">
+      Maintains an automated, tamper-proof record of every administrative action (who created a product, when a car price was modified, when a material was marked out of stock) for complete staff accountability.
+    </p>
+
+    <div class="screen-container">
+      <div class="screen-card">
+        <div class="browser-bar">
+          <div class="browser-dots">
+            <div class="browser-dot dot-red"></div>
+            <div class="browser-dot dot-yellow"></div>
+            <div class="browser-dot dot-green"></div>
+          </div>
+          <div class="browser-url">https://www.bengidlegacyghltd.com/admin/activity</div>
+        </div>
+        <div class="mock-admin-dark" style="padding:18px;">
+          <table style="width:100%; border-collapse:collapse; font-size:12px; color:#cbd5e1;">
+            <thead>
+              <tr style="border-bottom:1px solid #334155; text-align:left; color:#94a3b8;">
+                <th style="padding:8px;">Timestamp</th>
+                <th style="padding:8px;">Action</th>
+                <th style="padding:8px;">Item / Reference</th>
+                <th style="padding:8px;">Event Details</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom:1px solid #1e293b;">
+                <td style="padding:10px 8px; color:#94a3b8;">05 Nov, 10:15</td>
+                <td style="padding:10px 8px;"><span style="background:#064e3b; color:#34d399; padding:2px 6px; border-radius:3px; font-size:10px;">UPDATED</span></td>
+                <td style="padding:10px 8px; font-weight:600; color:#fff;">BYD Seal EV</td>
+                <td style="padding:10px 8px;">Price set to Contact for Price by admin</td>
+              </tr>
+              <tr style="border-bottom:1px solid #1e293b;">
+                <td style="padding:10px 8px; color:#94a3b8;">04 Nov, 16:42</td>
+                <td style="padding:10px 8px;"><span style="background:#064e3b; color:#34d399; padding:2px 6px; border-radius:3px; font-size:10px;">CREATED</span></td>
+                <td style="padding:10px 8px; font-weight:600; color:#fff;">A4 Copy Sheets</td>
+                <td style="padding:10px 8px;">Added new material to inventory (GH₵ 75.00)</td>
+              </tr>
+              <tr style="border-bottom:1px solid #1e293b;">
+                <td style="padding:10px 8px; color:#94a3b8;">03 Nov, 14:10</td>
+                <td style="padding:10px 8px;"><span style="background:#7f1d1d; color:#fca5a5; padding:2px 6px; border-radius:3px; font-size:10px;">STATUS</span></td>
+                <td style="padding:10px 8px; font-weight:600; color:#fff;">Hyundai Accent</td>
+                <td style="padding:10px 8px;">Vehicle marked as SOLD by admin</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="screen-caption">Screen 12: Real-time system activity log tracking all changes made by staff.</div>
+    </div>
+
+    <!-- SECTION 4 -->
+    <h2 class="section-title">4. Standard Operating Procedures (Daily Routine)</h2>
+
+    <div class="sop-step">
+      <div class="step-number">1</div>
+      <div class="step-content">
+        <div class="step-title">Morning Opening (8:30 AM)</div>
+        <div class="step-desc">
+          Log into <code>bengidlegacyghltd.com/admin</code> using the secure OTP code sent to <code>admin@bengidlegacy.com</code>. Check the <strong>Leads</strong> tab for any inquiries submitted overnight and ensure the official WhatsApp phone (<code>+233 20 576 1698</code>) is charged, connected, and active.
+        </div>
+      </div>
+    </div>
+
+    <div class="sop-step">
+      <div class="step-number">2</div>
+      <div class="step-content">
+        <div class="step-title">Order & WhatsApp Inquiry Processing</div>
+        <div class="step-desc">
+          When a customer clicks <em>"Order via WhatsApp"</em> or <em>"Inquire on WhatsApp"</em>, review the pre-filled vehicle model or printing product name. Greet the customer professionally, confirm stock availability, provide custom quantity discounts if applicable, and arrange delivery or showroom viewing.
+        </div>
+      </div>
+    </div>
+
+    <div class="sop-step">
+      <div class="step-number">3</div>
+      <div class="step-content">
+        <div class="step-title">Stock & Showroom Updates</div>
+        <div class="step-desc">
+          Whenever a new shipment arrives, an item runs low, or a vehicle is sold:
+          <br>• If a vehicle is sold, open <strong>Cars</strong> in the admin panel and change status to <strong>Sold</strong> immediately.
+          <br>• If paper or ink prices fluctuate, tick <strong>"Contact for Price"</strong> to direct buyers to direct WhatsApp quotation.
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 5 -->
+    <h2 class="section-title">5. Official Support & Company Details</h2>
+
+    <ul class="support-list">
+      <li><strong>Official WhatsApp / Phone:</strong> +233 20 576 1698</li>
+      <li><strong>Administrative Email:</strong> admin@bengidlegacy.com</li>
+      <li><strong>Live Storefront URL:</strong> https://www.bengidlegacyghltd.com</li>
+      <li><strong>Admin Console URL:</strong> https://www.bengidlegacyghltd.com/admin</li>
+      <li><strong>Company Registration:</strong> Bengid Legacy Ghana Limited (Est. 2010)</li>
+      <li><strong>Core Divisions:</strong> Commercial Printing Materials • Automobile Sales • General Importations</li>
+    </ul>
+
+    <div class="doc-footer">
+      © 2026 BENGID LEGACY GHANA LIMITED. All rights reserved. Operations & Client Storefront Manual.
+    </div>
+
+  </div>
+
+</body>
+</html>
