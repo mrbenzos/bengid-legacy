@@ -5,6 +5,7 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
 import CookieBanner from '@/components/layout/CookieBanner';
+import { PageViewTracker } from '@/components/PageViewTracker';
 import { Toaster } from 'react-hot-toast';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -22,6 +23,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body className={`${inter.className} flex flex-col min-h-screen antialiased bg-[#F9FAFB] text-[#111827] selection:bg-[#4B6F23] selection:text-white`}>
+        <PageViewTracker />
         <Navbar />
         <main className="flex-1">
           {children}
