@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practical Quiz - Three.js 3D Scene (No Models)</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+        body {
+            overflow: hidden;
+            background-color: #7ec0ee;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            color: #fff;
+        }
+        #webgl-container {
+            width: 100vw;
+            height: 100vh;
+            display: block;
+        }
+        /* Controls Toolbar */
+        .toolbar {
+            position: absolute;
+            bottom: 22px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            background: rgba(14, 25, 20, 0.88);
+            backdrop-filter: blur(10px);
+            padding: 8px 12px;
+            border-radius: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            z-index: 10;
+        }
+        .toolbar button {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .toolbar button:hover {
+            background: #2b7a4b;
+            border-color: #5cf2a5;
+            color: #fff;
+            transform: translateY(-2px);
+        }
+        .toolbar button.active {
+            background: #5cf2a5;
+            color: #0b2416;
+            border-color: #8affc2;
+        }
+        /* Loading Screen */
+        #loader {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: #0f1e16;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            transition: opacity 0.5s ease;
+        }
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(92, 242, 165, 0.2);
+            border-top: 4px solid #5cf2a5;
+            border-radius: 50%;
+            animation: spin 0.9s linear infinite;
+            margin-bottom: 16px;
+        }
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+        #loader p {
+            color: #a7f3d0;
+            font-size: 0.95rem;
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+        @media (max-width: 768px) {
+            .toolbar { width: 92%; justify-content: center; flex-wrap: wrap; }
+        }
+    </style>
+    <!-- Three.js and OrbitControls via reliable CDNs -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+</head>
+<body>
+
+    <!-- Loading Screen -->
+    <div id="loader">
+        <div class="spinner"></div>
+        <p>GENERATING 3D PRIMITIVES...</p>
+    </div>
+
+    <!-- Interactive Camera Toolbar -->
+    <div class="toolbar">
+        <button id="btn-scene" class="active" onclick="switchCameraView('scene')">🌐 Full Scene</button>
+        <button id="btn-table" onclick="switchCameraView('table')">🔍 Inspect Table Items</button>
+        <button id="btn-walkway" onclick="switchCameraView('walkway')">🚶 Walkway View</button>
+        <button id="btn-rotate" onclick="toggleAutoRotate()">🔄 Auto-Rotate</button>
+        <button id="btn-time" onclick="toggleDayNight()">🌙 Night Mode</button>
+    </div>
+
+    <!-- WebGL Canvas Mount -->
+    <div id="webgl-container"></div>
+
+    <script>
+        // ============================================================================
+        // 1. SCENE, CAMERA, RENDERER & LIGHTS SETUP
+        // ============================================================================
+        const container = document.getElementById('webgl-container');
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0xa0d8ef);
+        scene.fog = new THREE.FogExp2(0xa0d8ef, 0.012);
+
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(0, 10, 42); // Overview position matching prompt photo
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.05;
+        container.appendChild(renderer.domElement);
+
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.maxPolarAngle = Math.PI / 2 - 0.02; // Don't go below ground
+        controls.minDistance = 2;
+        controls.maxDistance = 120;
+        controls.target.set(0, 3.5, 0);
+
+        // Lights
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.65);
+        scene.add(ambientLight);
+
+        const hemiLight = new THREE.HemisphereLight(0xffffff, 0x447744, 0.45);
+        scene.add(hemiLight);
+
+        const dirLight = new THREE.DirectionalLight(0xfff8ee, 1.25);
+        dirLight.position.set(25, 40, 20);
+        dirLight.castShadow = true;
+        dirLight.shadow.mapSize.width = 2048;
+        dirLight.shadow.mapSize.height = 2048;
+        dirLight.shadow.camera.near = 0.5;
+        dirLight.shadow.camera.far = 150;
+        const d = 35;
+        dirLight.shadow.camera.left = -d;
+        dirLight.shadow.camera.right = d;
+        dirLight.shadow.camera.top = d;
+        dirLight.shadow.camera.bottom = -d;
+        dirLight.shadow.bias = -0.0005;
+        scene.add(dirLight);
+
+        // Gazebo interior warm lantern light
+        const gazeboLight = new THREE.PointLight(0xffd180, 1.5, 12, 1.8);
+        gazeboLight.position.set(0, 6.2, 0);
+        gazeboLight.castShadow = true;
+        scene.add(gazeboLight);
+
+        // ============================================================================
+        // 2. PROCEDURAL TEXTURES (NO EXTERNAL IMAGES / NO MODELS)
+        // ============================================================================
+        
+        // Procedural Checker / Grass Texture
+        function createGrassCanvas() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 512;
+            canvas.height = 512;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#499b33';
+            ctx.fillRect(0, 0, 512, 512);
+            // Subtle noise pattern
+            for (let i = 0; i < 4000; i++) {
+                const x = Math.random() * 512;
+                const y = Math.random() * 512;
+                const radius = Math.random() * 2 + 1;
+                ctx.fillStyle = Math.random() > 0.5 ? '#5cb83c' : '#3d8329';
+                ctx.beginPath();
+                ctx.arc(x, y, radius, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            // Stylized tiles like reference photo
+            ctx.strokeStyle = 'rgba(40, 85, 25, 0.18)';
+            ctx.lineWidth = 4;
+            const step = 64;
+            for (let x = 0; x <= 512; x += step) {
+                ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, 512); ctx.stroke();
+            }
+            for (let y = 0; y <= 512; y += step) {
+                ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(512, y); ctx.stroke();
+            }
+            const texture = new THREE.CanvasTexture(canvas);
+            texture.wrapS = THREE.RepeatWrapping;
+            texture.wrapT = THREE.RepeatWrapping;
+            texture.repeat.set(16, 16);
+            return texture;
+        }
+
+        // Procedural Milo Tin Label Texture
+        function createMiloLabelTexture() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 1024;
+            canvas.height = 512;
+            const ctx = canvas.getContext('2d');
+
+            // Rich Milo Emerald Green Background
+            ctx.fillStyle = '#00632a';
+            ctx.fillRect(0, 0, 1024, 512);
+
+            // Diagonal energy gold/white stripes
+            ctx.fillStyle = '#f5c518';
+            ctx.beginPath();
+            ctx.moveTo(0, 380);
+            ctx.lineTo(1024, 260);
+            ctx.lineTo(1024, 305);
+            ctx.lineTo(0, 425);
+            ctx.fill();
+
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.moveTo(0, 430);
+            ctx.lineTo(1024, 310);
+            ctx.lineTo(1024, 325);
+            ctx.lineTo(0, 445);
+            ctx.fill();
+
+            // Front and Back MILO Branding (repeated for cylinder wrap)
+            [260, 770].forEach(cx => {
+                // Nestlé Script in Red
+                ctx.fillStyle = '#d31018';
+                ctx.font = 'bold 32px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('Nestlé®', cx, 140);
+
+                // Big Bold MILO Text
+                ctx.font = '900 115px "Arial Black", Impact, sans-serif';
+                // Brown text shadow
+                ctx.fillStyle = '#4a2511';
+                ctx.fillText('MILO', cx + 5, 245 + 5);
+                // Vivid yellow text
+                ctx.fillStyle = '#ffde00';
+                ctx.fillText('MILO', cx, 245);
+
+                // Subtext badge: ACTIV-GO
+                ctx.fillStyle = '#d31018';
+                ctx.beginPath();
+                ctx.roundRect(cx - 140, 275, 280, 44, 22);
+                ctx.fill();
+
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 22px sans-serif';
+                ctx.fillText('ACTIV-GO®', cx, 305);
+
+                // Chocolate malt cup graphic representation
+                ctx.fillStyle = '#ffd15c';
+                ctx.font = '600 20px sans-serif';
+                ctx.fillText('CHOC-MALT NOURISHING DRINK', cx, 365);
+
+                ctx.fillStyle = '#ffffff';
+                ctx.font = '14px sans-serif';
+                ctx.fillText('Net Weight 400g • Ghana Favorite', cx, 465);
+            });
+
+            const texture = new THREE.CanvasTexture(canvas);
+            return texture;
+        }
+
+        // Procedural Ideal / Evaporated Milk Tin Label Texture
+        function createMilkLabelTexture() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 1024;
+            canvas.height = 512;
+            const ctx = canvas.getContext('2d');
+
+            // Royal Blue Top Band, Crisp White Bottom Band
+            ctx.fillStyle = '#0f4c81';
+            ctx.fillRect(0, 0, 1024, 260);
+            ctx.fillStyle = '#f8fafc';
+            ctx.fillRect(0, 260, 1024, 252);
+
+            // Red separator ribbon
+            ctx.fillStyle = '#dc2626';
+            ctx.fillRect(0, 250, 1024, 20);
+
+            [260, 770].forEach(cx => {
+                // Gold Emblem Star
+                ctx.fillStyle = '#f59e0b';
+                ctx.beginPath();
+                ctx.arc(cx, 90, 32, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#0f4c81';
+                ctx.font = 'bold 24px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('★', cx, 98);
+
+                // IDEAL / MILK Bold Text
+                ctx.font = '900 86px "Arial Black", Impact, sans-serif';
+                ctx.fillStyle = '#ffffff';
+                ctx.fillText('IDEAL', cx, 195);
+
+                ctx.font = '900 48px sans-serif';
+                ctx.fillStyle = '#0f4c81';
+                ctx.fillText('EVAPORATED', cx, 335);
+
+                ctx.fillStyle = '#dc2626';
+                ctx.font = 'bold 38px sans-serif';
+                ctx.fillText('MILK', cx, 385);
+
+                ctx.fillStyle = '#475569';
+                ctx.font = 'bold 18px sans-serif';
+                ctx.fillText('Rich & Creamy • Full Cream', cx, 435);
+                ctx.font = '14px sans-serif';
+                ctx.fillText('160g Net Weight', cx, 465);
+            });
+
+            const texture = new THREE.CanvasTexture(canvas);
+            return texture;
+        }
+
+        // Procedural Stone Walkway Texture
+        function createStoneCanvas() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 256; canvas.height = 256;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#e2e8f0';
+            ctx.fillRect(0, 0, 256, 256);
+            for (let i = 0; i < 1500; i++) {
+                ctx.fillStyle = Math.random() > 0.5 ? '#cbd5e1' : '#f1f5f9';
+                ctx.fillRect(Math.random()*256, Math.random()*256, 3, 3);
+            }
+            const texture = new THREE.CanvasTexture(canvas);
+            return texture;
+        }
+
+        // ============================================================================
+        // 3. ENVIRONMENT & REFERENCE PHOTO RECONSTRUCTION
+        // ============================================================================
+
+        // Ground Plane (Green Grass)
+        const groundGeo = new THREE.PlaneGeometry(300, 300);
+        const groundMat = new THREE.MeshStandardMaterial({
+            map: createGrassCanvas(),
+            roughness: 0.9,
+            metalness: 0.05
+        });
+        const ground = new THREE.Mesh(groundGeo, groundMat);
+        ground.rotation.x = -Math.PI / 2;
+        ground.receiveShadow = true;
+        scene.add(ground);
+
+        // Curved Light-Green Garden Walls (Flanking Left, Right & Background - Exactly like Reference Photo)
+        const wallMat = new THREE.MeshStandardMaterial({
+            color: 0x98f6c4, // Mint green from reference image
+            roughness: 0.7,
+            metalness: 0.05,
+            side: THREE.DoubleSide
+        });
+
+        const wallRadius = 26;
+        const wallHeight = 13;
+
+        // Left Curved Wall (Flanking the left side)
+        const leftWallGeo = new THREE.CylinderGeometry(wallRadius, wallRadius, wallHeight, 48, 1, true, Math.PI * 0.82, Math.PI * 0.36);
+        const leftWall = new THREE.Mesh(leftWallGeo, wallMat);
+        leftWall.position.set(0, wallHeight / 2, 0);
+        leftWall.castShadow = true;
+        leftWall.receiveShadow = true;
+        scene.add(leftWall);
+
+        // Right Curved Wall (Flanking the right side, symmetrically)
+        const rightWallGeo = new THREE.CylinderGeometry(wallRadius, wallRadius, wallHeight, 48, 1, true, -Math.PI * 0.18, Math.PI * 0.36);
+        const rightWall = new THREE.Mesh(rightWallGeo, wallMat);
+        rightWall.position.set(0, wallHeight / 2, 0);
+        rightWall.castShadow = true;
+        rightWall.receiveShadow = true;
+        scene.add(rightWall);
+
+        // Background Curved Wall (Behind the gazebo)
+        const backWallGeo = new THREE.CylinderGeometry(wallRadius * 0.95, wallRadius * 0.95, wallHeight * 0.85, 48, 1, true, Math.PI * 1.22, Math.PI * 0.56);
+        const backWall = new THREE.Mesh(backWallGeo, wallMat);
+        backWall.position.set(0, (wallHeight * 0.85) / 2, 0);
+        backWall.castShadow = true;
+        backWall.receiveShadow = true;
+        scene.add(backWall);
+
+        // Stone Walkway / Pathway leading to the Gazebo (from foreground)
+        const stoneTexture = createStoneCanvas();
+        const stoneMat = new THREE.MeshStandardMaterial({
+            map: stoneTexture,
+            color: 0xffffff,
+            roughness: 0.65,
+            metalness: 0.1
+        });
+        const pathGroup = new THREE.Group();
+        const numSlabs = 16;
+        const slabWidth = 4.2;
+        const slabLength = 1.6;
+        for (let i = 0; i < numSlabs; i++) {
+            const slabGeo = new THREE.BoxGeometry(slabWidth, 0.16, slabLength);
+            const slab = new THREE.Mesh(slabGeo, stoneMat);
+            slab.position.set(0, 0.08, 6.8 + (i * 2.1));
+            slab.receiveShadow = true;
+            slab.castShadow = true;
+            pathGroup.add(slab);
+        }
+        scene.add(pathGroup);
+
+        // ============================================================================
+        // 4. THE GAZEBO (100% PRIMITIVES: CYLINDERS, CONES, TORUS)
+        // ============================================================================
+        const gazeboGroup = new THREE.Group();
+
+        // Tiered Circular Stone Base
+        const stoneBaseMat = new THREE.MeshStandardMaterial({ color: 0xebf3eb, roughness: 0.75 });
+        const step1 = new THREE.Mesh(new THREE.CylinderGeometry(8.5, 8.8, 0.4, 48), stoneBaseMat);
+        step1.position.y = 0.2;
+        step1.receiveShadow = true;
+        step1.castShadow = true;
+        gazeboGroup.add(step1);
+
+        const step2 = new THREE.Mesh(new THREE.CylinderGeometry(7.6, 7.8, 0.4, 48), stoneBaseMat);
+        step2.position.y = 0.55;
+        step2.receiveShadow = true;
+        step2.castShadow = true;
+        gazeboGroup.add(step2);
+
+        // Gazebo Floor
+        const floorMat = new THREE.MeshStandardMaterial({ color: 0x99ddb3, roughness: 0.6 });
+        const floor = new THREE.Mesh(new THREE.CylinderGeometry(7.2, 7.2, 0.15, 48), floorMat);
+        floor.position.y = 0.8;
+        floor.receiveShadow = true;
+        gazeboGroup.add(floor);
+
+        // Gazebo Pillars (8 Columns in a Circle)
+        const numPillars = 8;
+        const pillarRadius = 6.4;
+        const pillarMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.5 });
+        const pillarPillars = [];
+
+        for (let i = 0; i < numPillars; i++) {
+            const angle = (i / numPillars) * Math.PI * 2;
+            const px = Math.cos(angle) * pillarRadius;
+            const pz = Math.sin(angle) * pillarRadius;
+
+            // Pillar column
+            const col = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.22, 5.2, 24), pillarMat);
+            col.position.set(px, 3.4, pz);
+            col.castShadow = true;
+            col.receiveShadow = true;
+            gazeboGroup.add(col);
+
+            // Pillar capital/top
+            const cap = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.2, 0.22, 16), pillarMat);
+            cap.position.set(px, 6.0, pz);
+            gazeboGroup.add(cap);
+
+            // Pillar base
+            const base = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.34, 0.25, 16), pillarMat);
+            base.position.set(px, 0.95, pz);
+            gazeboGroup.add(base);
+
+            pillarPillars.push({ px, pz, angle });
+        }
+
+        // Balustrade / Railing between pillars (except front entrance)
+        const railMat = new THREE.MeshStandardMaterial({ color: 0xa8f0c6, roughness: 0.6 });
+        for (let i = 0; i < numPillars; i++) {
+            // Skip the entrance opening in front (facing positive Z walkway)
+            if (i === 2) continue; 
+
+            const p1 = pillarPillars[i];
+            const p2 = pillarPillars[(i + 1) % numPillars];
+            const midX = (p1.px + p2.px) / 2;
+            const midZ = (p1.pz + p2.pz) / 2;
+            const dist = Math.hypot(p2.px - p1.px, p2.pz - p1.pz);
+            const rotY = Math.atan2(p2.px - p1.px, p2.pz - p1.pz);
+
+            // Top rail
+            const topRail = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.12, dist), railMat);
+            topRail.position.set(midX, 2.1, midZ);
+            topRail.rotation.y = rotY;
+            topRail.castShadow = true;
+            gazeboGroup.add(topRail);
+
+            // Bottom rail
+            const botRail = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.1, dist), railMat);
+            botRail.position.set(midX, 1.15, midZ);
+            botRail.rotation.y = rotY;
+            gazeboGroup.add(botRail);
+
+            // Vertical balusters
+            const numBal = 5;
+            for (let b = 1; b < numBal; b++) {
+                const t = b / numBal;
+                const bx = p1.px + (p2.px - p1.px) * t;
+                const bz = p1.pz + (p2.pz - p1.pz) * t;
+                const bal = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, 0.85, 12), pillarMat);
+                bal.position.set(bx, 1.62, bz);
+                bal.castShadow = true;
+                gazeboGroup.add(bal);
+            }
+        }
+
+        // Gazebo Conical Roof (Mint green matching the reference photo)
+        const roofMat = new THREE.MeshStandardMaterial({
+            color: 0x7de6ad,
+            roughness: 0.5,
+            metalness: 0.1
+        });
+        const roofTrimMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.4 });
+
+        // Octagonal/Circular Roof Ring Architrave
+        const roofRing = new THREE.Mesh(new THREE.TorusGeometry(6.4, 0.22, 16, 48), roofTrimMat);
+        roofRing.rotation.x = Math.PI / 2;
+        roofRing.position.y = 6.1;
+        gazeboGroup.add(roofRing);
+
+        // Conical Roof
+        const roof = new THREE.Mesh(new THREE.ConeGeometry(7.4, 3.2, 48), roofMat);
+        roof.position.y = 7.7;
+        roof.castShadow = true;
+        roof.receiveShadow = true;
+        gazeboGroup.add(roof);
+
+        // Top Roof Finial / Ball Ornament
+        const finialBase = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.6, 0.6, 16), roofTrimMat);
+        finialBase.position.y = 9.4;
+        gazeboGroup.add(finialBase);
+
+        const finialBall = new THREE.Mesh(new THREE.SphereGeometry(0.35, 24, 24), new THREE.MeshStandardMaterial({ color: 0xf59e0b, metalness: 0.6, roughness: 0.3 }));
+        finialBall.position.y = 9.9;
+        gazeboGroup.add(finialBall);
+
+        // Hanging Ceiling Lamp / Chandelier
+        const chain = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 1.4, 8), new THREE.MeshStandardMaterial({ color: 0x333333, metalness: 0.9 }));
+        chain.position.set(0, 6.9, 0);
+        gazeboGroup.add(chain);
+
+        const lantern = new THREE.Mesh(new THREE.OctahedronGeometry(0.35), new THREE.MeshStandardMaterial({
+            color: 0xffedd5,
+            emissive: 0xffb74d,
+            emissiveIntensity: 0.8,
+            roughness: 0.2
+        }));
+        lantern.position.set(0, 6.1, 0);
+        gazeboGroup.add(lantern);
+
+        scene.add(gazeboGroup);
+
+        // ============================================================================
+        // 5. THE TABLE & 4 CHAIRS (ALL PROCEDURAL PRIMITIVES)
+        // ============================================================================
+        const diningGroup = new THREE.Group();
+        diningGroup.position.set(0, 0.85, 0); // On top of gazebo floor
+
+        // Wood Material for Table & Chairs
+        const woodMat = new THREE.MeshStandardMaterial({
+            color: 0x78350f, // Warm rich walnut wood
+            roughness: 0.45,
+            metalness: 0.08
+        });
+        const darkWoodMat = new THREE.MeshStandardMaterial({
+            color: 0x451a03,
+            roughness: 0.5
+        });
+
+        // --- TABLE ---
+        const tableGroup = new THREE.Group();
+
+        // Round Table Top with beveled rim
+        const tabletop = new THREE.Mesh(new THREE.CylinderGeometry(2.2, 2.2, 0.12, 48), woodMat);
+        tabletop.position.y = 2.1;
+        tabletop.castShadow = true;
+        tabletop.receiveShadow = true;
+        tableGroup.add(tabletop);
+
+        // Table Top Decorative Ring / Apron
+        const tableApron = new THREE.Mesh(new THREE.CylinderGeometry(2.05, 2.05, 0.1, 32), darkWoodMat);
+        tableApron.position.y = 2.0;
+        tableGroup.add(tableApron);
+
+        // Central Pillar / Pedestal Table Leg
+        const tablePedestal = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.32, 1.9, 24), darkWoodMat);
+        tablePedestal.position.y = 1.0;
+        tablePedestal.castShadow = true;
+        tableGroup.add(tablePedestal);
+
+        // Table Pedestal Base / Foot Plate
+        const tableBase = new THREE.Mesh(new THREE.CylinderGeometry(1.2, 1.3, 0.15, 32), darkWoodMat);
+        tableBase.position.y = 0.08;
+        tableBase.receiveShadow = true;
+        tableBase.castShadow = true;
+        tableGroup.add(tableBase);
+
+        // Elegant Tablecloth / Runner center disk
+        const clothMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.85 });
+        const cloth = new THREE.Mesh(new THREE.CylinderGeometry(1.7, 1.7, 0.015, 36), clothMat);
+        cloth.position.y = 2.17;
+        cloth.receiveShadow = true;
+        tableGroup.add(cloth);
+
+        diningGroup.add(tableGroup);
+
+        // --- CHAIRS (4 Chairs around the Table - Minimum was 2) ---
+        function createChair() {
+            const chair = new THREE.Group();
+
+            // Chair Seat
+            const seat = new THREE.Mesh(new THREE.CylinderGeometry(0.65, 0.65, 0.08, 24), woodMat);
+            seat.position.y = 1.15;
+            seat.castShadow = true;
+            seat.receiveShadow = true;
+            chair.add(seat);
+
+            // Seat Cushion
+            const cushion = new THREE.Mesh(new THREE.CylinderGeometry(0.58, 0.58, 0.06, 24), new THREE.MeshStandardMaterial({ color: 0x10b981, roughness: 0.8 }));
+            cushion.position.y = 1.21;
+            chair.add(cushion);
+
+            // 4 Slanted Chair Legs
+            const legGeo = new THREE.CylinderGeometry(0.04, 0.03, 1.15, 12);
+            const legOffsets = [
+                { x: 0.38, z: 0.38, rx: 0.08, rz: 0.08 },
+                { x: -0.38, z: 0.38, rx: 0.08, rz: -0.08 },
+                { x: 0.38, z: -0.38, rx: -0.08, rz: 0.08 },
+                { x: -0.38, z: -0.38, rx: -0.08, rz: -0.08 }
+            ];
+            legOffsets.forEach(pos => {
+                const leg = new THREE.Mesh(legGeo, darkWoodMat);
+                leg.position.set(pos.x, 0.58, pos.z);
+                leg.rotation.x = pos.rx;
+                leg.rotation.z = pos.rz;
+                leg.castShadow = true;
+                chair.add(leg);
+            });
+
+            // Chair Backrest Uprights
+            const backPostGeo = new THREE.CylinderGeometry(0.04, 0.04, 1.35, 12);
+            const postLeft = new THREE.Mesh(backPostGeo, darkWoodMat);
+            postLeft.position.set(-0.42, 1.8, -0.42);
+            postLeft.castShadow = true;
+            chair.add(postLeft);
+
+            const postRight = new THREE.Mesh(backPostGeo, darkWoodMat);
+            postRight.position.set(0.42, 1.8, -0.42);
+            postRight.castShadow = true;
+            chair.add(postRight);
+
+            // Curved Backrest Cross-Slat
+            const backSlat = new THREE.Mesh(new THREE.BoxGeometry(0.95, 0.3, 0.06), woodMat);
+            backSlat.position.set(0, 2.25, -0.42);
+            backSlat.castShadow = true;
+            chair.add(backSlat);
+
+            // Middle Backrest Slat
+            const midSlat = new THREE.Mesh(new THREE.BoxGeometry(0.85, 0.12, 0.05), woodMat);
+            midSlat.position.set(0, 1.75, -0.42);
+            chair.add(midSlat);
+
+            return chair;
+        }
+
+        const numChairs = 4;
+        const chairDistance = 2.9;
+        for (let i = 0; i < numChairs; i++) {
+            const angle = (i / numChairs) * Math.PI * 2 + Math.PI / 4;
+            const chair = createChair();
+            chair.position.set(Math.cos(angle) * chairDistance, 0, Math.sin(angle) * chairDistance);
+            chair.rotation.y = -angle - Math.PI / 2; // Facing the table center
+            diningGroup.add(chair);
+        }
+
+        scene.add(diningGroup);
+
+        // ============================================================================
+        // 6. REQUIRED TABLETOP ITEMS: MILO TIN, MILK TIN & 2 CUPS
+        // ============================================================================
+        const itemsGroup = new THREE.Group();
+        itemsGroup.position.set(0, 3.03, 0); // Directly on tabletop surface
+
+        const silverMat = new THREE.MeshStandardMaterial({
+            color: 0xd8d8d8,
+            metalness: 0.9,
+            roughness: 0.2
+        });
+
+        // ----------------------------------------------------
+        // A. MILO TIN (Green Can with Milo Texture)
+        // ----------------------------------------------------
+        const miloGroup = new THREE.Group();
+        miloGroup.position.set(-0.55, 0, -0.25);
+
+        // Can Cylinder Body with Procedural Milo Label
+        const miloBodyGeo = new THREE.CylinderGeometry(0.32, 0.32, 0.75, 36);
+        const miloSideMat = new THREE.MeshStandardMaterial({
+            map: createMiloLabelTexture(),
+            roughness: 0.35,
+            metalness: 0.15
+        });
+        const miloCapMat = silverMat;
+        const miloMaterials = [miloSideMat, miloCapMat, miloCapMat];
+        const miloCan = new THREE.Mesh(miloBodyGeo, miloMaterials);
+        miloCan.position.y = 0.375;
+        miloCan.castShadow = true;
+        miloCan.receiveShadow = true;
+        miloGroup.add(miloCan);
+
+        // Can Rim Rings (Top and Bottom Metal Rims)
+        const miloRimTop = new THREE.Mesh(new THREE.TorusGeometry(0.32, 0.015, 12, 36), silverMat);
+        miloRimTop.rotation.x = Math.PI / 2;
+        miloRimTop.position.y = 0.75;
+        miloGroup.add(miloRimTop);
+
+        const miloRimBot = new THREE.Mesh(new THREE.TorusGeometry(0.32, 0.015, 12, 36), silverMat);
+        miloRimBot.rotation.x = Math.PI / 2;
+        miloRimBot.position.y = 0.01;
+        miloGroup.add(miloRimBot);
+
+        // Milo Gold Lid
+        const goldLidMat = new THREE.MeshStandardMaterial({ color: 0xca8a04, metalness: 0.8, roughness: 0.3 });
+        const miloLid = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.28, 0.02, 32), goldLidMat);
+        miloLid.position.y = 0.76;
+        miloGroup.add(miloLid);
+
+        itemsGroup.add(miloGroup);
+
+        // ----------------------------------------------------
+        // B. MILK TIN (Ideal / Evaporated Milk Can)
+        // ----------------------------------------------------
+        const milkGroup = new THREE.Group();
+        milkGroup.position.set(0.45, 0, -0.35);
+
+        const milkBodyGeo = new THREE.CylinderGeometry(0.26, 0.26, 0.58, 36);
+        const milkSideMat = new THREE.MeshStandardMaterial({
+            map: createMilkLabelTexture(),
+            roughness: 0.3,
+            metalness: 0.2
+        });
+        const milkMaterials = [milkSideMat, silverMat, silverMat];
+        const milkCan = new THREE.Mesh(milkBodyGeo, milkMaterials);
+        milkCan.position.y = 0.29;
+        milkCan.castShadow = true;
+        milkCan.receiveShadow = true;
+        milkGroup.add(milkCan);
+
+        // Milk Can Metal Rims
+        const milkRimTop = new THREE.Mesh(new THREE.TorusGeometry(0.26, 0.014, 12, 36), silverMat);
+        milkRimTop.rotation.x = Math.PI / 2;
+        milkRimTop.position.y = 0.58;
+        milkGroup.add(milkRimTop);
+
+        const milkRimBot = new THREE.Mesh(new THREE.TorusGeometry(0.26, 0.014, 12, 36), silverMat);
+        milkRimBot.rotation.x = Math.PI / 2;
+        milkRimBot.position.y = 0.01;
+        milkGroup.add(milkRimBot);
+
+        // Two punch holes on top of the milk can (typical Ghanaian/traditional milk pouring holes)
+        const holeMat = new THREE.MeshBasicMaterial({ color: 0x111111 });
+        const hole1 = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.01, 12), holeMat);
+        hole1.position.set(0.14, 0.582, 0);
+        milkGroup.add(hole1);
+
+        const hole2 = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.01, 12), holeMat);
+        hole2.position.set(-0.14, 0.582, 0);
+        milkGroup.add(hole2);
+
+        itemsGroup.add(milkGroup);
+
+        // ----------------------------------------------------
+        // C. TWO (2) CERAMIC CUPS WITH HANDLES & HOT MILO DRINK
+        // ----------------------------------------------------
+        function createCeramicCup(cupColorHex) {
+            const cupGroup = new THREE.Group();
+
+            const cupCeramicMat = new THREE.MeshStandardMaterial({
+                color: cupColorHex,
+                roughness: 0.15,
+                metalness: 0.05
+            });
+
+            // Saucer Plate
+            const saucer = new THREE.Mesh(new THREE.CylinderGeometry(0.48, 0.35, 0.04, 32), cupCeramicMat);
+            saucer.position.y = 0.02;
+            saucer.castShadow = true;
+            saucer.receiveShadow = true;
+            cupGroup.add(saucer);
+
+            // Cup Outer Body
+            const cupOuter = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.19, 0.38, 28), cupCeramicMat);
+            cupOuter.position.y = 0.22;
+            cupOuter.castShadow = true;
+            cupGroup.add(cupOuter);
+
+            // Cup Rim Torus (Smooth Lip)
+            const cupLip = new THREE.Mesh(new THREE.TorusGeometry(0.24, 0.018, 12, 28), cupCeramicMat);
+            cupLip.rotation.x = Math.PI / 2;
+            cupLip.position.y = 0.41;
+            cupGroup.add(cupLip);
+
+            // Cup Handle (Torus Segment)
+            const handleGeo = new THREE.TorusGeometry(0.14, 0.032, 12, 24, Math.PI * 1.15);
+            const handle = new THREE.Mesh(handleGeo, cupCeramicMat);
+            handle.position.set(0.27, 0.23, 0);
+            handle.rotation.z = -Math.PI / 2;
+            handle.castShadow = true;
+            cupGroup.add(handle);
+
+            // Steaming Hot Milo Liquid Inside Cup
+            const cocoaMat = new THREE.MeshStandardMaterial({
+                color: 0x3d1a04, // Rich creamy Milo chocolate brown
+                roughness: 0.15,
+                metalness: 0.1
+            });
+            const liquid = new THREE.Mesh(new THREE.CylinderGeometry(0.23, 0.23, 0.01, 24), cocoaMat);
+            liquid.position.y = 0.36;
+            cupGroup.add(liquid);
+
+            // Silver Teaspoon resting on saucer
+            const spoonHandle = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.015, 0.55), silverMat);
+            spoonHandle.position.set(0.26, 0.04, 0.18);
+            spoonHandle.rotation.y = 0.45;
+            spoonHandle.rotation.x = 0.05;
+            cupGroup.add(spoonHandle);
+
+            const spoonHead = new THREE.Mesh(new THREE.SphereGeometry(0.06, 16, 16), silverMat);
+            spoonHead.scale.set(1, 0.35, 1.4);
+            spoonHead.position.set(0.16, 0.04, -0.04);
+            cupGroup.add(spoonHead);
+
+            return cupGroup;
+        }
+
+        // Cup 1 (Cream / Ivory White) - Placed near southern chair
+        const cup1 = createCeramicCup(0xfdfbf7);
+        cup1.position.set(-0.35, 0, 0.65);
+        cup1.rotation.y = 0.3;
+        itemsGroup.add(cup1);
+
+        // Cup 2 (Warm Mint Pastel) - Placed near eastern chair
+        const cup2 = createCeramicCup(0xe0f2fe);
+        cup2.position.set(0.65, 0, 0.35);
+        cup2.rotation.y = -0.6;
+        itemsGroup.add(cup2);
+
+        // Centerpiece Fruit Bowl for Beautification
+        const bowlMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.2 });
+        const bowl = new THREE.Mesh(new THREE.SphereGeometry(0.42, 24, 16, 0, Math.PI * 2, 0, Math.PI / 2), bowlMat);
+        bowl.rotation.x = Math.PI;
+        bowl.position.set(0, 0.38, -0.05);
+        itemsGroup.add(bowl);
+
+        // Apples in the bowl
+        const appleMat = new THREE.MeshStandardMaterial({ color: 0xdc2626, roughness: 0.3 });
+        for (let a = 0; a < 3; a++) {
+            const apple = new THREE.Mesh(new THREE.SphereGeometry(0.12, 16, 16), appleMat);
+            apple.position.set(Math.cos(a * 2.1) * 0.14, 0.28, -0.05 + Math.sin(a * 2.1) * 0.14);
+            itemsGroup.add(apple);
+        }
+
+        scene.add(itemsGroup);
+
+        // ============================================================================
+        // 7. EXTRA BEAUTIFICATION: GARDEN TREES, FLOWER SHRUBS & PATHWAY LIGHTS
+        // ============================================================================
+
+        // Procedural Garden Trees
+        function createGardenTree() {
+            const tree = new THREE.Group();
+            // Trunk
+            const trunkMat = new THREE.MeshStandardMaterial({ color: 0x4a2e18, roughness: 0.9 });
+            const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.55, 3.8, 12), trunkMat);
+            trunk.position.y = 1.9;
+            trunk.castShadow = true;
+            tree.add(trunk);
+
+            // Foliage Layers (Stacked Cones)
+            const foliageMat = new THREE.MeshStandardMaterial({ color: 0x2e7d32, roughness: 0.7 });
+            const f1 = new THREE.Mesh(new THREE.ConeGeometry(2.4, 3.0, 16), foliageMat);
+            f1.position.y = 4.2;
+            f1.castShadow = true;
+            tree.add(f1);
+
+            const f2 = new THREE.Mesh(new THREE.ConeGeometry(1.9, 2.6, 16), foliageMat);
+            f2.position.y = 5.6;
+            f2.castShadow = true;
+            tree.add(f2);
+
+            const f3 = new THREE.Mesh(new THREE.ConeGeometry(1.3, 2.0, 16), foliageMat);
+            f3.position.y = 6.8;
+            f3.castShadow = true;
+            tree.add(f3);
+
+            return tree;
+        }
+
+        const treePositions = [
+            [-22, 0, -12], [-19, 0, 8], [-15, 0, 24],
+            [22, 0, -12], [19, 0, 8], [15, 0, 24],
+            [-10, 0, -20], [10, 0, -20]
+        ];
+        treePositions.forEach(pos => {
+            const t = createGardenTree();
+            t.position.set(pos[0], pos[1], pos[2]);
+            const s = 0.8 + Math.random() * 0.4;
+            t.scale.set(s, s, s);
+            scene.add(t);
+        });
+
+        // Garden Flower Bushes along the walkway
+        function createFlowerBush(flowerColor) {
+            const bush = new THREE.Group();
+            const bushMat = new THREE.MeshStandardMaterial({ color: 0x388e3c, roughness: 0.8 });
+            const baseBush = new THREE.Mesh(new THREE.SphereGeometry(0.75, 12, 12), bushMat);
+            baseBush.scale.set(1.4, 0.9, 1.4);
+            baseBush.position.y = 0.6;
+            baseBush.castShadow = true;
+            bush.add(baseBush);
+
+            // Small colorful flower blossoms
+            const flowerMat = new THREE.MeshStandardMaterial({ color: flowerColor, roughness: 0.4 });
+            for (let i = 0; i < 9; i++) {
+                const fl = new THREE.Mesh(new THREE.SphereGeometry(0.09, 8, 8), flowerMat);
+                const u = Math.random() * Math.PI * 2;
+                const v = Math.random() * Math.PI * 0.4;
+                fl.position.set(
+                    Math.cos(u) * Math.sin(v) * 0.9,
+                    0.6 + Math.cos(v) * 0.65,
+                    Math.sin(u) * Math.sin(v) * 0.9
+                );
+                bush.add(fl);
+            }
+            return bush;
+        }
+
+        for (let i = 0; i < 6; i++) {
+            const bLeft = createFlowerBush(0xf43f5e);
+            bLeft.position.set(-3.2, 0, 8 + i * 5);
+            scene.add(bLeft);
+
+            const bRight = createFlowerBush(0xf59e0b);
+            bRight.position.set(3.2, 0, 8 + i * 5);
+            scene.add(bRight);
+        }
+
+        // Pathway Solar Light Bollards
+        const bollardMat = new THREE.MeshStandardMaterial({ color: 0x1f2937, metalness: 0.8 });
+        const lampGlowMat = new THREE.MeshBasicMaterial({ color: 0xfef08a });
+        for (let i = 0; i < 4; i++) {
+            [-2.6, 2.6].forEach(bx => {
+                const bollard = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.8, 12), bollardMat);
+                bollard.position.set(bx, 0.4, 10 + i * 7.5);
+                scene.add(bollard);
+
+                const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.07, 12, 12), lampGlowMat);
+                bulb.position.set(bx, 0.85, 10 + i * 7.5);
+                scene.add(bulb);
+            });
+        }
+
+        // ============================================================================
+        // 8. INTERACTIVE CAMERA PRESETS & ANIMATION
+        // ============================================================================
+        let targetCameraPos = new THREE.Vector3(0, 10, 42);
+        let targetLookAt = new THREE.Vector3(0, 3.5, 0);
+        let isTransitioning = false;
+        let isNight = false;
+
+        function switchCameraView(view) {
+            document.querySelectorAll('.toolbar button').forEach(b => b.classList.remove('active'));
+            if (view === 'scene') {
+                document.getElementById('btn-scene').classList.add('active');
+                targetCameraPos.set(0, 10, 42);
+                targetLookAt.set(0, 3.5, 0);
+            } else if (view === 'table') {
+                document.getElementById('btn-table').classList.add('active');
+                // Zoom right up to table to inspect Milo, Milk, & Cups
+                targetCameraPos.set(0.8, 4.3, 2.2);
+                targetLookAt.set(0, 3.2, 0.1);
+            } else if (view === 'walkway') {
+                document.getElementById('btn-walkway').classList.add('active');
+                targetCameraPos.set(0, 2.2, 28);
+                targetLookAt.set(0, 4.5, 0);
+            }
+            isTransitioning = true;
+        }
+
+        function toggleAutoRotate() {
+            controls.autoRotate = !controls.autoRotate;
+            controls.autoRotateSpeed = 1.6;
+            document.getElementById('btn-rotate').classList.toggle('active', controls.autoRotate);
+        }
+
+        function toggleDayNight() {
+            isNight = !isNight;
+            const btn = document.getElementById('btn-time');
+            if (isNight) {
+                btn.textContent = '☀️ Day Mode';
+                btn.classList.add('active');
+                scene.background = new THREE.Color(0x0a1128);
+                scene.fog.color = new THREE.Color(0x0a1128);
+                ambientLight.intensity = 0.2;
+                dirLight.intensity = 0.25;
+                gazeboLight.intensity = 3.5;
+                gazeboLight.distance = 24;
+            } else {
+                btn.textContent = '🌙 Night Mode';
+                btn.classList.remove('active');
+                scene.background = new THREE.Color(0xa0d8ef);
+                scene.fog.color = new THREE.Color(0xa0d8ef);
+                ambientLight.intensity = 0.65;
+                dirLight.intensity = 1.25;
+                gazeboLight.intensity = 1.5;
+                gazeboLight.distance = 12;
+            }
+        }
+
+        // Window Resize Handler
+        window.addEventListener('resize', onWindowResize, false);
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        // Remove Loader Screen
+        setTimeout(() => {
+            const loader = document.getElementById('loader');
+            loader.style.opacity = '0';
+            setTimeout(() => loader.style.display = 'none', 500);
+        }, 600);
+
+        // ============================================================================
+        // 9. ANIMATION LOOP
+        // ============================================================================
+        const clock = new THREE.Clock();
+
+        function animate() {
+            requestAnimationFrame(animate);
+            const delta = clock.getDelta();
+
+            // Smooth camera transition when buttons clicked
+            if (isTransitioning) {
+                camera.position.lerp(targetCameraPos, 0.06);
+                controls.target.lerp(targetLookAt, 0.06);
+                if (camera.position.distanceTo(targetCameraPos) < 0.1) {
+                    isTransitioning = false;
+                }
+            }
+
+            // Subtle flickering of gazebo lamp
+            if (isNight) {
+                gazeboLight.intensity = 3.2 + Math.sin(clock.getElapsedTime() * 8) * 0.4;
+            }
+
+            controls.update();
+            renderer.render(scene, camera);
+        }
+
+        animate();
+    </script>
+</body>
+</html>
