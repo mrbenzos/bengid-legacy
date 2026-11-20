@@ -14,6 +14,18 @@ const nextConfig = {
       },
     ],
   },
+  async rewrites() {
+    return [
+      {
+        source: '/PracticalQuiz2',
+        destination: '/PracticalQuiz2/index.html',
+      },
+      {
+        source: '/PracticalQuiz',
+        destination: '/PracticalQuiz/index.html',
+      },
+    ];
+  },
 };
 
 export default nextConfig;
